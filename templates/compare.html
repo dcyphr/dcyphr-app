@@ -1,0 +1,17 @@
+{% extends "layout.html" %}
+{% block title %}
+    Review
+{% endblock %}
+
+{% block main %}
+{% for i in range(length) %}
+<p>OLD VERSION</p>
+<p>{{ articles[i]['old'] }}</p>
+<p>NEW VERSION</p>
+<p>{{ articles[i]['new'] }}</p>
+<form method="POST">
+    <button name="approve" type="submit" value="{{ articles[i]['doi'] }}">Approve</button>
+    <button name="disapprove" type="submit" value="{{ articles[i]['doi'] }}">Disapprove</button>
+</form>
+{% endfor %}
+{% endblock %}

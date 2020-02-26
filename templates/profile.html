@@ -1,0 +1,78 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Profile
+{% endblock %}
+
+{% block main %}
+<div class="p-3" style="">
+    <div class="container my-4">
+        <i class="fa fa-user-circle border-0 fa-4x mb-2" aria-hidden="true" style="color: #017bff"></i>
+
+        <h5 class="mb-2"> {{ info[0]["username"] }} </h5>
+
+        <div class="my-3" style="color: #017bff; font-size: 32px"> {{ length }} </div>
+
+    <h6>Articles dcyphr-d</h6>
+
+    </div>
+
+    <div>
+        <h2 class="mt-3" style="color: #017bff; font-weight: 200">Highlights</h2>
+        {% for i in range(length) %}
+        <a href="/read/{{ articles[i]['doi'] }}" align="rights">{{ articles[i]["article"] }}</a><br>
+        {% endfor %}
+        <div class="container mt-3 p-3 w-50 border-bottom"></div>
+    </div>
+
+    <div class="container my-3">
+        <i class="fa fa-trophy fa-4x border-0" aria-hidden="true" style="color: #017bff"></i>
+        <div class="my-3" style="color: #017bff; font-size: 32px"> {{ points }} </div>
+        <h6>Points Earned</h6>
+        <h6 style="color: #017bff">Keep up the good work!</h6>
+    </div>
+    <!--<div class="container">-->
+
+    <!--    <div class="row"><br>-->
+
+    <!--	    <div class="d-block">-->
+
+    <!--    	    <div class="progress">-->
+
+    <!--                <div class="bar-step" style="width: 30%;">-->
+    <!--                    <div class="label-percent">Silver: 20 Articles</div>-->
+    <!--                    <div class="label-line"></div>-->
+    <!--                </div>-->
+
+    <!--                <div class="bar-step" style="width: 55%;">-->
+    <!--                    <div class="label-percent">Gold: 40 Articles</div>-->
+    <!--                    <div class="label-line"></div>-->
+    <!--                </div>-->
+
+    <!--                <div class="progress-bar bg-danger" style="width: {{ progress }}%;">{{ progress }}%</div>-->
+    <!--		    </div>-->
+
+    <!--	    </div>-->
+
+    <!--	    </div>-->
+    <!--    </div>-->
+    </div>
+
+
+    <div class="container px-3">
+        <div class="row">
+            <div class="col">
+                <a href="/password" class="btn btn-primary rounded h-100" > Change Password </a>
+            </div>
+
+
+            {% if admin == 1 %}
+            <div class="col-6">
+                <a href="/compare" class="btn btn-primary"> Compare Tasks </a>
+            </div>
+            {% endif %}
+
+        </div>
+    </div>
+</div>
+{% endblock %}

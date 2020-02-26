@@ -1,0 +1,21 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Tasks
+{% endblock %}
+{% block main %}
+<div class="container">
+<table class="table table-striped">
+            <thead>
+                <th>Article</th>
+                <th>PMID Number</th>
+            </thead>
+            {% for i in range(length) %}
+            <tr>
+                <td><a href="/edit/{{ tasks[i]['doi'] }}">{{ tasks[i]["article"] }}</a></td>
+                <td>{{ tasks[i]["doi"] }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+</div>
+{% endblock %}

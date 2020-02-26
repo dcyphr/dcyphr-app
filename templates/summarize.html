@@ -1,0 +1,59 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Summary
+{% endblock %}
+
+{% block main %}
+<div class="container">
+<label for="summary"><b>You are dcyphr-ing "{{ article }}":</b></label>
+<form method="POST" class="indent">
+    <br>
+    <br>
+    <p>Abstract:</p>
+    <textarea class="form-control" rows="5" cols="50" name="abstract" placeholder="Abstract..."></textarea><br>
+    <p>Introduction:</p>
+    <p><ul><li>The introduction gives extensive background on the gene or protein of interest</li>
+    <li>Report why the authors chose the particular subject (e.g. gene of interest) to study</li>
+    <li>Spend 1-3 sentences reporting a few pieces of background information directly relating to the experiment or study</li>
+    <li>Report any unclear terms or concepts that the authors define</li></ul></p>
+    <textarea class="form-control" rows="5" cols="50" name="background" placeholder="Background..."></textarea><br>
+    <p>Aims:</p>
+    <ul><li>Find the purpose of the research and report this</li></ul>
+    <textarea class="form-control" rows="5" cols="50" name="aims" placeholder="Aims..."></textarea><br>
+    <p>Methods:</p>
+    <ul><li>Only report important techniques</li>
+    <li>When reporting a technique, name the technique itself and state the purpose of its use</li>
+    <li>There should be causal or chronological order to this section</li></ul>
+    <textarea class="form-control" rows="5" cols="50" name="methods" placeholder="Methods..."></textarea><br>
+    <p>Results:</p><ul>
+    <li>Report the corresponding results of each method that you reported</li>
+    <li>Summarize in a couple sentences figures that directly relate to the results that you report. Report figures and corresponding results together.</li></ul>
+    <textarea class="form-control" rows="5" cols="50" name="results" placeholder="Results..."></textarea><br>
+    <p>Conclusion:</p>
+    <ul>
+        <li>Report the meaning and significance of each result you summarized</li>
+        <li>Report any conclusions the authors make from their results</li>
+    </ul>
+    <textarea class="form-control" rows="5" cols="50" name="conclusion" placeholder="Conclusion..."></textarea><br>
+
+<ul>
+<li>Use active voice</li>
+<li>Minimize nominalization</li>
+<li>Keep subjects near verbs near objects</li>
+<li>Use simple word substitutions (under 3 syllables)</li>
+<li>Restrict sentences to one idea per sentence</li>
+<li>Make dependent clauses in the middle of sentence a separate sentence</li>
+<ul><li>Ex. The ball, which was blue, rolled down the hill. → The ball was blue. It rolled down the hill. → The blue ball rolled down the hill.</li></ul>
+<li>Qualify all the pronouns you use</li>
+<li>Introduce paragraphs with main idea sentence</li>
+<li>State only the ideas of the original text</li>
+</ul>
+
+    <button class="btn btn-primary" type="submit" class="indent">Submit</button>
+    <br>
+</form>
+<br>
+<p class="indent">Link to the article: <a href="{{ link }}">{{ article }}</a></p>
+</div>
+{% endblock %}

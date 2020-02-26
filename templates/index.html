@@ -1,0 +1,122 @@
+{% extends "layout.html" %}
+{% block title %}
+    Home
+{% endblock %}
+
+{% block main %}
+<div>
+    <div id="searchbar" class="h-50">
+        <section class="mb-5 h-auto">
+        <br>
+        <br>
+        <br>
+        <br><br><br>
+        <h1 class="display-3"><font color="#017bff">dcyphr</font></h1><br>
+        <blockquote>
+            <p>“Any fool can make things bigger, more complex, and more violent. It takes a touch of genius — and a lot of courage — to move in the opposite direction.”</p>
+            <footer class="blockquote-footer">Albert Einstein</footer>
+        </blockquote><br>
+        <form action="/" method="POST">
+        <div class="input-group col-sm-6 mx-auto">
+            <input type="text" class="form-control" name="search" aria-label="Search" aria-describedby="searchbar">
+            <div class="input-group-append">
+                <button class="btn btn-outline-secondary" type="submit">Search</button>
+            </div>
+        </div>
+        </form></section>
+
+        <div class="container h-50 mt-4 pt-4">
+            <div class= "row h-100">
+                <div class="col-12 col-md-3 p-2 border" style="height: 250px">
+                    <div class="container h-75">
+                        <h5 class="card-title"><b>Browse</b></h5>
+                        <p class="card-text p-2">Browse dcyphr-d scientific articles for your classes. All summaries are moderated by professionals for accuracy.</p>
+                    </div>
+                    <div class="container">
+                        <a href="/browse" class="btn btn-primary">Browse</a>
+                    </div>
+                </div>
+                <div class="col-12 col-md-3 p-2 border" style="height: 250px; margin: 0 auto">
+                    <div class="container h-75">
+                        <h5 class="card-title"><b>Contribute</b></h5>
+                        <p class="card-text p-2">Become a dcyphr-r and build your skills in scientific communication and to help make science more accessible for everyone.</p>
+                    </div>
+                    <div class="container">
+                        <a href="/tasks" class="btn btn-primary">Contribute</a>
+                    </div>
+                </div>
+                <div class="col-12 col-md-3 p-2 border" style="height: 250px">
+                    <div class="container h-75">
+                        <h5 class="card-title"><b>Request</b></h5>
+                        <p class="card-text p-2">Don't see the article that you need dcyphr-d? Wish to dcyphr an article but its not requested yet? Click here to put in a request.</p>
+                    </div>
+                    <div class="container">
+                        <a href="/request" class="btn btn-primary">Request</a>
+                    </div>
+              </div>
+            </div>
+        </div>
+    </div>
+
+    <div>
+        <section class="w3-container w3-center w3-content my-5 p-5">
+            <h2 class="display-4 text-primary">Mission</h2>
+            <p class="w3-justify" style="line-height: 40px;">The purpose of science is to explain the natural world to us. However, in the status quo, the knowledge and tools of science is limited to a select few that have the resources to learn it. The language in scientific articles is unnecessarily complex and full of jargon. This makes it hard even for those that have the education to keep up with the literature.</p>
+            <p>Thus, <b style="color: #017bff">dcyphr</b>: an open-source platform that makes science more accessible to the public.</p>
+        </section>
+    </div>
+
+        <div id="teammembers" class="p-5 mt-5">
+        <section class="w3-row-padding w3-center" >
+            <h2 class="display-4 mb-5 text-primary">Team</h2>
+            <article class="w3-third">
+                <p>Jeffrey Ma</p>
+                <p>Founder</p>
+                <p>jeffrey.ma.jzm5@yale.edu</p>
+            </article>
+            <article class="w3-third">
+                <p>Onyedikachi Uche</p>
+                <p>Research Director</p>
+                <p>onyedikachi.uche@yale.edu</p>
+            </article>
+            <article class="w3-third">
+                <p>Isabela Cardenas</p>
+                <p>Marketing Director</p>
+                <p>isabela.cardenas@yale.edu</p>
+            </article>
+        </section>
+        <br><br>
+        <section class="w3-row-padding w3-center">
+            <article class="w3-half">
+                <p>Aidan Neziri</p>
+                <p>Business Director</p>
+                <p>aidan.neziri@yale.edu</p>
+            </article>
+            <article class="w3-half">
+                <p>Matt Tu</p>
+                <p>Web Master</p>
+                <p>matt.tu@yale.edu</p>
+            </article>
+        </section>
+        <br><br>
+        <section class="w3-row-padding w3-center">
+            <article class="w3-quarter">
+                <p>Ivan Chan</p>
+                <p>ivan.chan@yale.edu</p>
+            </article>
+            <article class="w3-quarter">
+                <p>Janet Hsu</p>
+                <p>janet.hsu@yale.edu</p>
+            </article>
+            <article class="w3-quarter">
+                <p>Jalil Morris</p>
+                <p>jalil.morris@yale.edu</p>
+            </article>
+            <article class="w3-quarter">
+                <p>Graham Stodolski</p>
+                <p>graham.stodolski@yale.edu</p>
+            </article>
+        </section><br><br>
+        </div>
+</div>
+{% endblock %}

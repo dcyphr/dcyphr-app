@@ -1,0 +1,22 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Register
+{% endblock %}
+
+
+{% block main %}
+<form action="/register" method="POST">
+    <br>
+    <input type="text" class="form-control" name="username" placeholder="username">
+    <p></p>
+    <p>Please enter Yale email only.</p>
+    <input type="text" class="form-control" name="email" placeholder="email">
+    <p></p>
+    <input type="text" class="form-control" name="password" placeholder="password">
+    <p></p>
+    <input type="text" class="form-control" name="confirm" placeholder="confirm password">
+    <p></p>
+    <input type="submit" class="btn btn-primary">
+</form>
+{% endblock %}

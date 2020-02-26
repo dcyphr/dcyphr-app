@@ -1,0 +1,129 @@
+
+main .form-control
+{
+    /* center form controls */
+    display: inline-block;
+
+    /* override Bootstrap's 100% width for form controls */
+    width: auto;
+}
+
+main
+{
+    /* scroll horizontally as needed */
+    overflow-x: auto;
+
+    /* center contents */
+    text-align: center;
+}
+
+main img
+{
+    /* constrain images on small screens */
+    max-width: 100%;
+}
+
+blockquote {
+    max-width:600px;
+    text-align: center;
+    padding-left: 5px;
+    margin:0 auto;
+    width:auto;
+    display:table
+}
+
+.name
+{
+    text-align: left;
+    margin-left: 222.5px;
+}
+.box {
+    width: 600px;
+    height: 200px;
+    text-align: left;
+    border-style: solid;
+    border-width: 1px;
+    border-color: lightblue;
+}
+.indent
+{
+    text-align: left;
+    margin-left: 277px;
+}
+
+.name1
+{
+    text-align: left;
+    margin-left: 110px;
+    margin-right: 110px
+}
+.label-txt {
+    float: left;
+}
+
+.label-line {
+    float: right;
+    background: #000;
+    height:50px;
+	width:1px;
+    margin-left: 5px;
+}
+
+.label-percent {
+    float: right;
+    margin-left: 5px;
+}
+.bar-step {
+    position:absolute;
+    margin-top:-20px;
+	z-index:1;
+    font-size:12px;
+}
+i {
+  border: solid black;
+  border-width: 0 3px 3px 0;
+  display: inline-block;
+  padding: 3px;
+}
+
+.up {
+  transform: rotate(-135deg);
+  -webkit-transform: rotate(-135deg);
+}
+
+.down {
+  transform: rotate(45deg);
+  -webkit-transform: rotate(45deg);
+}
+
+.nav input[type=text] {
+  float: right;
+  padding: 6px;
+  border: none;
+  margin-top: 8px;
+  margin-right: 16px;
+  font-size: 17px;
+}
+
+
+dl:nth-of-type(odd) {
+    background: #fafafa;
+}
+
+/*#searchbar {*/
+/*    background: white;*/
+/*    background: -webkit-linear-gradient(to bottom, #a3e9ff, #FFFFFF);*/
+/*    background: linear-gradient(to bottom, #a3e9ff, #FFFFFF);*/
+/*}*/
+
+#teammembers {
+    background: #8e9eab;  /* fallback for old browsers */
+    background: -webkit-linear-gradient(to bottom, #ffffff, #8e9eab);  /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to bottom, #ffffff, #8e9eab); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
+}
+
+.disabledButton:hover {
+    text-decoration: none;
+    filter: brightness(85%);
+}

@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+
+{% block title %}
+{{ methods[0]["name"] }}
+{% endblock %}
+
+{% block main %}
+<br>
+<h1 style="text-align: left">{{ methods[0]["name"] }}</h1>
+<br>
+<p class="pl-4 text-weight-light" style="line-height: 40px; font-size: 20px;">
+{{ methods[0]["description"] }}
+</p>
+
+{% endblock %}

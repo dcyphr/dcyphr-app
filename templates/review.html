@@ -1,0 +1,50 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Review
+{% endblock %}
+
+{% block main %}
+<div class="container">
+<b>Article Title: {{ article }}</b>
+<p></p>
+<div class="name" style="font-weight:bold">
+    Draft Summary:
+</div>
+<p>Abstract:</p>
+<div class="container p-3 h-auto mx-auto">
+    {{ abstract[0]["abstract"] }}
+</div>
+<p>Introduction:</p>
+<div class="container p-3 h-auto mx-auto">
+    {{ background[0]["background"] }}
+</div>
+<p>Aims:</p>
+<div class="container p-3 h-auto mx-auto">
+    {{ aims[0]["aims"] }}
+</div>
+<p>Methods:</p>
+<div class="container p-3 h-auto mx-auto">
+    {{ methods[0]["methods"] }}
+</div>
+<p>Results:</p>
+<div class="container p-3 h-auto mx-auto">
+    {{ results[0]["results"] }}
+</div>
+<p>Conclusion:</p>
+<div class="container p-3 h-auto mx-auto">
+    {{ conclusion[0]["conclusion"] }}
+</div>
+<br>
+<form method="POST" class="name">
+    <input type="radio" value="yes" name="review"> <b>Pass</b> <br>
+    <input type="radio" value="no" name="review"> <b>Doesn't Pass</b> <br>
+    <br>
+    <button class="btn btn-primary" type="submit">Submit</button></button>
+    <br>
+</form>
+<br>
+<p class="name">Link to the article: <a href="{{ link }}" >{{ article }}</a></p>
+</div>
+{% endblock %}
+

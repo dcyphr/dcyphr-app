@@ -1,0 +1,20 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Request
+{% endblock %}
+
+{% block main %}
+<br>
+<form action="/request" method="POST" class="form-group">
+    <input type="text" class="form-control" placeholder="Article name" name="article" required>
+    <p></p>
+    <input type="text" class="form-control" placeholder="PMID number" name="doi" required>
+    <p></p>
+    <input type="text" class="form-control" placeholder="Link" name="link" required>
+    <p></p>
+    <input type="text" class="form-control" placeholder="APA citation" name="citation" required>
+    <p></p>
+    <button class="btn btn-primary" type="submit">Submit</button>
+</form>
+{% endblock %}

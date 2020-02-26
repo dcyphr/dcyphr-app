@@ -1,0 +1,129 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    {{ article }}
+{% endblock %}
+
+{% block main %}
+
+
+<div class="container mb-5">
+    <div class="row jumbotron m-xs-1 rounded bg-white text-left">
+
+        <div class="col-md-10 col-xs-6">
+            <p class="display-4">
+                {{ article }}
+            </p>
+
+            <p style="font-size: medium;">
+                APA citation: <em>{{ citation }}</em>
+            </p>
+
+            <p style="font-size: medium;">
+                Dcyphr-d by <font color="DodgerBlue"><a href="/public/{{ summary[0]['user_id'] }}">@{{ username[0]["username"] }}</a></font>
+            </p>
+
+            <p style="font-size: medium;">
+                Link to Original Article: <font color="DodgerBlue"><a href="{{ link }}">{{ article }}</a></font>
+            </p>
+
+            <p>
+                Link to Edit: <font color="DodgerBlue"><a href="/edit/{{ doi }}">Edit</a></font>
+            </p>
+            <p>
+                <form method="POST">
+                    <button class="btn btn-default" name="flag" value="flag">FLAG</button>
+                </form>
+            </p>
+        </div>
+
+
+        <div class="col-md-2 col-xs-6 text-center text-secondary" style="font-size: 1.7em">
+            <form method="POST">
+                {% if x == "true" %}
+            <button class="btn btn-default" type="submit" name="like" value="like" disabled><i class="arrow up"></i></button>
+            <br>
+            {{ likes }}
+            <br>
+            <button class="btn btn-default" type="submit" name="dislike" value="dislike" disabled><i class="arrow down"></i></button>
+            {% else %}
+            <button class="btn btn-default" type="submit" name="like" value="like"><i class="arrow up"></i></button>
+            <br>
+            {{ likes }}
+            <br>
+            <button class="btn btn-default" type="submit" name="dislike" value="dislike"><i class="arrow down"></i></button>
+            {% endif %}
+            </form>
+        </div>
+    </div>
+
+
+
+    <div class="w-25 p-2 bg-light border border-dark ">
+        <h1 class="display-4">Contents</h1>
+        <ul class="ml-3 text-left" style="list-style: none;">
+            {% for i in range(title_length) %}
+            <li><a href="#{{ titles[i] }}">{{ titles[i] }}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div class="container text-left">
+
+        <div id="summary" class="p-3 my-3">
+            <p class="pl-4 text-weight-light" style="line-height: 40px; font-size: 20px;">
+                {{summary_actual | safe}}
+            </p>
+            <p class="pl-4 text-weight-light" style="line-height: 40px; font-size: 20px;">
+                {% for i in range(method_length) %}
+                <a href="/method/{{ method_id[i] }}">{{ methods_used[i] }}</a>
+                {% endfor %}
+            </p>
+        </div>
+
+
+    </div>
+
+    <div class="container text-left">
+        <div id="comments" class="p-3 my-3">
+            <div class="mb-4 display-4 text-center">
+                Comments
+            </div>
+
+            <form method="POST" class="form">
+                <div class="sticky-top form-group row">
+                    <label for="comment" class="col-xs-2 col-form-label">Leave a comment: </label>
+                    <div class="col">
+                        <input type="text" name="text" class="form-control text-wrap w-100" id="comment" placeholder="Write here...">
+                    </div>
+                    <div>
+                        {% if y == "true" %}
+                        <button class="btn btn-default" type="submit" value="{{doi}}" disabled>Submit</button>
+                        {% else %}
+                        <button class="btn btn-default" type="submit" value= "{{doi}}">Submit</button>
+                        {% endif %}
+                    </div>
+                </div>
+            </form>
+
+            {% for comment in comments %}
+            <div class="contanier">
+                <div>
+                    Posted by <span class="text-danger">@{{ comment['username'] }}</span> on <span class="text-danger">{{ comment['date'] }}</span>
+                </div>
+                <div class="m-3 bg-light rounded p-3">
+                    {{ comment['comment'] }}
+                </div>
+            </div>
+
+            <hr>
+            {% endfor %}
+
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}
+
+

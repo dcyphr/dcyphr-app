@@ -1,0 +1,26 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Methods
+{% endblock %}
+
+{% block main %}
+
+
+<div class="container">
+<br>
+<h1 style="text-align: left">Methods:</h1>
+<dl style="text-align: left">
+    {% for i in range(length) %}
+    <ul style="list-style: none">
+        <li><dt><a href="{{ methods[i]['id'] }}">{{ methods[i]["name"] }}</a> </dt>
+        <ul style="list-style: none">
+            <li><dd>{{ preview[i]['substr'] }}...</dd></li>
+        </ul>
+        </li>
+    </ul>
+    {% endfor %}
+</dl>
+</div>
+
+{% endblock %}
