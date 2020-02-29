@@ -35,8 +35,8 @@ Session(app)
 
 # Configure CS50 Library to use SQLite database
 # db = SQL('postgres://hwicvwhg:4zzgStNJkiEy3hC3gtFHrdlyLFR_vQUN@rajje.db.elephantsql.com:5432/hwicvwhg?sslmode=require')
-#db = SQL("sqlite:///nvision.db")
-db = SQL(os.environ['DATABASE_URL'])
+db = SQL("sqlite:///nvision.db")
+#db = SQL(os.environ['DATABASE_URL'])
 # This allows the user to browse the different articles
 # Displays articles by recency of completion and displays only the article title and author as a link to the page that contains the actual summary
 @app.route("/browse", methods=["GET", "POST"])
@@ -149,6 +149,7 @@ def read(doi):
 def tasks():
     # Gets tasks that are not marked as done and orders it by request amount
     tasks = db.execute("SELECT article, doi FROM summary WHERE done = CAST(0 AS BIT) ORDER BY requests")
+
     length = len(tasks)
     return render_template("tasks.html", tasks=tasks, length=length)
 
@@ -244,10 +245,12 @@ def requesting():
 @app.route("/", methods=["GET", "POST"])
 def index():
     if request.method == "GET":
+        leaderboard = db.execute("SELECT username, id, points FROM users WHERE points != 'None' ORDER BY points DESC LIMIT 5")
+        lead_length = len(leaderboard)
         # db.execute("CREATE TABLE IF NOT EXISTS summary (id SERIAL PRIMARY KEY, user_id INTEGER, citation TEXT, doi TEXT, background TEXT, aims TEXT, methods TEXT, results TEXT, conclusion TEXT, task_id INTEGER, done BIT, reviewed INTEGER, remove BIT, likes INTEGER, reviewer_1 INTEGER, reviewer_2 INTEGER, FOREIGN KEY(doi) REFERENCES tasks(doi), FOREIGN KEY (user_id) REFERENCES users(id), FOREIGN KEY(task_id) REFERENCES tasks(id));")
         # db.execute("CREATE TABLE IF NOT EXISTS tasks (id SERIAL PRIMARY KEY, type TEXT, citation TEXT, requests INTEGER, article TEXT, doi TEXT, done INTEGER, user_id INTEGER, link TEXT, FOREIGN KEY(user_id) REFERENCES users(id));")
         # db.execute("CREATE TABLE IF NOT EXISTS comments (id SERIAL PRIMARY KEY, user_id INTEGER, doi INTEGER, comment TEXT, date DATE);")
-        return render_template("index.html")
+        return render_template("index.html", leaderboard=leaderboard, lead_length=lead_length)
     else:
         # search bar
         search = request.form.get("search")
@@ -326,6 +329,10 @@ def profile(user_id):
     # gets their username
     info = db.execute("SELECT username FROM users WHERE id=:user_id", user_id=session["user_id"])
     admin = db.execute("SELECT admin FROM users WHERE id=:user_id", user_id=session["user_id"])[0]['admin']
+    # ranks = db.execute("SELECT id, RANK () OVER (ORDER BY points DESC) as points_rank FROM users")
+    # for i in len(ranks):
+    #     if ranks[i]["id"] == user_id:
+    #         rank = ranks[i]["points_rank"]
     return render_template("profile.html", info=info, articles=articles, length=length, progress=progress, admin=admin, points=points)
 
 @app.route("/compare", methods=["GET", "POST"])

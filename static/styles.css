@@ -116,14 +116,18 @@ dl:nth-of-type(odd) {
 /*    background: linear-gradient(to bottom, #a3e9ff, #FFFFFF);*/
 /*}*/
 
-#teammembers {
-    background: #8e9eab;  /* fallback for old browsers */
-    background: -webkit-linear-gradient(to bottom, #ffffff, #8e9eab);  /* Chrome 10-25, Safari 5.1-6 */
-    background: linear-gradient(to bottom, #ffffff, #8e9eab); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+/*#teammembers {background: #8e9eab;  /* fallback for old browsers
+    background: -webkit-linear-gradient(to bottom, #ffffff, #8e9eab);  /* Chrome 10-25, Safari 5.1-6
+    background: linear-gradient(to bottom, #ffffff, #8e9eab); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+
 
-}
+/*}*/
 
 .disabledButton:hover {
     text-decoration: none;
     filter: brightness(85%);
+}
+
+.contentButton:hover {
+    text-decoration: none;
+    color: DodgerBlue;
 }

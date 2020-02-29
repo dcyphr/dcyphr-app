@@ -7,8 +7,8 @@
 <div>
     <div id="searchbar" class="h-50">
         <section class="mb-5 h-auto">
-        <br>
-        <br>
+
+
         <br>
         <br><br><br>
         <h1 class="display-3"><font color="#017bff">dcyphr</font></h1><br>
@@ -24,8 +24,8 @@
             </div>
         </div>
         </form></section>
-
-        <div class="container h-50 mt-4 pt-4">
+        <br>
+        <div class="container h-50 mt-4 pt-4;">
             <div class= "row h-100">
                 <div class="col-12 col-md-3 p-2 border" style="height: 250px">
                     <div class="container h-75">
@@ -59,16 +59,31 @@
     </div>
 
     <div>
-        <section class="w3-container w3-center w3-content my-5 p-5">
-            <h2 class="display-4 text-primary">Mission</h2>
+        <section class="w3-container w3-half w3-content my-5 p-5">
+            <h2 class="display-4 text-primary">mission</h2>
             <p class="w3-justify" style="line-height: 40px;">The purpose of science is to explain the natural world to us. However, in the status quo, the knowledge and tools of science is limited to a select few that have the resources to learn it. The language in scientific articles is unnecessarily complex and full of jargon. This makes it hard even for those that have the education to keep up with the literature.</p>
             <p>Thus, <b style="color: #017bff">dcyphr</b>: an open-source platform that makes science more accessible to the public.</p>
+        </section>
+        <section class="w3-container w3-half w3-content my-5 p-5">
+            <h2 class="display-4 text-primary">top dcyphr-rs</h2>
+            <table class="table table-striped">
+                <thead>
+                    <th>Username</th>
+                    <th>Points</th>
+            </thead>
+            {% for i in range(lead_length) %}
+            <tr>
+                <td><a href="/public/{{ leaderboard[i]['id'] }}">{{ leaderboard[i]['username'] }}</a></td>
+                <td>{{ leaderboard[i]["points"] }}</td>
+            </tr>
+            {% endfor %}
+            </table>
         </section>
     </div>
 
         <div id="teammembers" class="p-5 mt-5">
         <section class="w3-row-padding w3-center" >
-            <h2 class="display-4 mb-5 text-primary">Team</h2>
+            <h2 class="display-4 mb-5 text-primary">team</h2>
             <article class="w3-third">
                 <p>Jeffrey Ma</p>
                 <p>Founder</p>
@@ -80,24 +95,12 @@
                 <p>onyedikachi.uche@yale.edu</p>
             </article>
             <article class="w3-third">
-                <p>Isabela Cardenas</p>
-                <p>Marketing Director</p>
-                <p>isabela.cardenas@yale.edu</p>
-            </article>
-        </section>
-        <br><br>
-        <section class="w3-row-padding w3-center">
-            <article class="w3-half">
                 <p>Aidan Neziri</p>
                 <p>Business Director</p>
                 <p>aidan.neziri@yale.edu</p>
             </article>
-            <article class="w3-half">
-                <p>Matt Tu</p>
-                <p>Web Master</p>
-                <p>matt.tu@yale.edu</p>
-            </article>
         </section>
+        <br><br>
         <br><br>
         <section class="w3-row-padding w3-center">
             <article class="w3-quarter">
