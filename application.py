@@ -11,7 +11,7 @@ from datetime import date, datetime
 from bs4 import BeautifulSoup
 import jellyfish
 
-from helpers import apology, login_required, lookup, usd
+from helpers import apology, login_required, lookup, usd, readability
 
 # Configure application
 app = Flask(__name__)
@@ -176,9 +176,10 @@ def edit(doi):
     else:
         # inserts user summary from form into summary table
         summary_new = remove_html_tags(request.form.get("summary"))
+        summary_new_html = request.form.get("summary")
         user = db.execute("SELECT user_id FROM summary WHERE doi=:doi", doi=doi)[0]["user_id"]
         db.execute("UPDATE summary SET summary=:summary, done=CAST(1 AS BIT) WHERE doi=:doi;",
-                   summary=summary_new, doi=doi)
+                   summary=summary_new_html, doi=doi)
         if not user:
             db.execute("UPDATE summary SET user_id=:user_id WHERE doi=:doi;",
                    user_id=session["user_id"], doi=doi)
@@ -198,7 +199,7 @@ def edit(doi):
         if diff_ratio < 0.05:
             pass
         else:
-            # if textstat.automated_readability_index(summary_new) - textstat.automated_readability_index(summary) < 0:
+            # if readability(summary_new) - readability(summary) < 0:
                 others = db.execute("SELECT others FROM summary WHERE doi=:doi", doi=doi)[0]['others']
                 print(others)
                 if others == None:

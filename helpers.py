@@ -61,3 +61,50 @@ def lookup(symbol):
 def usd(value):
     """Format value as USD."""
     return f"${value:,.2f}"
+
+def readability(summary):
+    # sets the values to 0
+
+    letters = 0
+    words = 1
+    sentences = 0
+
+    # gets text from user
+
+    s = summary
+
+    # calculates length of the text
+
+    length = len(s)
+
+    # considers bad scenarios
+
+    if s[0] == " ":
+        words = words - 1
+
+    if s[length - 1] == " ":
+        words = words - 1
+
+    for i in range(length):
+        if s[i].isalpha() == True:
+            letters += 1
+        # counts words
+        if s[i] == " " and s[i - 1] != " ":
+            words += 1
+        # counts sentences
+        if s[i] == "." or s[i] == "?" or s[i] == "!":
+            sentences += 1
+
+    # calculates ari and grade
+
+    L = float(letters) / float(words) * 100
+    S = float(words) / float(sentences) * 100
+    ari = 4.71 * L + 0.5 * S - 21.43
+    grade = round(ari)
+
+    if grade < 1:
+        return 0
+    elif grade >= 16:
+        return 14
+    else:
+        return grade
