@@ -18,12 +18,12 @@
             {% for i in range(length) %}
             <li class="p-3" style="">
                 <div class="row border-top border-dark pt-3">
-                    <div class="float-left text-center" style="color: grey; font-size: 1.25em; width: 6%; margin: auto 0">
+                    <div class="col-1 text-center" style="color: grey; font-size: 1.25em; width: 6%; margin: auto 0">
 
                         {{ summaries[i]['likes'] }}
                         <p>likes</p>
                     </div>
-                    <div class="">
+                    <div class="col">
                         <div>
                             <a class="disabledButton" href="{{links[i]}}" style="color: #017bff; font-size: 1.4em; font-weight: 200;">{{ summaries[i]["article"] }}</a>
                         </div>
