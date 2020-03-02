@@ -35,8 +35,8 @@ Session(app)
 
 # Configure CS50 Library to use SQLite database
 # db = SQL('postgres://hwicvwhg:4zzgStNJkiEy3hC3gtFHrdlyLFR_vQUN@rajje.db.elephantsql.com:5432/hwicvwhg?sslmode=require')
-# db = SQL("sqlite:///nvision.db")
-db = SQL(os.environ['DATABASE_URL'])
+db = SQL("sqlite:///nvision.db")
+# db = SQL(os.environ['DATABASE_URL'])
 # This allows the user to browse the different articles
 # Displays articles by recency of completion and displays only the article title and author as a link to the page that contains the actual summary
 @app.route("/browse", methods=["GET", "POST"])
@@ -425,7 +425,7 @@ def register():
         if len(db.execute("SELECT id FROM users WHERE email = :email", email=email)) > 0:
             return render_template("apology.html", message="That email is already registered")
         # checks that it is a valid email
-        if not re.match(r"^[A-Za-z0-9\.\+_-]+@yale.edu", email):
+        if not re.match(r"^[A-Za-z0-9\.\+_-]+@", email):
             return render_template("apology.html", message="Not a valid email address")
         # checks if username is taken
         if len(db.execute("SELECT id FROM users WHERE username = :username", username=username)) > 0:
