@@ -6,25 +6,40 @@
 
 {% block main %}
 <div class="container mt-5">
-    <ul style="text-align: left; list-style: none;">
-        {{ p }}
-        {% for i in range(length) %}
-        <li class="p-3" style="">
-            <div>
-                <div>
-                    <a class="disabledButton" href="{{links[i]}}" style="color: #017bff; font-size: 1.7em; font-weight: 200;">{{ summaries[i]["article"] }}</a>
+    <div class="text-left pl-3" style="font-size: 1.8em">
+        <div class="d-inline ml-4" style="border-left: 4px solid orange;"></div>
+        <div class="d-inline ml-2" style="color: #017bff">Browse</div>
+        <p class="ml-4 mt-2" style="font-size: 0.6em">Take a look to see if the paper you are reading is here. If not, submit a request in the "Request" tab! </p>
+    </div>
+
+    <div>
+        <ul style="text-align: left; list-style: none;">
+            {{ p }}
+            {% for i in range(length) %}
+            <li class="p-3" style="">
+                <div class="row border-top border-dark pt-3">
+                    <div class="float-left text-center" style="color: grey; font-size: 1.25em; width: 6%; margin: auto 0">
+
+                        {{ summaries[i]['likes'] }}
+                        <p>likes</p>
+                    </div>
+                    <div class="">
+                        <div>
+                            <a class="disabledButton" href="{{links[i]}}" style="color: #017bff; font-size: 1.4em; font-weight: 200;">{{ summaries[i]["article"] }}</a>
+                        </div>
+                        <div class="pl-1" style="font-size: 0.8em">
+                            Dcyphr-d by <a class="disabledButton" href="public/{{ summaries[i]['id'] }}" style="color: Red">@{{ summaries[i]["username"] }}</a>
+                        </div>
+                        <div class="p-2" style="font-size: 0.95em">
+                            {{ preview[i] }}...
+                        </div>
+                    </div>
                 </div>
-                <div class="pl-1" style="font-size: 0.8em">
-                    Dcyphr-d by <a class="disabledButton" href="public/{{ summaries[i]['id'] }}" style="color: #ff2f2b">@{{ summaries[i]["username"] }}</a>
-                </div>
-                <div class="p-2" style="font-size: 0.95em">
-                    {{ preview[i] }}...
-                </div>
-            </div>
-            <div class=""></div>
-        </li>
-        {% endfor %}
-    </ul>
+                <div class=""></div>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
 </div>
 
 {% endblock %}

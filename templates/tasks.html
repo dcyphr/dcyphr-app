@@ -4,20 +4,31 @@
     Tasks
 {% endblock %}
 {% block main %}
-<div class="container">
-<table class="table table-striped">
+<div class="container mt-3">
+    <div class="text-left pl-3" style="font-size: 1.6em">
+        <div class="d-inline ml-4" style="border-left: 4px solid orange;"></div>
+        <div class="d-inline ml-2" style="color: #017bff">Contribute</div>
+        <p class="ml-4 mt-2" style="font-size: 0.6em">These are the articles that have been requested. Select one to start contributing! </p>
+    </div>
+    <div class="px-4">
+        <table class="table table-striped contributeTable">
             <thead>
-                <th>Article</th>
-                <th>PMID Number</th>
+                <div class="row">
+                    <div class="col" style="font-size: 1.4em; color: #017bff"> Article</div>
+                    <div class="col-3" style="font-size: 1.4em; color: #017bff">PMID</div>
+                </div>
+                <!--<th style="color: DodgerBlue">Article</th>-->
+                <!--<th style="color: DodgerBlue">PMID Number</th>-->
             </thead>
             {% for i in range(length) %}
-            <tr>
-                <td><a href="/edit/{{ tasks[i]['doi'] }}">{{ tasks[i]["article"] }}</a></td>
-                <td>{{ tasks[i]["doi"] }}</td>
+            <tr class="">
+                <div class=" border-top border-bottom row contributeTable" style="line-height: 40px" >
+                    <div class="col" style="font-size: 1em"><a href="/edit/{{ tasks[i]['doi'] }}">{{ tasks[i]["article"] }}</a></div>
+                    <div class="col-3" style="font-size: 1em">{{ tasks[i]["doi"] }}</div>
+                </div>
             </tr>
             {% endfor %}
         </table>
-
-
+    </div>
 </div>
 {% endblock %}

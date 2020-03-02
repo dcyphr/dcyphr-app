@@ -41,26 +41,27 @@ db = SQL(os.environ['DATABASE_URL'])
 # Displays articles by recency of completion and displays only the article title and author as a link to the page that contains the actual summary
 @app.route("/browse", methods=["GET", "POST"])
 def browse():
-    # Selects doi so we know where to route people when they click on the article link
+    if request.method == "GET":
+        # Selects doi so we know where to route people when they click on the article link
 
-    # Creates an array of links to route people to that corresponds to what people click on
-    links = []
-
-    # Displays preview information about articles
-    summaries = db.execute(
-        "SELECT article, username, users.id, doi, summary.summary FROM summary JOIN users ON summary.user_id = users.id WHERE summary.done = CAST(1 AS BIT);")
-    for i in range(len(summaries)):
-        links.append("read/{0}".format(summaries[i]["doi"]))
-    # Gets length because there is no len function in jinja
-    length = len(summaries)
-    if length == 0:
-        p = "No summaries to show. Please contribute."
-        return render_template("browse.html", summaries=summaries, links=links, length=length, p=p)
-    else:
-        soup = []
+        # Creates an array of links to route people to that corresponds to what people click on
+        links = []
+        summaries = db.execute(
+            "SELECT summary.likes, article, username, users.id, doi, summary.summary FROM summary JOIN users ON summary.user_id = users.id WHERE summary.done = CAST(1 AS BIT);")
+        # Displays preview information about articles
         for i in range(len(summaries)):
-            soup.append(BeautifulSoup(summaries[i]["summary"], features = "html5lib").get_text()[0:100])
-        return render_template("browse.html", summaries=summaries, links=links, length=length, preview=soup)
+            links.append("read/{0}".format(summaries[i]["doi"]))
+
+        # Gets length because there is no len function in jinja
+        length = len(summaries)
+        if length == 0:
+            p = "No summaries to show. Please contribute."
+            return render_template("browse.html", summaries=summaries, links=links, length=length, p=p)
+        else:
+            soup = []
+            for i in range(len(summaries)):
+                soup.append(BeautifulSoup(summaries[i]["summary"], features = "html5lib").get_text()[0:100])
+            return render_template("browse.html", summaries=summaries, links=links, length=length, preview=soup)
 
 # This route displays the summaries to the people
 # Note that there is a variable in the route to specify what article they are looking at

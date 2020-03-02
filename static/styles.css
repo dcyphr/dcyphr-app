@@ -110,6 +110,10 @@ dl:nth-of-type(odd) {
     background: #fafafa;
 }
 
+.contributeTable:nth-of-type(even) {
+    background: #f2f2f2;
+}
+
 /*#searchbar {*/
 /*    background: white;*/
 /*    background: -webkit-linear-gradient(to bottom, #a3e9ff, #FFFFFF);*/
