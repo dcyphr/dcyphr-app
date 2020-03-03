@@ -47,7 +47,7 @@ def browse():
         # Creates an array of links to route people to that corresponds to what people click on
         links = []
         summaries = db.execute(
-            "SELECT summary.likes, article, username, users.id, doi, summary.summary FROM summary JOIN users ON summary.user_id = users.id WHERE summary.done = CAST(1 AS BIT);")
+            "SELECT summary.likes, article, username, users.id, doi, summary.summary FROM summary JOIN users ON summary.user_id = users.id WHERE summary.done = CAST(1 AS BIT) and summary.approved = 1;")
         # Displays preview information about articles
         for i in range(len(summaries)):
             links.append("read/{0}".format(summaries[i]["doi"]))
@@ -120,7 +120,9 @@ def read(doi):
     else:
         flag = request.form.get("flag")
         if flag == "flag":
-            db.execute("UPDATE summary SET done = CAST(0 AS BIT) WHERE doi=:doi", doi=doi)
+            user = db.execute("SELECT user_id FROM summary WHERE doi=:doi", doi=doi)[0]["user_id"]
+            db.execute("UPDATE summary SET approved=0 WHERE doi=:doi", doi=doi)
+            db.execute("UPDATE users SET points = points - 20 WHERE id=:user_id", user_id=user)
             return redirect("/")
         # Handles the liking and disliking action
         dislike = request.form.get("dislike")
@@ -185,18 +187,16 @@ def edit(doi):
             db.execute("UPDATE summary SET user_id=:user_id WHERE doi=:doi;",
                    user_id=session["user_id"], doi=doi)
         # create points bot
-        if summary == "" and summary_new != "":
-            points = db.execute("SELECT points FROM users WHERE id=:user_id", user_id=session["user_id"])[0]['points']
-            if points == None:
-                points = 0
-            points = points + 20
-            db.execute("UPDATE users SET points=:points WHERE id=:user_id", points=points, user_id=session["user_id"])
+
         difference = jellyfish.damerau_levenshtein_distance(summary, summary_new)
         if len(summary) > len(summary_new):
             max_diff = len(summary)
         else:
             max_diff = len(summary_new)
-        diff_ratio = difference/max_diff
+        if max_diff == 0:
+            diff_ratio = 0
+        else:
+            diff_ratio = difference/max_diff
         if diff_ratio < 0.05:
             pass
         else:
@@ -247,7 +247,7 @@ def requesting():
 @app.route("/", methods=["GET", "POST"])
 def index():
     if request.method == "GET":
-        leaderboard = db.execute("SELECT username, id, points FROM users WHERE points != 0 ORDER BY points DESC LIMIT 5")
+        leaderboard = db.execute("SELECT username, id, points FROM users WHERE points > 0 ORDER BY points DESC LIMIT 5")
         lead_length = len(leaderboard)
         # db.execute("CREATE TABLE IF NOT EXISTS summary (id SERIAL PRIMARY KEY, user_id INTEGER, citation TEXT, doi TEXT, background TEXT, aims TEXT, methods TEXT, results TEXT, conclusion TEXT, task_id INTEGER, done BIT, reviewed INTEGER, remove BIT, likes INTEGER, reviewer_1 INTEGER, reviewer_2 INTEGER, FOREIGN KEY(doi) REFERENCES tasks(doi), FOREIGN KEY (user_id) REFERENCES users(id), FOREIGN KEY(task_id) REFERENCES tasks(id));")
         # db.execute("CREATE TABLE IF NOT EXISTS tasks (id SERIAL PRIMARY KEY, type TEXT, citation TEXT, requests INTEGER, article TEXT, doi TEXT, done INTEGER, user_id INTEGER, link TEXT, FOREIGN KEY(user_id) REFERENCES users(id));")
@@ -447,7 +447,39 @@ def register():
 def results():
     return render_template("results.html")
 
+@app.route("/contact", methods=["GET", "POST"])
+def contact():
+    if request.method == "GET":
+        return render_template("contact.html")
+    else:
+        email = request.form.get("email")
+        feedback = request.form.get("feedback")
+        db.execute("INSERT INTO feedback (email, feedback) VALUES (:email, :feedback)", email=email, feedback=feedback)
 
+@app.route("/approvals", methods=["GET", "POST"])
+@login_required
+def approvals():
+    if request.method == "GET":
+        drafts = db.execute("SELECT doi, summary.summary, article, link FROM summary WHERE approved = 0 AND done = 1")
+        length = len(drafts)
+        return render_template("approvals.html", drafts=drafts, length=length)
+    else:
+        summary = request.form.get("summary")
+        approved = request.form.get("approve").split()
+        if approved[1] == "no":
+            # put point allocation here for new summary creation
+            db.execute("UPDATE summary SET summary = '', user_id=NULL, done=0 WHERE doi=:doi", doi=approved[0])
+        else:
+            user_id = db.execute("SELECT user_id FROM summary WHERE doi=:doi", doi=approved[0])[0]["user_id"]
+            points = db.execute("SELECT points FROM users WHERE id=:user_id", user_id=user_id)[0]['points']
+            if points == None:
+                points = 0
+            points = points + 20
+            db.execute("UPDATE users SET points=:points WHERE id=:user_id", points=points, user_id=user_id)
+            db.execute("UPDATE summary SET summary = :summary, approved=1 WHERE doi=:doi", summary=summary, doi=approved[0])
+        drafts = db.execute("SELECT doi, summary.summary, article, link FROM summary WHERE approved = 0 and done = 1")
+        length = len(drafts)
+        return render_template("approvals.html", drafts=drafts, length=length)
 @app.route("/about")
 def about():
     return render_template("about.html")

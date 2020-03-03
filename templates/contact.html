@@ -1,0 +1,21 @@
+{% extends "layout.html" %}
+{% block title %}
+    Contact Us
+{% endblock %}
+
+{% block main %}
+<br>
+<br>
+<b style="color: #017bff">Check out our <u><a href="http://dcyphrgroup.wordpress.com">blog</a></u> for updates!</b>
+
+<b style="color: #017bff"> or leave us some feedback here:</b>
+<form action="/contact" method="POST">
+    <br>
+    <input type="text" class="form-control" name="email" placeholder="email">
+    <p></p>
+    <textarea rows="10" class="form-control" name="feedback" placeholder="feedback..."></textarea><br>
+    <input type="submit" class="btn btn-primary">
+</form>
+<br>
+<b style="color: #017bff"> or send us an email with any concerns at dcyphrteam@gmail.com</b>
+{% endblock %}
