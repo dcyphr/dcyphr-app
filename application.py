@@ -211,7 +211,7 @@ def edit(doi):
                 points = db.execute("SELECT points FROM users WHERE id=:user_id", user_id=session["user_id"])[0]['points']
                 if points == None:
                     points = 0
-                points = points + 10
+
                 db.execute("UPDATE users SET points=:points WHERE id=:user_id", points=points, user_id=session["user_id"])
             # else:
                 # db.execute("INSERT INTO compare (doi, old, new, user_id) VALUES (:doi, :old, :new, :user_id)", doi=doi, old=summary, new=summary_new, user_id=session["user_id"])
