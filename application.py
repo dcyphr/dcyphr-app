@@ -468,7 +468,7 @@ def approvals():
         approved = request.form.get("approve").split()
         if approved[1] == "no":
             # put point allocation here for new summary creation
-            db.execute("UPDATE summary SET summary = '', user_id=NULL, done=0 WHERE doi=:doi", doi=approved[0])
+            db.execute("UPDATE summary SET summary = '', user_id=NULL, done=CAST(0 AS BIT) WHERE doi=:doi", doi=approved[0])
         else:
             user_id = db.execute("SELECT user_id FROM summary WHERE doi=:doi", doi=approved[0])[0]["user_id"]
             points = db.execute("SELECT points FROM users WHERE id=:user_id", user_id=user_id)[0]['points']
