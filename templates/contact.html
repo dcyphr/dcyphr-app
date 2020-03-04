@@ -1,14 +1,22 @@
 {% extends "layout.html" %}
 {% block title %}
-    Contact Us
+    Contact
 {% endblock %}
 
 {% block main %}
-<br>
-<br>
-<b style="color: #017bff">Check out our <u><a href="http://dcyphrgroup.wordpress.com">blog</a></u> for updates!</b>
+<div class="container mt-5">
+<div class="text-left pl-3" style="font-size: 1.8em">
+        <div class="d-inline ml-4" style="border-left: 4px solid orange;"></div>
+        <div class="d-inline ml-2" style="color: #017bff">Contact</div>
+        <p class="ml-4 mt-2" style="font-size: 0.6em; border-bottom: 1px solid black; padding: 10px">Check out our <b style="color: #017bff"><u><a href="http://dcyphrgroup.wordpress.com">blog</a></u> </b>for updates!
+        <br>Or send us an email with any concerns at dcyphrteam@gmail.com</p>
+    </div>
 
-<b style="color: #017bff"> or leave us some feedback here:</b>
+<br>
+
+
+
+<b style="color: #017bff">We appreciate your feedback!</b>
 <form action="/contact" method="POST">
     <br>
     <input type="text" class="form-control" name="email" placeholder="email">
@@ -18,4 +26,5 @@
 </form>
 <br>
 <b style="color: #017bff"> or send us an email with any concerns at dcyphrteam@gmail.com</b>
+</div>
 {% endblock %}
