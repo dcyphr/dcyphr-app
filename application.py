@@ -47,7 +47,7 @@ def browse():
         # Creates an array of links to route people to that corresponds to what people click on
         links = []
         summaries = db.execute(
-            "SELECT summary.likes, article, username, users.id, doi, summary.summary FROM summary JOIN users ON summary.user_id = users.id WHERE summary.done = CAST(1 AS BIT) and summary.approved = 1;")
+            "SELECT summary.likes, article, username, users.id, doi, summary.summary FROM summary JOIN users ON summary.user_id = users.id WHERE summary.done = CAST(1 AS BIT) and summary.approved = 1 ORDER BY summary.likes DESC;")
         # Displays preview information about articles
         for i in range(len(summaries)):
             links.append("read/{0}".format(summaries[i]["doi"]))
