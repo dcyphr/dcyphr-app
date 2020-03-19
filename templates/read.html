@@ -113,9 +113,19 @@
             </form>
 
             {% for comment in comments %}
-            <div class="contanier">
+            <form method="POST">
+            <div class="container">
                 <div>
                     Posted by <span class="text-danger">@{{ comment['username'] }}</span> on <span class="text-danger">{{ comment['date'] }}</span>
+                    <!--{% if y == "true" %}
+                        <button style="float: right;" class="btn btn-default" type="submit" name="like" value="like" disabled>Like</button>
+                    {% else %}
+                        <button style="float: right;" class="btn btn-default bg-white btn-sm" type="submit" name="dislike_comment" value="dislike_comment">
+                            <i class="fa fa-thumbs-o-down" style="color: #017bff;"></i></button>
+                        <span style="float: right;">{{ comment['likes'] }}</span>
+                        <button style="float: right;" class="btn btn-default bg-white btn-sm" type="submit" name="like_comment" value="like_comment">
+                            <i class="fa fa-thumbs-o-up" style="color: #017bff;"></i></button>
+                    {% endif %}-->
                 </div>
                 <div class="m-3 bg-light rounded p-3">
                     {{ comment['comment'] }}
@@ -123,6 +133,7 @@
             </div>
 
             <hr>
+            </form>
             {% endfor %}
 
         </div>

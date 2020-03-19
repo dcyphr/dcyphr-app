@@ -4,11 +4,22 @@
 {% endblock %}
 
 {% block main %}
+{% if length == 0 %}
+<br>
+<b>No edits to review!</b>
+{% endif %}
 {% for i in range(length) %}
-<p>OLD VERSION</p>
-<p>{{ articles[i]['old'] }}</p>
-<p>NEW VERSION</p>
-<p>{{ articles[i]['new'] }}</p>
+
+<section class="w3-row-padding w3-center" >
+    <h2 class="display-4 mb-5 text-primary">Review: <a href="{{ links[i] }}">{{ title[i] }}</a></h2>
+        <article class="w3-half">
+                <p><b style="color: black">OLD VERSION</p></b>
+                <p>{{ articles[i]['old'] }}</p>
+        </article>
+        <article class="w3-half">
+            <p><b style="color: black">NEW VERSION</p></b>
+            <p>{{ articles[i]['new'] }}</p>
+        </article>
 <form method="POST">
     <button name="approve" type="submit" value="{{ articles[i]['doi'] }}">Approve</button>
     <button name="disapprove" type="submit" value="{{ articles[i]['doi'] }}">Disapprove</button>

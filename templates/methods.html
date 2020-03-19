@@ -15,17 +15,28 @@ Methods
         <p class="ml-4 mt-2" style="font-size: 0.6em; border-bottom: 1px solid black; padding: 10px">A collection of methods we have defined to make your experience better!</p>
     </div>
 
-<dl style="text-align: left">
+<ul style="text-align: left; list-style: none;">
     {% for i in range(length) %}
-    <ul style="list-style: none">
-        <li><dt><a href="{{ methods[i]['id'] }}">{{ methods[i]["name"] }}</a> </dt>
-        <ul style="list-style: none">
-            <li><dd>{{ preview[i]['substr'] }}...</dd></li>
-        </ul>
-        </li>
-    </ul>
+    <li class="p-2 my-2">
+        <div>
+            <div>
+                <a class="disabledButton" href="{{ methods[i]['id'] }}" style="color: #017bff; font-size: 1.4em; font-weight: 200;">{{ methods[i]["name"] }}</a>
+            </div>
+            <div class="p-2" style="font-size: 0.95em">
+                {{ preview[i]['substr'] }}...
+            </div>
+        </div>
+    </li>
     {% endfor %}
-</dl>
+</ul>
 </div>
 
 {% endblock %}
+
+<!--<ul style="list-style: none">-->
+<!--        <li><dt><a href="{{ methods[i]['id'] }}">{{ methods[i]["name"] }}</a> </dt>-->
+<!--        <ul style="list-style: none">-->
+<!--            <li><dd>{{ preview[i]['substr'] }}...</dd></li>-->
+<!--        </ul>-->
+<!--        </li>-->
+<!--    </ul>-->
