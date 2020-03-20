@@ -7,6 +7,7 @@
 {% block main %}
 
 
+
 <div class="container mb-5">
     <div class="row jumbotron m-xs-1 rounded bg-white text-left">
 
@@ -92,48 +93,132 @@
 
     <div class="container text-left">
         <div id="comments" class="p-3 my-3">
-            <div class="mb-4 display-4 text-center">
-                Comments
+            <div class="mb-4 display-4 text-center" style="color: #017bff">
+                comments
             </div>
 
             <form method="POST" class="form">
                 <div class="sticky-top form-group row">
-                    <label for="comment" class="col-xs-2 col-form-label">Leave a comment: </label>
+                    <label for="comment" class="col-xs-2 col-form-label"><b>Leave a comment:</b> </label>
                     <div class="col">
-                        <input type="text" name="text" class="form-control text-wrap w-100" id="comment" placeholder="Write here...">
+                        <input type="text" name="comment" class="form-control text-wrap w-100" id="comment" placeholder="Write here...">
                     </div>
                     <div>
                         {% if y == "true" %}
-                        <button class="btn btn-default" type="submit" value="{{doi}}" disabled>Submit</button>
+                        <button class="btn btn-default" type="submit" value="{{doi}}" disabled>Post</button>
                         {% else %}
-                        <button class="btn btn-default" type="submit" value= "{{doi}}">Submit</button>
+                        <button class="btn btn-default" type="submit" value="{{doi}}">Post</button>
                         {% endif %}
                     </div>
                 </div>
             </form>
 
             {% for comment in comments %}
-            <form method="POST">
-            <div class="container">
-                <div>
-                    Posted by <span class="text-danger">@{{ comment['username'] }}</span> on <span class="text-danger">{{ comment['date'] }}</span>
-                    <!--{% if y == "true" %}
-                        <button style="float: right;" class="btn btn-default" type="submit" name="like" value="like" disabled>Like</button>
-                    {% else %}
-                        <button style="float: right;" class="btn btn-default bg-white btn-sm" type="submit" name="dislike_comment" value="dislike_comment">
-                            <i class="fa fa-thumbs-o-down" style="color: #017bff;"></i></button>
-                        <span style="float: right;">{{ comment['likes'] }}</span>
-                        <button style="float: right;" class="btn btn-default bg-white btn-sm" type="submit" name="like_comment" value="like_comment">
-                            <i class="fa fa-thumbs-o-up" style="color: #017bff;"></i></button>
-                    {% endif %}-->
+            {% if comment['reply'] == 1 and comment['last'] == 1 %}
+
+                <div class="container" style="width: 80%">
+                    <div>
+                        {{ comment['comment'] }} &mdash; <span class="text-danger"> <a href="/public/{{ comment['user_id'] }}">{{ comment['username'] }}</a></span> on <span class="text-danger">{{ comment['date'] }}</span>
+                        <!--{% if y == "true" %}
+                            <button style="float: right;" class="btn btn-default" type="submit" name="like" value="like" disabled>Like</button>
+                        {% else %}
+                            <button style="float: right;" class="btn btn-default bg-white btn-sm" type="submit" name="dislike_comment" value="dislike_comment">
+                                <i class="fa fa-thumbs-o-down" style="color: #017bff;"></i></button>
+                            <span style="float: right;">{{ comment['likes'] }}</span>
+                            <button style="float: right;" class="btn btn-default bg-white btn-sm" type="submit" name="like_comment" value="like_comment">
+                                <i class="fa fa-thumbs-o-up" style="color: #017bff;"></i></button>
+                        {% endif %}-->
+
+
+                    <button class="btn btn-default bg-white" data-toggle="collapse" data-target="#reply{{ comment['comment_id'] }}{{ comment['reply'] }}" style="color: DodgerBlue;"><i class="fa fa-reply-all border-0 fa-lg"></i>  Reply</button>
+
+</div>
+
+                    <form method="POST" class="collapse" id="reply{{ comment['comment_id'] }}{{ comment['reply'] }}">
+                        <div>
+                            <div class="col">
+                                <input type="text" name="reply" class="form-control text-wrap w-100" id="reply" placeholder="Reply here...">
+                            </div>
+                            <div>
+                            {% if y == "true" %}
+                                <button class="btn btn-default" type="submit" value="{{ comment['id'] }}" disabled>Post</button>
+                            {% else %}
+                                <button class="btn btn-default" type="submit" name="comment_button" value="{{ comment['comment_id'] }}">Post</button>
+                            {% endif %}
+                            </div>
+                        </div>
+                    </form>
                 </div>
-                <div class="m-3 bg-light rounded p-3">
-                    {{ comment['comment'] }}
+            {% elif comment['reply'] == 1 %}
+                <div class="container" style="width: 80%">
+                    <div>
+                       {{ comment['comment'] }} &mdash; <span class="text-danger"> <a href="/public/{{ comment['user_id'] }}">{{ comment['username'] }}</a></span> on <span class="text-danger">{{ comment['date'] }}</span>
+                        <!--{% if y == "true" %}
+                            <button style="float: right;" class="btn btn-default" type="submit" name="like" value="like" disabled>Like</button>
+                        {% else %}
+                            <button style="float: right;" class="btn btn-default bg-white btn-sm" type="submit" name="dislike_comment" value="dislike_comment">
+                                <i class="fa fa-thumbs-o-down" style="color: #017bff;"></i></button>
+                            <span style="float: right;">{{ comment['likes'] }}</span>
+                            <button style="float: right;" class="btn btn-default bg-white btn-sm" type="submit" name="like_comment" value="like_comment">
+                                <i class="fa fa-thumbs-o-up" style="color: #017bff;"></i></button>
+                        {% endif %}-->
+                    </div>
+
+
+                    <!--<form method="POST" class="form">
+                        <div class="sticky-top form-group row">
+                            <label for="reply" class="col-xs-2 col-form-label">Want to reply? </label>
+                            <div class="col">
+                                <input type="text" name="reply" class="form-control text-wrap w-100" id="reply" placeholder="Reply here...">
+                            </div>
+                            <div>
+                            {% if y == "true" %}
+                                <button class="btn btn-default" type="submit" value="{{ comment['id'] }}" disabled>Submit</button>
+                            {% else %}
+                                <button class="btn btn-default" type="submit" name="comment_button" value="{{ comment['comment_id'] }}">Submit</button>
+                            {% endif %}
+                            </div>
+                        </div>
+                    </form>-->
                 </div>
-            </div>
+            {% else %}
+                <div class="container">
+                    <div>
+                         {{ comment['comment'] }} &mdash;<span class="text-danger"><a href="/public/{{ comment['user_id'] }}"> {{ comment['username'] }}</a></span>  on <span class="text-danger">{{ comment['date'] }}</span>
+                        <!--{% if y == "true" %}
+                            <button style="float: right;" class="btn btn-default" type="submit" name="like" value="like" disabled>Like</button>
+                        {% else %}
+                            <button style="float: right;" class="btn btn-default bg-white btn-sm" type="submit" name="dislike_comment" value="dislike_comment">
+                                <i class="fa fa-thumbs-o-down" style="color: #017bff;"></i></button>
+                            <span style="float: right;">{{ comment['likes'] }}</span>
+                            <button style="float: right;" class="btn btn-default bg-white btn-sm" type="submit" name="like_comment" value="like_comment">
+                                <i class="fa fa-thumbs-o-up" style="color: #017bff;"></i></button>
+                        {% endif %}-->
+
+
+                    <button class="btn btn-default bg-white" data-toggle="collapse" data-target="#reply{{ comment['comment_id'] }}{{ comment['reply'] }}" style="color: DodgerBlue;"><i class="fa fa-reply-all border-0 fa-lg"></i>  Reply</button>
+</div>
+
+
+                    <form method="POST" class="form collapse hide" id="reply{{ comment['comment_id'] }}{{ comment['reply'] }}">
+                        <div>
+
+                            <div class="col">
+                                <input type="text" name="reply" class="form-control text-wrap w-100" id="reply" placeholder="Reply here...">
+                            </div>
+                            <div>
+                            {% if y == "true" %}
+                                <button class="btn btn-default" type="submit" value="{{ comment['id'] }}" disabled>Post</button>
+                            {% else %}
+                                <button class="btn btn-default" type="submit" name="comment_button" value="{{ comment['comment_id'] }}">Post</button>
+                            {% endif %}
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            {% endif %}
 
             <hr>
-            </form>
             {% endfor %}
 
         </div>
@@ -142,5 +227,3 @@
 </div>
 
 {% endblock %}
-
-

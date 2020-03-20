@@ -73,7 +73,7 @@ def read(doi):
         summary = db.execute(
             "SELECT summary.summary, user_id, username FROM summary JOIN users ON summary.user_id = users.id WHERE doi=:doi", doi=doi)
         username = db.execute("SELECT username FROM users WHERE id=:user_id", user_id=summary[0]["user_id"])
-        comments = db.execute("SELECT * FROM comments JOIN users ON comments.user_id = users.id WHERE doi=:doi", doi=doi)
+        comments = db.execute("SELECT * FROM comments JOIN users ON comments.user_id = users.id WHERE doi=:doi ORDER BY comment_id", doi=doi)
         link = db.execute("SELECT link FROM summary WHERE doi=:doi", doi=doi)[0]["link"]
         likes = db.execute("SELECT likes FROM summary WHERE doi=:doi", doi=doi)[0]["likes"]
         citation = db.execute("SELECT citation FROM summary WHERE doi=:doi", doi=doi)[0]["citation"]
@@ -125,6 +125,7 @@ def read(doi):
             db.execute("UPDATE users SET points = points - 20 WHERE id=:user_id", user_id=user)
             return redirect("/")
         # Handles the liking and disliking action
+        author = db.execute("SELECT user_id FROM summary WHERE doi=:doi", doi=doi)[0]["user_id"]
         dislike = request.form.get("dislike")
         like = request.form.get("like")
         likes = db.execute("SELECT likes FROM users WHERE id=:user_id", user_id=session["user_id"])[0]["likes"]
@@ -133,17 +134,30 @@ def read(doi):
             db.execute("UPDATE users SET likes = :likes WHERE id=:user_id", likes=likes, user_id=session["user_id"])
         if dislike == "dislike":
             db.execute("UPDATE summary SET likes = likes - 1 WHERE doi=:doi", doi=doi)
+            db.execute("UPDATE users SET points = points - 1 WHERE id=:user_id", user_id=author)
         elif like == "like":
             db.execute("UPDATE summary SET likes = likes + 1 WHERE doi=:doi", doi=doi)
+            db.execute("UPDATE users SET points = points + 1 WHERE id=:user_id", user_id=author)
         else:
         # Handles comments
-            comment = request.form.get('text')
-            if not comment:
+            comment = request.form.get('comment')
+            reply = request.form.get('reply')
+            if comment == None and reply == None:
                 return render_template("apology.html", message="Error, please input text for your post")
             today = date.today()
             today = today.strftime("%B %d, %Y")
-            db.execute("INSERT INTO comments (user_id, doi, comment, date) VALUES (:user_id, :doi, :comment, :date)",
-                        user_id=session["user_id"], doi=doi, comment=comment, date=today)
+            # Comment
+            if not reply:
+                db.execute("INSERT INTO comments (user_id, doi, comment, date, likes, reply) VALUES (:user_id, :doi, :comment, :date, :likes, :reply)",
+                            user_id=session["user_id"], doi=doi, comment=comment, date=today, likes=0, reply=0)
+                comment_id = db.execute("SELECT id FROM comments WHERE doi=:doi ORDER BY id DESC LIMIT 1", doi=doi)[0]["id"]
+                db.execute("UPDATE comments SET comment_id=:comment_id WHERE doi=:doi ORDER BY id DESC LIMIT 1", comment_id=comment_id, doi=doi)
+            # Reply
+            else:
+                comment_id = request.form.get('comment_button')
+                db.execute("UPDATE comments SET last=0 WHERE (doi=:doi) AND (comment_id=:comment_id) AND last=1", doi=doi, comment_id=comment_id)
+                db.execute("INSERT INTO comments (user_id, doi, comment, date, likes, reply, comment_id, last) VALUES (:user_id, :doi, :comment, :date, :likes, :reply, :comment_id, :last)",
+                            user_id=session["user_id"], doi=doi, comment=reply, date=today, likes=0, reply=1, comment_id=comment_id, last=1)
         return redirect("/read/{0}".format(doi))
 
 # Displays to the user a list of tasks that they can click on
@@ -165,11 +179,11 @@ def remove_html_tags(text):
 @app.route("/edit/<doi>", methods=["GET", "POST"])
 @login_required
 def edit(doi):
-    summary_dirty = db.execute("SELECT summary FROM summary WHERE doi=:doi", doi=doi)[0]["summary"]
-    if summary_dirty == None:
+    summary = db.execute("SELECT summary FROM summary WHERE doi=:doi", doi=doi)[0]["summary"]
+    if summary == None:
         summary = ""
-    else:
-        summary = remove_html_tags(summary_dirty)
+    # else:
+        # summary = remove_html_tags(summary_dirty)
     if request.method == "GET":
         # provides contributor with information about the article they are summarizing
         article = db.execute("SELECT article, user_id FROM summary WHERE doi=:doi", doi=doi)
@@ -381,6 +395,8 @@ def public(user_id):
         "SELECT article, doi FROM summary WHERE user_id=:user_id AND done = CAST(1 AS BIT)", user_id=user_id)
     length = len(articles)
     info = db.execute("SELECT username, points FROM users WHERE id=:user_id", user_id=user_id)
+    if info[0]['points'] == None:
+        info[0]['points'] = 0
     return render_template("public.html", articles=articles, info=info, length=length)
 
 

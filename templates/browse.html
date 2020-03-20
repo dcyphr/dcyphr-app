@@ -5,6 +5,7 @@
 {% endblock %}
 
 {% block main %}
+
 <div class="container mt-5">
     <div class="text-left pl-3" style="font-size: 1.8em; ">
         <div class="d-inline ml-4" style="border-left: 4px solid orange;"></div>
@@ -13,7 +14,10 @@
     </div>
 
     <div>
-        <ul style="text-align: left; list-style: none;">
+        <div class="text-left pl-5">
+            <p>Sort By: <a style="cursor:pointer; color: #017bff" onclick="w3.sortHTML('#id01', 'li')">Hot</a> |  <a style="cursor:pointer; color: #017bff" onclick="w3.sortHTML('#id01', '.p-3', 'a')">A-Z</a></p>
+        </div>
+        <ul style="text-align: left; list-style: none;" id="id01">
             {{ p }}
             {% for i in range(length) %}
             <li class="p-3" style="">
