@@ -168,7 +168,7 @@ def read(doi):
 def tasks():
     if request.method == "GET":
         # Gets tasks that are not marked as done and orders it by request amount
-        tasks = db.execute("SELECT article, doi FROM summary WHERE done = CAST(0 AS BIT) AND bookmarked = CAST(0 AS BIT) ORDER BY requests DESC")
+        tasks = db.execute("SELECT article, doi FROM summary WHERE done = CAST(0 AS BIT) AND bookmarked = 0 ORDER BY requests DESC")
 
         length = len(tasks)
         return render_template("tasks.html", tasks=tasks, length=length)
