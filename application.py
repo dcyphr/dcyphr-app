@@ -2,7 +2,7 @@ import os
 import re
 
 from cs50 import SQL
-from flask import Flask, flash, jsonify, redirect, render_template, request, session
+from flask import Flask, flash, jsonify, redirect, render_template, request, session, url_for
 from flask_session import Session
 from tempfile import mkdtemp
 from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
@@ -10,11 +10,13 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from datetime import date, datetime
 from bs4 import BeautifulSoup
 import jellyfish
-
+# from flask_email_verifier import EmailVerifier
+# from validate_email import validate_email
 from helpers import apology, login_required, lookup, usd, readability
 
 # Configure application
 app = Flask(__name__)
+# verifier = EmailVerifier(app)
 
 # Ensure templates are auto-reloaded
 app.config["TEMPLATES_AUTO_RELOAD"] = True
@@ -161,18 +163,52 @@ def read(doi):
         return redirect("/read/{0}".format(doi))
 
 # Displays to the user a list of tasks that they can click on
-@app.route("/tasks")
+@app.route("/tasks", methods=["GET", "POST"])
 @login_required
 def tasks():
-    # Gets tasks that are not marked as done and orders it by request amount
-    tasks = db.execute("SELECT article, doi FROM summary WHERE done = CAST(0 AS BIT) ORDER BY requests DESC")
+    if request.method == "GET":
+        # Gets tasks that are not marked as done and orders it by request amount
+        tasks = db.execute("SELECT article, doi FROM summary WHERE done = CAST(0 AS BIT) AND bookmarked = CAST(0 AS BIT) ORDER BY requests DESC")
 
-    length = len(tasks)
-    return render_template("tasks.html", tasks=tasks, length=length)
+        length = len(tasks)
+        return render_template("tasks.html", tasks=tasks, length=length)
+
+    else:
+        user_id = session["user_id"]
+        doi = request.form.get("bookmark")
+        today = date.today()
+        print(today)
+        db.execute("UPDATE summary SET bookmarked=:user_id, bookmarked_date=:date WHERE doi=:doi", user_id=user_id, doi=doi, date=today)
+
+        tasks = db.execute("SELECT article, doi FROM summary WHERE done = CAST(0 AS BIT) AND bookmarked = :user_id ORDER BY requests DESC", user_id=user_id)
+        length = len(tasks)
+
+        #return render_template("bookmarks.html", tasks=tasks, length=length)
+        return redirect("/bookmarks")
 
 def remove_html_tags(text):
     clean = re.compile('<.*?>')
     return re.sub(clean, "", text)
+
+
+@app.route("/bookmarks", methods=["GET", "POST"])
+@login_required
+def bookmarks():
+    if request.method == "GET":
+        user_id = session["user_id"]
+        tasks = db.execute("SELECT article, doi FROM summary WHERE done = CAST(0 AS BIT) AND bookmarked = :user_id ORDER BY requests DESC", user_id=user_id)
+        length = len(tasks)
+        return render_template("bookmarks.html", tasks=tasks, length=length)
+
+    else:
+        user_id = session["user_id"]
+        doi = request.form.get("unbookmark")
+        db.execute("UPDATE summary SET bookmarked=0, bookmarked_date=0 WHERE doi=:doi", doi=doi)
+
+        tasks = db.execute("SELECT article, doi FROM summary WHERE done = CAST(0 AS BIT) AND bookmarked = :user_id ORDER BY requests DESC", user_id=user_id)
+        length = len(tasks)
+        return render_template("bookmarks.html", tasks=tasks, length=length)
+
 
 # Allows the user to summarize a text
 # You get to this route by clicking on a summary type task
@@ -227,8 +263,8 @@ def edit(doi):
                     points = 0
                 points = points + 10
                 db.execute("UPDATE users SET points=:points WHERE id=:user_id", points=points, user_id=session["user_id"])
-            else:
-                db.execute("INSERT INTO compare (doi, old, new, user_id) VALUES (:doi, :old, :new, :user_id)", doi=doi, old=summary, new=summary_new, user_id=session["user_id"])
+            #else:
+                #db.execute("INSERT INTO compare (doi, old, new, user_id) VALUES (:doi, :old, :new, :user_id)", doi=doi, old=summary, new=summary_new, user_id=session["user_id"])
         return redirect("/")
 
 # Allows user to request an article to be summarized
@@ -351,38 +387,38 @@ def profile(user_id):
     #         rank = ranks[i]["points_rank"]
     return render_template("profile.html", info=info, articles=articles, length=length, progress=progress, admin=admin, points=points)
 
-@app.route("/compare", methods=["GET", "POST"])
-@login_required
-def compare():
-    if request.method == "GET":
-        articles = db.execute("SELECT * FROM compare")
-        length=len(articles)
-        title = []
-        links = []
-        for i in range(length):
-            title.append(db.execute("SELECT article FROM summary WHERE doi=:doi", doi=articles[i]['doi'])[0]['article'])
-            links.append(db.execute("SELECT link FROM summary WHERE doi=:doi", doi=articles[i]['doi'])[0]['link'])
-        return render_template("compare.html", articles=articles, length=length, title=title, links=links)
-    else:
-        approve = request.form.get("approve")
-        disapprove = request.form.get("disapprove")
-        articles = db.execute("SELECT * FROM compare")
-        if not approve:
-            old = db.execute("SELECT old FROM compare WHERE doi=:doi", doi=disapprove)[0]['old']
-            db.execute("UPDATE summary SET summary=:old WHERE doi=:doi", old=old, doi=disapprove)
-            db.execute("DELETE FROM compare WHERE doi=:doi", doi=disapprove)
-        else:
-            new = db.execute("SELECT new FROM compare WHERE doi=:doi", doi=approve)[0]['new']
-            db.execute("UPDATE summary SET summary=:new WHERE doi=:doi", doi=approve, new=new)
-            user = db.execute("SELECT user_id FROM compare WHERE doi=:doi", doi=approve)[0]['user_id']
-            if user == None:
-                pass
-            else:
-                db.execute("UPDATE users SET points=points + 10 WHERE id=:user_id", user_id=user)
-            db.execute("DELETE FROM compare WHERE doi=:doi", doi=approve)
-        articles = db.execute("SELECT * FROM compare")
-        length=len(articles)
-        return render_template("compare.html", articles=articles, length=length)
+# @app.route("/compare", methods=["GET", "POST"])
+# @login_required
+# def compare():
+#     if request.method == "GET":
+#         articles = db.execute("SELECT * FROM compare")
+#         length=len(articles)
+#         title = []
+#         links = []
+#         for i in range(length):
+#             title.append(db.execute("SELECT article FROM summary WHERE doi=:doi", doi=articles[i]['doi'])[0]['article'])
+#             links.append(db.execute("SELECT link FROM summary WHERE doi=:doi", doi=articles[i]['doi'])[0]['link'])
+#         return render_template("compare.html", articles=articles, length=length, title=title, links=links)
+#     else:
+#         approve = request.form.get("approve")
+#         disapprove = request.form.get("disapprove")
+#         articles = db.execute("SELECT * FROM compare")
+#         if not approve:
+#             old = db.execute("SELECT old FROM compare WHERE doi=:doi", doi=disapprove)[0]['old']
+#             db.execute("UPDATE summary SET summary=:old WHERE doi=:doi", old=old, doi=disapprove)
+#             db.execute("DELETE FROM compare WHERE doi=:doi", doi=disapprove)
+#         else:
+#             new = db.execute("SELECT new FROM compare WHERE doi=:doi", doi=approve)[0]['new']
+#             db.execute("UPDATE summary SET summary=:new WHERE doi=:doi", doi=approve, new=new)
+#             user = db.execute("SELECT user_id FROM compare WHERE doi=:doi", doi=approve)[0]['user_id']
+#             if user == None:
+#                 pass
+#             else:
+#                 db.execute("UPDATE users SET points=points + 10 WHERE id=:user_id", user_id=user)
+#             db.execute("DELETE FROM compare WHERE doi=:doi", doi=approve)
+#         articles = db.execute("SELECT * FROM compare")
+#         length=len(articles)
+#         return render_template("compare.html", articles=articles, length=length)
 
 
 
@@ -428,6 +464,7 @@ def password():
             db.execute("UPDATE users SET hash = :hashed WHERE id=:user_id", hashed=hashed, user_id=session["user_id"])
         return render_template("index.html")
 
+
 # allows user registration
 @app.route("/register", methods=["GET", "POST"])
 def register():
@@ -458,7 +495,11 @@ def register():
         if password != confirm:
             return render_template("apology.html", message="Your passwords do not match")
         else:
+            # email_address_info = verifier.verify(email)
+            # is_valid = validate_email(email_address=email, check_regex=True, check_mx=True, smtp_timeout=10, dns_timeout=10, use_blacklist=True)
             # generates hash of password which is stored in database
+            # is_valid = validate_email(email, check_mx=True, verify=True)
+            # print(is_valid)
             hashed = generate_password_hash(password)
             db.execute("INSERT INTO users (username, hash, email) VALUES (:username, :hashed, :email)", username=username, hashed=hashed, email=email)
             return redirect("/login")
@@ -501,6 +542,22 @@ def approvals():
         drafts = db.execute("SELECT doi, summary.summary, article, link FROM summary WHERE approved = 0 and done = CAST(1 AS BIT)")
         length = len(drafts)
         return render_template("approvals.html", drafts=drafts, length=length)
+
+@app.route("/bookmarking", methods=["GET", "POST"])
+@login_required
+def bookmarking():
+    if request.method == "GET":
+        info = db.execute("SELECT article, bookmarked, bookmarked_date, username, doi FROM summary JOIN users ON bookmarked = users.id WHERE bookmarked != 0")
+        length = len(info)
+        return render_template("bookmarking.html", info=info, length=length)
+    if request.method == "POST":
+        doi = request.form.get("unbookmark")
+        db.execute("UPDATE summary SET bookmarked=0 WHERE doi=:doi", doi=doi)
+        info = db.execute("SELECT article, bookmarked, username, doi FROM summary JOIN users ON bookmarked = users.id WHERE bookmarked != 0")
+        length = len(info)
+        return render_template("bookmarking.html", info=info, length=length)
+
+
 @app.route("/about")
 def about():
     return render_template("about.html")

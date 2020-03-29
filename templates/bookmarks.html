@@ -1,27 +1,24 @@
 {% extends "layout.html" %}
 
 {% block title %}
-    Tasks
+    Bookmarks
 {% endblock %}
 {% block main %}
 
 <div class="container mt-5">
     <div class="text-left pl-3" style="font-size: 1.8em;">
         <div class="d-inline ml-4" style="border-left: 4px solid orange;"></div>
-        <div class="d-inline ml-2" style="color: #017bff">Contribute</div>
-        <p class="ml-4 mt-2" style="font-size: 0.6em;  border-bottom: 1px solid black; padding: 10px">These are the articles that have been requested. Select one to start contributing! </p>
-        <p class="ml-4 mt-2" style="font-size: 0.6em;  padding: 1px">
-            <button class="btn btn-link"><a href="/bookmarks"> Click to see the articles you've bookmarked. </a></button></p>
+        <div class="d-inline ml-2" style="color: #017bff">Bookmarks</div>
+        <p class="ml-4 mt-2" style="font-size: 0.6em;  border-bottom: 1px solid black; padding: 10px">These are the articles that you've bookmarked to summarize. </p>
     </div>
     <br>
     <div class="px-4">
         <table class="table table-striped contributeTable">
             <thead>
                 <div class="row">
+                    <div class="col" style="font-size: 1.4em; color: #017bff">Remove</div>
                     <div class="col" style="font-size: 1.4em; color: #017bff"> Article</div>
                     <div class="col-3" style="font-size: 1.4em; color: #017bff">PMID</div>
-                    <div class="col-2" style="font-size: 1.4em; color: #017bff"></div>
-
                 </div>
                 <!--<th style="color: DodgerBlue">Article</th>-->
                 <!--<th style="color: DodgerBlue">PMID Number</th>-->
@@ -30,10 +27,9 @@
             <form method="POST" class="form">
             <tr class="">
                 <div class=" border-top border-bottom row contributeTable" style="line-height: 40px" >
+                    <div class="col" style="font-size: 1em"><button class="btn btn-link btn-lg" type="submit" value="{{ tasks[i]['doi'] }}" name="unbookmark"><i class="fa fa-bookmark border-0"></i></button></div>
                     <div class="col" style="font-size: 1em"><a href="/edit/{{ tasks[i]['doi'] }}">{{ tasks[i]["article"] }}</a></div>
                     <div class="col-3" style="font-size: 1em">{{ tasks[i]["doi"] }}</div>
-                    <div class="col-2" style="font-size: 1em"><button class="btn btn-link btn-lg" type="submit" value="{{ tasks[i]['doi'] }}" name="bookmark"><i class="fa fa-bookmark-o border-0"></i></button></div>
-
                 </div>
             </tr>
             </form>

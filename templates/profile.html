@@ -11,6 +11,8 @@
 
         <h5 class="mb-2"> {{ info[0]["username"] }} </h5>
 
+        <h6><a href="/bookmarks" class="btn btn-primary"><i class="fa fa-bookmark-o border-0"></i> Bookmarks</a></h6>
+
         <div class="my-3" style="color: #017bff; font-size: 32px"> {{ length }} </div>
 
     <h6>Articles dcyphr-d</h6>
@@ -68,11 +70,12 @@
 
 
             {% if admin == 1 %}
+
             <div class="col-6">
-                <a href="/compare" class="btn btn-primary"> Compare Edits </a>
+                <a href="/approvals" class="btn btn-primary"> Approvals </a>
             </div>
             <div class="col-3">
-                <a href="/approvals" class="btn btn-primary"> Approvals </a>
+                <a href="/bookmarking" class="btn btn-primary"> Bookmarkings </a>
             </div>
             {% endif %}
 
