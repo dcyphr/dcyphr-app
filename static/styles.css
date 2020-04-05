@@ -152,7 +152,7 @@ dl:nth-of-type(odd) {
 #wrap{
     display: flex;
     justify-content: center;
-    width: 105%;
+    width: 103%;
 }
 #profile-stuff1{
     width: 100%;
