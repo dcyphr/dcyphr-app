@@ -4,7 +4,7 @@ import urllib.parse
 
 from flask import redirect, render_template, request, session
 from functools import wraps
-
+from bs4 import BeautifulSoup
 
 def apology(message, code=400):
     """Render message as an apology to user."""
@@ -114,3 +114,12 @@ def readability(summary):
         return 14
     else:
         return grade
+
+
+def remove_scripts(text):
+    if "<script>" in text:
+        soup = BeautifulSoup(text, features="html5lib")
+        soup.script.decompose()
+        return str(soup)
+    else:
+        return text

@@ -6,27 +6,18 @@
 
 {% block main %}
 <div class="p-3" style="">
+    <div class=row>
     <div class="container my-4">
         <i class="fa fa-user-circle border-0 fa-4x mb-2" aria-hidden="true" style="color: #017bff"></i>
 
         <h5 class="mb-2"> {{ info[0]["username"] }} </h5>
 
-        <h6><a href="/bookmarks" class="btn btn-primary"><i class="fa fa-bookmark-o border-0"></i> Bookmarks</a></h6>
 
         <div class="my-3" style="color: #017bff; font-size: 32px"> {{ length }} </div>
 
     <h6>Articles dcyphr-d</h6>
 
     </div>
-
-    <div>
-        <h2 class="mt-3" style="color: #017bff; font-weight: 200">Highlights</h2>
-        {% for i in range(length) %}
-        <a href="/read/{{ articles[i]['doi'] }}" align="rights">{{ articles[i]["article"] }}</a><br>
-        {% endfor %}
-        <div class="container mt-3 p-3 w-50 border-bottom"></div>
-    </div>
-
     <div class="container my-3">
         <i class="fa fa-trophy fa-4x border-0" aria-hidden="true" style="color: #017bff"></i>
         <div class="my-3" style="color: #017bff; font-size: 32px"> {{ points }} </div>
@@ -34,6 +25,24 @@
 
         <h6 style="color: #017bff">Keep up the good work!</h6>
     </div>
+    </div>
+    <div>
+        <h2 class="mt-3" style="color: #017bff; font-weight: 200">Highlights</h2>
+        {% for i in range(length) %}
+        <a href="/read/{{ articles[i]['doi'] }}" align="rights">{{ articles[i]["article"] }}</a><br>
+        {% endfor %}
+        <div class="container mt-3 p-3 w-50 border-bottom"></div>
+    </div>
+    <br>
+    <div class="row" id="wrap">
+            <div id="profile-stuff">
+                <a href="/bookmarks" class="btn btn-primary"><i class="fa fa-bookmark-o border-0"></i> Bookmarks</a>
+            </div>
+            <div id="profile-stuff">
+                <a href="/password" class="btn btn-primary" > Change Password </a>
+            </div>
+        </div>
+
     <!--<div class="container">-->
 
     <!--    <div class="row"><br>-->
@@ -60,26 +69,30 @@
     <!--	    </div>-->
     <!--    </div>-->
     </div>
-
-
-    <div class="container px-3">
-        <div class="row">
-            <div class="col">
-                <a href="/password" class="btn btn-primary rounded h-100" > Change Password </a>
-            </div>
-
-
+<br>
             {% if admin == 1 %}
+    <div class="container px-3">
+        <b>Administrative Tasks</b>
+        <br>
+        <div class="row" id="wrap">
 
-            <div class="col-6">
-                <a href="/approvals" class="btn btn-primary"> Approvals </a>
+
+
+
+
+            <div id="profile-stuff1">
+                <a href="/approvals" class="btn btn-primary"> Summary Approvals </a>
             </div>
-            <div class="col-3">
+            <div id="profile-stuff1">
                 <a href="/bookmarking" class="btn btn-primary"> Bookmarkings </a>
             </div>
-            {% endif %}
+            <div id="profile-stuff1">
+                <a href="/comparehome" class="btn btn-primary"> Compare Edits </a>
+            </div>
+
 
         </div>
     </div>
+    {% endif %}
 </div>
 {% endblock %}

@@ -5,19 +5,27 @@
 {% endblock %}
 
 {% block main %}
-<div class="container">
-<p style="text-align: left">Showing results for "{{ search }}":</p>
-<dl style="text-align: left">
+<div class="container mt-5">
+    <div class="text-left pl-3" style="font-size: 1.8em; ">
+        <div class="d-inline ml-4" style="border-left: 4px solid orange;"></div>
+        <div class="d-inline ml-2" style="color: #017bff">Showing search results for "<span style="color: orange">{{ search }}</span>":</div>
+        <p class="ml-4 mt-2" style="font-size: 0.6em; border-bottom: 1px solid black; padding: 10px"></p>
+    </div>
+
+<ul style="text-align: left; list-style: none">
     {% for i in range(length) %}
-    <ul style="list-style: none">
-        <li><dt><a href="{{links[i]}}">{{ results[i]["article"] }}</a> dcyphr-d by <a href="public/{{ results[i]['id'] }}">@{{ results[i]["username"] }}</a></dt>
-        <ul style="list-style: none">
-            <dd><li>{{ preview[i] }}...</dd></li>
-        </ul>
+        <li class="mx-3 py-3 border-bottom border-dark">
+            <div>
+                <a href="{{links[i]}}" class="disabledButton" style="color: #017bff; font-size: 1.6em; font-weight: 200;">{{ results[i]["article"] }}</a>
+                <p class="" >Dcyphr-d by <a href="public/{{ results[i]['id'] }}" style="color: Red">@{{ results[i]["username"] }}</a></p>
+            </div>
+
+            <div style="list-style: none">
+                <p class="ml-2">{{ preview[i] }}...</p>
+            </div>
         </li>
-    </ul>
     {% endfor %}
-</dl>
+</ul>
 </div>
 
 

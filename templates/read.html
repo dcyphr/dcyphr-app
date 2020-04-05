@@ -12,7 +12,7 @@
     <div class="row jumbotron m-xs-1 rounded bg-white text-left">
 
         <div class="col-md-9 col-xs-6">
-            <p class="" style="font-size: 2.5em; color: #017bff">
+            <p class="" style="color: #017bff" id="title">
                 {{ article }}
             </p>
 
@@ -66,8 +66,8 @@
 
 
 
-    <div class="w-25 p-2 bg-light border border-dark ">
-        <h1 class="" style="color: #017bff; text-weight: 500; font-size: 2.5em">Contents</h1>
+    <div class="p-2 bg-light border border-dark" id="content-box">
+        <h1 class="" style="color: #017bff; text-weight: 500;" id="title">Contents</h1>
         <ul class="ml-3 text-left" style="list-style: none;">
             {% for i in range(title_length) %}
             <li><a class="contentButton" href="#{{ titles[i] }}">{{ i + 1 }}.{{ titles[i] }}</a></li>
@@ -93,8 +93,8 @@
 
     <div class="container text-left">
         <div id="comments" class="p-3 my-3">
-            <div class="mb-4 display-4 text-center" style="color: #017bff">
-                comments
+            <div class="mb-4 display-4 text-center" id="title" style="color: #017bff">
+                Comments
             </div>
 
             <form method="POST" class="form">

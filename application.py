@@ -1,5 +1,6 @@
 import os
 import re
+import bleach
 
 from cs50 import SQL
 from flask import Flask, flash, jsonify, redirect, render_template, request, session, url_for
@@ -12,7 +13,7 @@ from bs4 import BeautifulSoup
 import jellyfish
 # from flask_email_verifier import EmailVerifier
 # from validate_email import validate_email
-from helpers import apology, login_required, lookup, usd, readability
+from helpers import apology, login_required, lookup, usd, readability, remove_scripts
 
 # Configure application
 app = Flask(__name__)
@@ -37,8 +38,8 @@ Session(app)
 
 # Configure CS50 Library to use SQLite database
 # db = SQL('postgres://hwicvwhg:4zzgStNJkiEy3hC3gtFHrdlyLFR_vQUN@rajje.db.elephantsql.com:5432/hwicvwhg?sslmode=require')
-# db = SQL("sqlite:///nvision.db")
-db = SQL(os.environ['DATABASE_URL'])
+db = SQL("sqlite:///nvision.db")
+# db = SQL(os.environ['DATABASE_URL'])
 # This allows the user to browse the different articles
 # Displays articles by recency of completion and displays only the article title and author as a link to the page that contains the actual summary
 @app.route("/browse", methods=["GET", "POST"])
@@ -62,7 +63,7 @@ def browse():
         else:
             soup = []
             for i in range(len(summaries)):
-                soup.append(BeautifulSoup(summaries[i]["summary"], features = "html5lib").get_text()[0:100])
+                soup.append(BeautifulSoup(summaries[i]["summary"], features = "html5lib").get_text()[0:500])
             return render_template("browse.html", summaries=summaries, links=links, length=length, preview=soup)
 
 # This route displays the summaries to the people
@@ -229,7 +230,7 @@ def edit(doi):
     else:
         # inserts user summary from form into summary table
         summary_new = remove_html_tags(request.form.get("summary"))
-        summary_new_html = request.form.get("summary")
+        summary_new_html = remove_scripts(request.form.get("summary"))
         user = db.execute("SELECT user_id FROM summary WHERE doi=:doi", doi=doi)[0]["user_id"]
         db.execute("UPDATE summary SET summary=:summary, done=CAST(1 AS BIT) WHERE doi=:doi;",
                    summary=summary_new_html, doi=doi)
@@ -258,13 +259,9 @@ def edit(doi):
                 else:
                     others = others + " " + str(session["user_id"])
                 db.execute("UPDATE summary SET others = :others WHERE doi=:doi", others=others, doi=doi)
-                points = db.execute("SELECT points FROM users WHERE id=:user_id", user_id=session["user_id"])[0]['points']
-                if points == None:
-                    points = 0
-                points = points + 10
-                db.execute("UPDATE users SET points=:points WHERE id=:user_id", points=points, user_id=session["user_id"])
-            #else:
-                #db.execute("INSERT INTO compare (doi, old, new, user_id) VALUES (:doi, :old, :new, :user_id)", doi=doi, old=summary, new=summary_new, user_id=session["user_id"])
+
+
+        db.execute("INSERT INTO compare (doi, old, new, user_id) VALUES (:doi, :old, :new, :user_id)", doi=doi, old=summary, new=summary_new_html, user_id=session["user_id"])
         return redirect("/")
 
 # Allows user to request an article to be summarized
@@ -311,7 +308,7 @@ def index():
         soup = []
         links = []
         for i in range(len(results)):
-            soup.append(BeautifulSoup(results[i]["summary"], features="html5lib").get_text()[0:100])
+            soup.append(BeautifulSoup(results[i]["summary"], features="html5lib").get_text()[0:500])
             links.append("read/{0}".format(results[i]["doi"]))
         # creates list of links/routes to display to user so they can click on the result and it takes them to the correct read subroute
         length = len(results)
@@ -387,40 +384,41 @@ def profile(user_id):
     #         rank = ranks[i]["points_rank"]
     return render_template("profile.html", info=info, articles=articles, length=length, progress=progress, admin=admin, points=points)
 
-# @app.route("/compare", methods=["GET", "POST"])
-# @login_required
-# def compare():
-#     if request.method == "GET":
-#         articles = db.execute("SELECT * FROM compare")
-#         length=len(articles)
-#         title = []
-#         links = []
-#         for i in range(length):
-#             title.append(db.execute("SELECT article FROM summary WHERE doi=:doi", doi=articles[i]['doi'])[0]['article'])
-#             links.append(db.execute("SELECT link FROM summary WHERE doi=:doi", doi=articles[i]['doi'])[0]['link'])
-#         return render_template("compare.html", articles=articles, length=length, title=title, links=links)
-#     else:
-#         approve = request.form.get("approve")
-#         disapprove = request.form.get("disapprove")
-#         articles = db.execute("SELECT * FROM compare")
-#         if not approve:
-#             old = db.execute("SELECT old FROM compare WHERE doi=:doi", doi=disapprove)[0]['old']
-#             db.execute("UPDATE summary SET summary=:old WHERE doi=:doi", old=old, doi=disapprove)
-#             db.execute("DELETE FROM compare WHERE doi=:doi", doi=disapprove)
-#         else:
-#             new = db.execute("SELECT new FROM compare WHERE doi=:doi", doi=approve)[0]['new']
-#             db.execute("UPDATE summary SET summary=:new WHERE doi=:doi", doi=approve, new=new)
-#             user = db.execute("SELECT user_id FROM compare WHERE doi=:doi", doi=approve)[0]['user_id']
-#             if user == None:
-#                 pass
-#             else:
-#                 db.execute("UPDATE users SET points=points + 10 WHERE id=:user_id", user_id=user)
-#             db.execute("DELETE FROM compare WHERE doi=:doi", doi=approve)
-#         articles = db.execute("SELECT * FROM compare")
-#         length=len(articles)
-#         return render_template("compare.html", articles=articles, length=length)
+@app.route("/compare/<int:compare_id>", methods=["GET", "POST"])
+@login_required
+def compare(compare_id):
+    if request.method == "GET":
+        articles = db.execute("SELECT compare.id, old, new, summary.doi, article, link FROM compare JOIN summary ON compare.doi=summary.doi WHERE compare.id=:compare_id", compare_id=compare_id)
+        return render_template("compare.html", articles=articles)
+    else:
+        approve = request.form.get("approve")
+        disapprove = request.form.get("disapprove")
+        doi = db.execute("SELECT doi FROM compare WHERE id=:compare_id", compare_id=compare_id)[0]['doi']
+        if not approve:
+            old = db.execute("SELECT old FROM compare WHERE doi=:doi", doi=doi)[0]['old']
+            db.execute("UPDATE summary SET summary=:old WHERE doi=:doi", old=old, doi=doi)
+            db.execute("DELETE FROM compare WHERE id=:doi", doi=compare_id)
+        else:
+            new = db.execute("SELECT new FROM compare WHERE doi=:doi", doi=doi)[0]['new']
+            db.execute("UPDATE summary SET summary=:new WHERE doi=:doi", doi=doi, new=new)
+            user = db.execute("SELECT user_id FROM compare WHERE id=:doi", doi=compare_id)[0]['user_id']
+            if user == None:
+                pass
+            else:
+                db.execute("UPDATE users SET points=points + 10 WHERE id=:user_id", user_id=user)
+            db.execute("DELETE FROM compare WHERE id=:doi", doi=compare_id)
+        articles = db.execute("SELECT compare.id, article FROM compare JOIN summary ON compare.doi=summary.doi")
+        length = len(articles)
+        return render_template("compare_home.html", articles=articles, length=length)
 
 
+
+@app.route("/comparehome", methods=["GET"])
+@login_required
+def comparehome():
+        articles = db.execute("SELECT compare.id, article FROM compare JOIN summary ON compare.doi=summary.doi")
+        length = len(articles)
+        return render_template("compare_home.html", articles=articles, length=length)
 
 
 # same as profile route but without the change password and progress bar
@@ -441,7 +439,7 @@ def public(user_id):
 def methods(method_id):
     if method_id == 0:
         methods = db.execute("SELECT name, id FROM methods")
-        preview = db.execute("SELECT substr(description, 1, 100) FROM methods")
+        preview = db.execute("SELECT substr(description, 1, 400) FROM methods")
         length = len(methods)
         return render_template("methods.html", methods=methods, preview=preview, length=length)
     else:

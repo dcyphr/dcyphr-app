@@ -136,3 +136,43 @@ dl:nth-of-type(odd) {
     color: DodgerBlue;
 }
 
+#title{
+    font-size: 2.5em;
+}
+
+#content-box{
+    width: 25%;
+}
+
+#profile-stuff{
+    text-align: center;
+    padding: 2%;
+}
+
+#wrap{
+    display: flex;
+    justify-content: center;
+    width: 105%;
+}
+#profile-stuff1{
+    width: 100%;
+    padding: 1%;
+}
+@media screen and (max-width: 481px){
+#likes {
+    padding-right: 30px;
+}
+#title {
+    font-size: 1.5em;
+}
+
+#content-box {
+    width: 50%;
+}
+#profile-stuff{
+    width: 100%;
+}
+#profile-stuff1{
+    width: 100%;
+}
+}
