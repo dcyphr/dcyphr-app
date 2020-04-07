@@ -76,7 +76,7 @@ def read(doi):
         summary = db.execute(
             "SELECT summary.summary, user_id, username FROM summary JOIN users ON summary.user_id = users.id WHERE doi=:doi", doi=doi)
         username = db.execute("SELECT username FROM users WHERE id=:user_id", user_id=summary[0]["user_id"])
-        comments = db.execute("SELECT * FROM comments JOIN users ON comments.user_id = users.id WHERE doi=:doi ORDER BY comment_id,id", doi=doi)
+        comments = db.execute("SELECT * FROM comments JOIN users ON comments.user_id = users.id WHERE doi=:doi ORDER BY comment_id, comments.id", doi=doi)
         link = db.execute("SELECT link FROM summary WHERE doi=:doi", doi=doi)[0]["link"]
         likes = db.execute("SELECT likes FROM summary WHERE doi=:doi", doi=doi)[0]["likes"]
         citation = db.execute("SELECT citation FROM summary WHERE doi=:doi", doi=doi)[0]["citation"]
