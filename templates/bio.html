@@ -1,0 +1,20 @@
+{% extends "layout.html" %}
+{% block title %}
+    Edit Bio
+{% endblock %}
+
+{% block main %}
+<div class="container mt-5">
+    <div class="text-left pl-3" style="font-size: 1.8em; ">
+        <div class="d-inline ml-4" style="border-left: 4px solid orange;"></div>
+        <div class="d-inline ml-2" style="color: #017bff">Edit Bio</div>
+        <p class="ml-4 mt-2" style="font-size: 0.6em; border-bottom: 1px solid black; padding: 10px">Edit your bio to your liking!</p>
+    </div>
+    <form method="POST" >
+                    <textarea id="summernote" name="bio" id="bio">{{bio}}</textarea>
+                    <div class="container text-center">
+                        <button class="btn btn-default my-3" type="submit" style="color: white; background-color: #017bff">Submit</button>
+                    </div>
+                </form></div>
+
+{% endblock %}

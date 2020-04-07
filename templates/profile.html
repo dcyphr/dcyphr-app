@@ -6,23 +6,32 @@
 
 {% block main %}
 <div class="p-3" style="">
-    <div class=row>
+    <div class="row">
     <div class="container my-4">
         <i class="fa fa-user-circle border-0 fa-4x mb-2" aria-hidden="true" style="color: #017bff"></i>
 
         <h5 class="mb-2"> {{ info[0]["username"] }} </h5>
+        <h5 class="mb-2">{{ info[0]["bio"] | safe}}</h5> <a href="/bio/{{ user_id }}">Edit Bio</a>
+
+        <div class="row mx-5 mb-3">
+            <div class="col-12 mt-2">
+                <i class="fa fa-trophy border-0 fa-4x" aria-hidden="true" style="color: #017bff"></i>
+            </div>
+            <div class="col ml-5">
+                <div class="w-50 ml-auto mr-0">
+                    <div class="my-3" style="color: #017bff; font-size: 32px"> {{ length }}</div>
+                    <h6>Articles dcyphr-d</h6>
+                </div>
+            </div>
 
 
-        <div class="my-3" style="color: #017bff; font-size: 32px"> {{ length }} </div>
-
-    <h6>Articles dcyphr-d</h6>
-
+    <div class="col mr-5">
+        <div class="w-50 mr-auto ml-0">
+            <div class="my-3" style="color: #017bff; font-size: 32px"> {{ points }} </div>
+            <h6>Points Earned</h6>
+        </div>
     </div>
-    <div class="container my-3">
-        <i class="fa fa-trophy fa-4x border-0" aria-hidden="true" style="color: #017bff"></i>
-        <div class="my-3" style="color: #017bff; font-size: 32px"> {{ points }} </div>
-        <h6>Points Earned</h6>
-
+    </div>
         <h6 style="color: #017bff">Keep up the good work!</h6>
     </div>
     </div>
@@ -81,7 +90,7 @@
 
 
             <div id="profile-stuff1">
-                <a href="/approvals" class="btn btn-primary"> Summary Approvals </a>
+                <a href="/approvalhome" class="btn btn-primary"> Summary Approvals </a>
             </div>
             <div id="profile-stuff1">
                 <a href="/bookmarking" class="btn btn-primary"> Bookmarkings </a>

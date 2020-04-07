@@ -11,6 +11,7 @@
         <i class="fa fa-users border-0 fa-4x mb-4" aria-hidden="true" style="color: #ff2f2b"></i>
 
         <h4 class="mb-4"> {{ info[0]["username"] }} has {{ info[0]["points"] }} points! </h4>
+        <h5 class="mb-4">{{ info[0]['bio'] | safe }}</h5>
 
         <h5>Articles dcyphr-d: {{ length }} </h5>
     </div>

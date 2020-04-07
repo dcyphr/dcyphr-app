@@ -123,3 +123,9 @@ def remove_scripts(text):
         return str(soup)
     else:
         return text
+
+def percent_remove(text):
+    if "%%" in text:
+        return text.replace("%%", "%")
+    else:
+        return text

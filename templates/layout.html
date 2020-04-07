@@ -3,7 +3,6 @@
 <html lang="en">
 
     <head>
-
         <!-- Required meta tags -->
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -11,8 +10,8 @@
         <!-- documentation at http://getbootstrap.com/docs/4.1/, alternative themes at https://bootswatch.com/ -->
         <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet">
 
-        <!-- https://favicon.io/emoji-favicons/money-mouth-face/ -->
-        <link href="/static/favicon.ico" rel="icon">
+
+        <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
 
         <link href="/static/styles.css" rel="stylesheet">
         <link rel="stylesheet" href="https://www.w3schools.com/w3css/3/w3.css">
@@ -47,7 +46,43 @@
             gtag('config', 'UA-162663603-1');
         </script>
 
+        <script>
+        var HelloButton = function (context) {
+            var ui = $.summernote.ui;
 
+            // create button
+            var button = ui.button({
+                contents: '<i class="fa fa-wikipedia-w border-0"/></i>',
+                tooltip: 'Link to any Wiki page',
+                click: function () {
+                 // invoke insertText method with 'hello' on editor module.
+                var highlight = window.getSelection();
+                var html = "<a href='https://en.wikipedia.org/wiki/" + highlight + "' target='_blank'>" + highlight + "</a>";
+                context.invoke('editor.pasteHTML', html);
+            }
+            }  );
+
+            return button.render();   // return button as jquery object
+        };
+
+    $(document).ready(function() {
+        $('#summernote').summernote({
+        toolbar: [
+        ['style', ['style']],
+        ['font', ['bold', 'underline', 'clear']],
+        ['fontname', ['fontname']],
+        ['color', ['color']],
+        ['para', ['ul', 'ol', 'paragraph']],
+        ['table', ['table']],
+        ['insert', ['link', 'picture', 'video']],
+        ['view', ['fullscreen', 'codeview', 'help']], ['mybutton', ['wiki']]
+        ],
+        buttons: {
+            wiki: HelloButton
+        }
+        });
+    });
+        </script>
         <title>dcyphr: {% block title %}{% endblock %}</title>
 
     </head>
@@ -120,9 +155,68 @@
         <script>
             $(document).ready(function() {
                 $("#summernote").summernote();
-            })
+            });
         </script>
-
     </body>
+    <br>
+<!-- Footer -->
+<footer class="page-footer font-small mt-auto" style="background: #017bff; position: relative; bottom: 0; width: 100%">
 
+  <!-- Footer Elements -->
+  <div class="container">
+
+    <!-- Grid row-->
+    <div class="row">
+
+      <!-- Grid column -->
+
+        <div class="col-md-6 mt-md-0 mt-3" id="footer-content">
+
+        <!-- Content -->
+        <h4 class="text-lowercase">dcyphr</h5>
+        <p>See a bug? Send a message to dcyphrteam@gmail.com</p>
+        </div>
+
+      <div class="col-6 mt-md-4 float-right">
+
+        <!-- Links -->
+
+          <!-- Facebook -->
+          <div class="float-right">
+          <a id="footer-content" target="_blank" href="https://www.facebook.com/Dcyphr-106767984321570/">
+            <i class="fa fa-facebook-f fa-lg white-text mr-md-5 mr-3 fa-2x border-0"></i>
+          </a>
+        </div>
+
+          <!--Instagram-->
+        <div class="float-right">
+          <a id="footer-content" target="_blank" href="https://www.instagram.com/d.cyphr/">
+            <i class="fa fa-instagram fa-lg white-text mr-md-5 mr-3 fa-2x border-0"> </i>
+          </a>
+        </div>
+
+        <div class="float-right">
+          <a id="footer-content" target="_blank" href="https://www.linkedin.com/company/dcyphr/">
+            <i class="fa fa-linkedin fa-lg white-text mr-md-5 mr-3 fa-2x border-0"> </i>
+          </a>
+        </div>
+
+        </div>
+      </div>
+      <!-- Grid column -->
+
+    </div>
+    <!-- Grid row-->
+
+  </div>
+  <!-- Footer Elements -->
+
+  <!-- Copyright -->
+  <div id="footer-content" class="footer-copyright text-center py-3">© 2020 Copyright:
+    <a href="https://mdbootstrap.com/"> www.dcyphr.org</a>
+  </div>
+  <!-- Copyright -->
+
+</footer>
+<!-- Footer -->
 </html>

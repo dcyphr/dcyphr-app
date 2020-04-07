@@ -25,7 +25,7 @@
             </p>
 
             <p style="font-size: medium;">
-                Link to Original Article: <font style="color: #017bff"><a href="{{ link }}">{{ article }}</a></font>
+                Link to Original Article: <font style="color: #017bff"><a href="{{ link }}" target="_blank">{{ article }}</a></font>
             </p>
 
             <p>
@@ -33,6 +33,12 @@
 
                 <font style="color: #017bff"><a href="/edit/{{ doi }}"><i class="fa fa-edit fa-2x border-0"></i><br>Edit</a></font>
             </p>
+            Share this summary:
+            <a class="w-inline-block social-share-btn fb" href="https://www.facebook.com/sharer/sharer.php?u=&t=" title="Share on Facebook" target="_blank" onclick="window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(document.URL) + '&t=' + encodeURIComponent(document.URL)); return false;"><i style="color:#017bff" class="fa fa-facebook border-0 fa-lg"></i></a>
+            <a class="w-inline-block social-share-btn tw" href="https://twitter.com/intent/tweet?" target="_blank" title="Tweet" onclick="window.open('https://twitter.com/intent/tweet?text=%20Check%20up%20this%20awesome%20content' + encodeURIComponent(document.title) + ':%20 ' + encodeURIComponent(document.URL)); return false;"><i style="color:#017bff" class="fa fa-twitter border-0 fa-lg"></i></a>
+            <a class="w-inline-block social-share-btn lnk" href="http://www.linkedin.com/shareArticle?mini=true&url=&title=&summary=&source=" target="_blank" title="Share on LinkedIn" onclick="window.open('http://www.linkedin.com/shareArticle?mini=true&url=' + encodeURIComponent(document.URL) + '&title=' + encodeURIComponent(document.title)); return false;"><i style="color:#017bff"class="fa fa-linkedin border-0 fa-lg"></i></a>
+            <a class="w-inline-block social-share-btn email" href="mailto:?subject=&body=:%20" target="_blank" title="Email" onclick="window.open('mailto:?subject=' + encodeURIComponent(document.title) + '&body=' + encodeURIComponent(document.URL)); return false;"><i style="color: #017bff" class="fa fa-envelope fa-lg border-0"></i></a>
+            <a class="w-inline-block social-share-btn redd" href="http://www.reddit.com/submit?url=&title=" target="_blank" title="Submit to Reddit" onclick="window.open('http://www.reddit.com/submit?url=' + encodeURIComponent(document.URL) + '&title=' + encodeURIComponent(document.title)); return false;"><i style="color: #017bff" class="fa fa-reddit fa-lg border-0"></i></a>
         </div>
 
 
