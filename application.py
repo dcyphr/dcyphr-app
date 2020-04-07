@@ -260,8 +260,11 @@ def edit(doi):
                     others = others + " " + str(session["user_id"])
                 db.execute("UPDATE summary SET others = :others WHERE doi=:doi", others=others, doi=doi)
 
-
-        db.execute("INSERT INTO compare (doi, old, new, user_id) VALUES (:doi, :old, :new, :user_id)", doi=doi, old=summary, new=summary_new_html, user_id=session["user_id"])
+        existing = db.execute("SELECT id FROM compare WHERE doi=:doi", doi=doi)
+        if len(existing) == 0:
+            db.execute("INSERT INTO compare (doi, old, new, user_id) VALUES (:doi, :old, :new, :user_id)", doi=doi, old=summary, new=summary_new_html, user_id=session["user_id"])
+        else:
+            db.execute("UPDATE compare SET old=new, new=:new WHERE doi=:doi, user_id=:user_id", doi=doi, new=summary_new_html, user_id=session["user_id"])
         return redirect("/")
 
 # Allows user to request an article to be summarized
