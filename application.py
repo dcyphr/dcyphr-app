@@ -164,7 +164,7 @@ def read(doi):
         return redirect("/read/{0}".format(doi))
 
 
-@app.route("/apa/<int:doi>", methods=["GET", "POST"])
+@app.route("/apa/<doi>", methods=["GET", "POST"])
 @login_required
 def apa(doi):
     if request.method == "GET":
