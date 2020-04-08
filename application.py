@@ -163,6 +163,19 @@ def read(doi):
                             user_id=session["user_id"], doi=doi, comment=reply, date=today, likes=0, reply=1, comment_id=comment_id, last=1)
         return redirect("/read/{0}".format(doi))
 
+
+@app.route("/apa/<int:doi>", methods=["GET", "POST"])
+@login_required
+def apa(doi):
+    if request.method == "GET":
+        info = db.execute("SELECT article, citation, link FROM summary WHERE doi=:doi", doi=doi)[0]
+        length = len(info)
+        return render_template("apa.html", info=info, length=length)
+    else:
+        citation = request.form.get("citation")
+        db.execute("UPDATE summary SET citation=:citation WHERE doi=:doi", citation=citation, doi=doi)
+        return redirect("/read/{0}".format(doi))
+
 # Displays to the user a list of tasks that they can click on
 @app.route("/tasks", methods=["GET", "POST"])
 @login_required
@@ -278,6 +291,8 @@ def requesting():
         doi = doi.strip()
         link = request.form.get("link")
         citation = request.form.get("citation")
+        if not citation:
+            citation = "Not avaliable"
         # checks if PMID/DOI is already in the requested list
         if len(db.execute("SELECT doi FROM summary WHERE doi=:doi", doi=doi)) > 0:
             test = db.execute("SELECT article FROM summary WHERE doi=:doi", doi=doi)

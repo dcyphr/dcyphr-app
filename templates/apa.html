@@ -1,0 +1,37 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    {{ info["article"] }}
+{% endblock %}
+
+{% block main %}
+
+<div class="container">
+    <div class="container mb-2">
+        <div class="row jumbotron m-xs-1 rounded bg-white text-left">
+
+            <div class="col-md-10 col-xs-6">
+                <p class="display-4" style="color: #017bff; font-size:2.5em">
+                    {{ info["article"] }}
+                </p>
+
+
+                <p style="font-size: medium;">
+                    Link to Original Article: <font color="#017bff"><a href="{{ info['link'] }}" target="_blank">{{ info["article"] }}</a></font>
+                </p>
+            </div>
+            <div class="mx-4 text-left" style="margin-left: 15%">
+                <p>APA Citation:</p>
+        <form method="POST">
+            <textarea name="citation" id="citation" cols="100" rows="5">{{ info['citation'] }}</textarea>
+            <div class="container text-center">
+                <button class="btn btn-primary" type="submit">Submit</button>
+            </div>
+        </form>
+    </div>
+
+        </div>
+    </div>
+
+    </div>
+{% endblock %}
