@@ -29,6 +29,20 @@
         <script defer>
             window.VerifaliaWidgetConfig = {
             appKey: '72fe6c88d9ea43e4a8a32c6f70c0c25d',
+            inputBindings: {
+                autoWireup: true,
+                debounceTime: 4000,
+                preventSubmission: "invalid, throttled",
+                appendHiddenFields: true,
+                classNames: {
+                    base: 'verifalia-field',
+                    processing: 'verifalia-field-processing',
+                    valid: 'verifalia-field-valid',
+                    invalid: 'verifalia-field-invalid',
+                    throttled: 'verifalia-field-throttled',
+                    exception: 'verifalia-field-exception'
+                },
+            }
             };
 
         </script>
