@@ -15,7 +15,28 @@
 
     <div>
         <div class="text-left pl-5">
-            <p>Sort By: <a style="cursor:pointer; color: #017bff" onclick="w3.sortHTML('#id01', 'li')">Hot</a> |  <a style="cursor:pointer; color: #017bff" onclick="w3.sortHTML('#id01', '.p-3', 'a')">A-Z</a></p>
+            <div class="btn-group">
+            Sort By: &nbsp <a style="cursor:pointer; color: #017bff" onclick="w3.sortHTML('#id01', 'li')">Hot</a> &nbsp | &nbsp <a style="cursor:pointer; color: #017bff" onclick="w3.sortHTML('#id01', '.p-3', 'a')">A-Z</a>
+            </div>
+            <div class="float-right">
+
+            <div class="dropdown show">Filter by:
+              <a class="dropdown-toggle" style="color: #017bff" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                   Tags
+              </a>
+
+              <div class="dropdown-menu" aria-labelledby="dropdownMenuLink" id="myDropdown">
+                <input type="text" class="form-control" placeholder="Search.." id="myInput" onkeyup="filterFunction()">
+                {% for i in range(tags_length) %}
+
+                <a class="dropdown-item" href="/tag/{{ tags[i]['id'] }}" style="color: #017bff">{{ tags[i]['title'] }}</a>
+
+                {% endfor %}
+              </div>
+            </div>
+            </div>
+
+
         </div>
         <ul style="text-align: left; list-style: none;" id="id01">
             {{ p }}
@@ -32,7 +53,7 @@
                             <a class="disabledButton" href="{{links[i]}}" style="color: #017bff; font-size: 1.4em; font-weight: 200;">{{ summaries[i]["article"] }}</a>
                         </div>
                         <div class="pl-1" style="font-size: 0.8em">
-                            Dcyphr-d by <a class="disabledButton" href="public/{{ summaries[i]['id'] }}" style="color: Red">@{{ summaries[i]["username"] }}</a>
+                            dcyphr-d by <a class="disabledButton" href="public/{{ summaries[i]['id'] }}" style="color: Red">@{{ summaries[i]["username"] }}</a>
                         </div>
                         <div class="p-2" style="font-size: 0.95em">
                             {{ preview[i] }}...
@@ -45,5 +66,7 @@
         </ul>
     </div>
 </div>
+
+
 
 {% endblock %}

@@ -57,6 +57,8 @@ def browse():
 
         # Gets length because there is no len function in jinja
         length = len(summaries)
+        tags = db.execute("SELECT id, title FROM tags")
+        tags_length = len(tags)
         if length == 0:
             p = "No summaries to show. Please contribute."
             return render_template("browse.html", summaries=summaries, links=links, length=length, p=p)
@@ -64,7 +66,7 @@ def browse():
             soup = []
             for i in range(len(summaries)):
                 soup.append(percent_remove(str(BeautifulSoup(summaries[i]["summary"], features = "html5lib").get_text()[0:500])))
-            return render_template("browse.html", summaries=summaries, links=links, length=length, preview=soup)
+            return render_template("browse.html", tags=tags, tags_length=tags_length, summaries=summaries, links=links, length=length, preview=soup)
 
 # This route displays the summaries to the people
 # Note that there is a variable in the route to specify what article they are looking at
@@ -74,12 +76,16 @@ def read(doi):
         # Gets information about article to display
         article = db.execute("SELECT article FROM summary WHERE doi=:doi", doi=doi)[0]["article"]
         summary = db.execute(
-            "SELECT summary.summary, user_id, username FROM summary JOIN users ON summary.user_id = users.id WHERE doi=:doi", doi=doi)
+            "SELECT summary.id, summary.summary, user_id, username FROM summary JOIN users ON summary.user_id = users.id WHERE doi=:doi", doi=doi)
         username = db.execute("SELECT username FROM users WHERE id=:user_id", user_id=summary[0]["user_id"])
         comments = db.execute("SELECT * FROM comments JOIN users ON comments.user_id = users.id WHERE doi=:doi ORDER BY comment_id, comments.id", doi=doi)
         link = db.execute("SELECT link FROM summary WHERE doi=:doi", doi=doi)[0]["link"]
         likes = db.execute("SELECT likes FROM summary WHERE doi=:doi", doi=doi)[0]["likes"]
         citation = db.execute("SELECT citation FROM summary WHERE doi=:doi", doi=doi)[0]["citation"]
+        tags = db.execute("SELECT title, tags.id FROM tags JOIN tagitem ON tags.id=tagitem.tag_id WHERE tagitem.item_id=:summary_id", summary_id=summary[0]['id'])
+        tag_length = len(tags)
+        all_tags = db.execute("SELECT title FROM tags")
+        all_tags_len = len(all_tags)
         article_methods = summary[0]["summary"].lower()
         methods = db.execute("SELECT name FROM methods")
         methods_list = []
@@ -104,11 +110,14 @@ def read(doi):
         summary_actual=soup
         # Checks if person is logged in
         # x is a variable that disables liking when true and enables liking when false
+        z = "false"
         if len(session) == 0:
             x = "true"
             y = "true"
         else:
             y = "false"
+            if db.execute("SELECT admin FROM users WHERE id=:user_id", user_id=session['user_id'])[0]['admin'] == 1:
+                z = "true"
             # Checks if person already liked the post
             liked = db.execute("SELECT likes FROM users WHERE id=:user_id", user_id=session["user_id"])[0]["likes"]
             # Checks specifically if the person has liked anything
@@ -119,7 +128,7 @@ def read(doi):
                 x = "true"
             else:
                 x = "false"
-        return render_template("read.html", summary_actual=percent_remove(str(summary_actual)), title_length=title_length, titles=title_list, doi=doi, username=username, method_length=method_length, summary=summary, article=article, link=link, likes=likes, x=x, y=y, comments=comments, citation=citation, methods_used=methods_used, method_id=method_id)
+        return render_template("read.html", z=z, all_tags=all_tags, all_tags_len=all_tags_len, tag_length=tag_length, tags=tags, summary_actual=percent_remove(str(summary_actual)), title_length=title_length, titles=title_list, doi=doi, username=username, method_length=method_length, summary=summary, article=article, link=link, likes=likes, x=x, y=y, comments=comments, citation=citation, methods_used=methods_used, method_id=method_id)
     else:
         flag = request.form.get("flag")
         if flag == "flag":
@@ -127,6 +136,30 @@ def read(doi):
             db.execute("UPDATE summary SET approved=0 WHERE doi=:doi", doi=doi)
             db.execute("UPDATE users SET points = points - 20 WHERE id=:user_id", user_id=user)
             return redirect("/")
+        # Handles tagging
+        tag = request.form.get("tag").lower()
+        if tag:
+            summary_id = db.execute("SELECT id FROM summary WHERE doi=:doi", doi=doi)[0]['id']
+            summary_tags = db.execute("SELECT title FROM tags JOIN tagitem ON tags.id=tagitem.tag_id WHERE tagitem.item_id=:summary_id", summary_id=summary_id)
+            summary_tags_list = []
+            for i in range(len(summary_tags)):
+                summary_tags_list.append(summary_tags[i]['title'])
+
+            tags = db.execute("SELECT title FROM tags")
+            tags_list = []
+            for i in range(len(tags)):
+                tags_list.append(tags[i]['title'])
+
+            if tag in summary_tags_list:
+                pass
+            elif tag in tags_list:
+                tag_id = db.execute("SELECT id FROM tags WHERE title=:tag", tag=tag)[0]['id']
+                db.execute("INSERT INTO tagitem (item_id, tag_id) VALUES (:summary_id, :tag_id)", summary_id=summary_id, tag_id=tag_id)
+            elif tag not in tags_list:
+                db.execute("INSERT INTO tags (title) VALUES (:tag)", tag=tag)
+                tag_id = db.execute("SELECT id FROM tags WHERE title=:tag", tag=tag)[0]['id']
+                db.execute("INSERT INTO tagitem (item_id, tag_id) VALUES (:summary_id, :tag_id)", summary_id=summary_id, tag_id=tag_id)
+            return redirect("/read/{0}".format(doi))
         # Handles the liking and disliking action
         author = db.execute("SELECT user_id FROM summary WHERE doi=:doi", doi=doi)[0]["user_id"]
         dislike = request.form.get("dislike")
@@ -163,6 +196,21 @@ def read(doi):
                             user_id=session["user_id"], doi=doi, comment=reply, date=today, likes=0, reply=1, comment_id=comment_id, last=1)
         return redirect("/read/{0}".format(doi))
 
+@app.route("/tag/<int:tag_id>")
+def tag(tag_id):
+    titles = db.execute("SELECT article, doi, summary.likes, username, users.id, summary.summary FROM users JOIN summary ON summary.user_id=users.id JOIN tagitem on summary.id=tagitem.item_id WHERE tagitem.tag_id=:tag_id AND summary.approved=1 AND summary.done = CAST(1 AS BIT)", tag_id=tag_id)
+    length = len(titles)
+    title = db.execute("SELECT title FROM tags WHERE id=:tag_id", tag_id=tag_id)
+    tags = db.execute("SELECT id, title FROM tags")
+    tags_length = len(tags)
+    if length == 0:
+        p = "No summaries to show. Please contribute."
+        return render_template("tag.html", titles=titles, length=length, p=p)
+    else:
+        soup = []
+        for i in range(length):
+            soup.append(percent_remove(str(BeautifulSoup(titles[i]["summary"], features = "html5lib").get_text()[0:500])))
+        return render_template("tag.html", tags=tags, tags_length=tags_length, titles=titles, length=length, title=title, preview=soup)
 
 @app.route("/apa/<doi>", methods=["GET", "POST"])
 @login_required
@@ -322,7 +370,7 @@ def index():
         # search bar
         search = request.form.get("search").lower()
         # gets info on things that have the searched thing in it
-        results = db.execute("SELECT summary.doi, summary.summary, username, article, users.id FROM summary JOIN users ON summary.user_id = users.id WHERE (LOWER(article) LIKE :search OR summary.doi LIKE :search OR username LIKE :search OR LOWER(summary.summary) LIKE :search OR LOWER(summary.citation) LIKE :search) AND summary.done = CAST(1 AS BIT) AND summary.approved = 1", search="%" + search + "%")
+        results = db.execute("SELECT summary.doi, summary.summary, username, article, users.id FROM summary JOIN tagitem ON summary.id=tagitem.item_id JOIN tags ON tagitem.tag_id=tags.id JOIN users ON summary.user_id = users.id WHERE (LOWER(article) LIKE :search OR summary.doi LIKE :search OR username LIKE :search OR LOWER(summary.summary) LIKE :search OR LOWER(summary.citation) LIKE :search OR LOWER(tags.title) LIKE :search) AND summary.done = CAST(1 AS BIT) AND summary.approved = 1", search="%" + search + "%")
         soup = []
         links = []
         for i in range(len(results)):

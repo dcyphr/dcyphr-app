@@ -27,7 +27,32 @@
             <p style="font-size: medium;">
                 Link to Original Article: <font style="color: #017bff"><a href="{{ link }}" target="_blank">{{ article }}</a></font>
             </p>
+            <p style="font-size: medium">
+                Tags:
+                {% for i in range(tag_length) %}
+                <a href="/tag/{{tags[i]['id']}}">{{ tags[i]['title'] }}</a>
+                {% endfor %}
+                {% if z == "true" %}
+                <button data-toggle="collapse" data-target="#add_tag" class="btn btn-outline-primary btn-sm" >+</button>
+                <form method="POST" id="add_tag" class="collapse">
+                    <div class="input-group">
+                        <div class="col-xs-2">
+                    <input type="text" name="tag" class="tag form-control" style="" placeholder="add tag" list="datalist1">
+                    <datalist id="datalist1">
+                        {% for i in range(all_tags_len) %}
+                        <option value="{{ all_tags[i]['title'] }}">
+                        </option>
+                        {% endfor %}
+                    </datalist>
+                    </div>
+                    <div class="input-group-append">
+                    <button type='submit' class="btn btn-outline-primary btn-sm">Add</button>
+                    </div>
+                    </div>
 
+                </form>
+                {% endif %}
+            </p>
             <p>
                 <b>See something wrong that you can fix?</b><br>
 
