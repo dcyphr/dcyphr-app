@@ -50,7 +50,7 @@ def browse():
         # Creates an array of links to route people to that corresponds to what people click on
         links = []
         summaries = db.execute(
-            "SELECT summary.likes, article, username, users.id, doi, summary.summary FROM summary JOIN users ON summary.user_id = users.id WHERE summary.done = CAST(1 AS BIT) and summary.approved = 1 ORDER BY summary.likes DESC;")
+            "SELECT summary.likes, article, username, users.id, doi, array_agg(tags.title), array_agg(tagitem.tag_id), summary.summary FROM summary JOIN tagitem ON summary.id=tagitem.item_id JOIN tags ON tags.id=tagitem.tag_id JOIN users ON summary.user_id = users.id WHERE summary.done = CAST(1 AS BIT) and summary.approved = 1 GROUP BY summary.doi ORDER BY summary.likes DESC;")
         # Displays preview information about articles
         for i in range(len(summaries)):
             links.append("read/{0}".format(summaries[i]["doi"]))
