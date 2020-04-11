@@ -27,13 +27,21 @@
             <p style="font-size: medium;">
                 Link to Original Article: <font style="color: #017bff"><a href="{{ link }}" target="_blank">{{ article }}</a></font>
             </p>
+
             <p style="font-size: medium">
+
+                <form method="POST" style="display: inline-block">
                 Tags:
                 {% for i in range(tag_length) %}
                 <a href="/tag/{{tags[i]['id']}}">{{ tags[i]['title'] }}</a>
-                {% endfor %}
                 {% if z == "true" %}
-                <button data-toggle="collapse" data-target="#add_tag" class="btn btn-outline-primary btn-sm" >+</button>
+                <button type="submit" name="delete" value="{{tags[i]['id']}}" class="btn btn-outline-primary btn-sm">-</button>
+                {% endif %}
+                {% endfor %}
+                </form>
+                {% if z == "true" %}
+                <button data-toggle="collapse" data-target="#add_tag" class="btn btn-outline-primary btn-sm" style="display: inline-block">+</button>
+
                 <form method="POST" id="add_tag" class="collapse">
                     <div class="input-group">
                         <div class="col-xs-2">
@@ -51,6 +59,7 @@
                     </div>
 
                 </form>
+
                 {% endif %}
             </p>
             <p>

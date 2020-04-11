@@ -54,11 +54,6 @@
                         </div>
                         <div class="pl-1" style="font-size: 0.8em">
                             dcyphr-d by <a class="disabledButton" href="public/{{ summaries[i]['id'] }}" style="color: Red">@{{ summaries[i]["username"] }}</a>
-                            Tags:
-                            {% for j in range( summaries[i]['array_agg(tags.title)] | length ) %}
-                            <a href="/tag/{{ summaries[i]['array_agg(tagitem.tag_id)']['j'] }}">{{ summaries[i]['array_agg(tags.title)']['j'] }}</a>
-                            {% endfor %}
-                        </div>
                         <div class="p-2" style="font-size: 0.95em">
                             {{ preview[i] }}...
                         </div>
