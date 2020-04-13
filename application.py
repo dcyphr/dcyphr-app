@@ -142,9 +142,9 @@ def read(doi):
             db.execute("UPDATE users SET points = points - 20 WHERE id=:user_id", user_id=user)
             return redirect("/")
         # Handles tagging
-        tag = request.form.get("tag").lower()
+        tag = request.form.get("tag")
         if tag:
-
+            tag = tag.lower()
             summary_tags = db.execute("SELECT title FROM tags JOIN tagitem ON tags.id=tagitem.tag_id WHERE tagitem.item_id=:summary_id", summary_id=summary_id)
             summary_tags_list = []
             for i in range(len(summary_tags)):
