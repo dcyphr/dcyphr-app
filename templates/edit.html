@@ -6,8 +6,8 @@
 
 {% block main %}
 
-<div class="container">
-    <div class="container mb-2">
+<div class="p-0 mx-0 w-100" style="">
+    <div class="mx-5 text-left" style="">
         <div class="row jumbotron m-xs-1 rounded bg-white text-left">
 
             <div class="col-md-10 col-xs-6">
@@ -26,13 +26,30 @@
     </div>
 
 
-    <div class="mx-4 text-left" style="margin-left: 15%">
-
+    <div class="mx-5 text-left" style="">
         <div class="row">
 
+            <div id="format" class="col col-lg-2 collapse">
+                <div style="text-align: center">
+                    <p class="font-weight-bold">Readability</p>
+                    <div id="level" style="color: green">
+                    </div>
+                </div>
+                <div id="adverb" class="adverb counter"></div>
+                <div id="passive" class="passive counter"></div>
+                <div id="complex" class="complex counter"></div>
+                <div id="hardSentence" class="hardSentence counter"></div>
+                <div id="veryHardSentence" class="veryHardSentence counter"></div>
+
+            </div>
             <div class="col">
 
-                <div class="mb-2 ml-auto text-center w-25">
+                <div class="mr-auto d-inline text-center w-25">
+                    <button class="btn btn-default bg-white" onclick="format()" data-toggle="collapse" data-target="#format" style="color: DodgerBlue;"  title="Careful! This will remove any formatting in the editor.">Test Readability</button>
+                    <button class="btn btn-default bg-white" style="color: DodgerBlue;" data-toggle="collapse" data-target="#format">Toggle Readability</button>
+                </div>
+
+                <div class="ml-auto d-inline float-right text-center">
                     <button class="btn btn-default bg-white" data-toggle="collapse" data-target="#guidelines" style="color: DodgerBlue;">
                         <span class="d-none d-lg-flex">Toggle Guidelines</span>
                         <span class="d-flex d-lg-none">Below</span>
@@ -40,12 +57,15 @@
                 </div>
 
                 <form method="POST" >
-                    <textarea id="summernote" name="summary" id="summary">{{summary}}</textarea>
+                    <textarea id="summernote" name="summary" id="summary"><div id="output">{{summary}}</div></textarea>
                     <div class="container text-center">
                         <button class="btn btn-default my-3" type="submit" style="color: white; background-color: DodgerBlue">Submit</button>
                     </div>
+
                 </form>
+
             </div>
+
 
             <div class="col-12 col-lg-4 collapse show" id="guidelines">
                 <h2 style="color: DodgerBlue">Guidelines</h2>
@@ -87,6 +107,6 @@
         </div>
     </div>
 </div>
-
+<script type="text/javascript" src="{{ url_for('static', filename='hemingway.js') }}"></script>
 {% endblock %}
 

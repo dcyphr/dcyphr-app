@@ -25,6 +25,42 @@ i{
     border-width: 0 0 0 0 !important;
 
 }
+
+.adverb {
+  background: #c4e3f3;
+}
+
+.qualifier {
+  background: #c4e3f3;
+}
+
+.passive {
+  background: #c4ed9d;
+}
+
+.complex {
+  background: #e3b7e8;
+}
+
+.hardSentence {
+  background: #f7ecb5;
+}
+
+.veryHardSentence {
+  background: #e4b9b9;
+}
+
+.counter {
+  position: relative;
+  padding: 5% 5%;
+  margin: 5% 0 0 5%;
+  border-radius: 8px;
+}
+#left {
+  width: 75%;
+  position: absolute;
+  left: 2.5%;
+}
 main img
 {
     /* constrain images on small screens */
@@ -94,6 +130,10 @@ i {
   padding: 3px;
 }
 
+.resize{
+    height: 75%;
+    width: 75%;
+}
 .up {
   transform: rotate(-135deg);
   -webkit-transform: rotate(-135deg);
@@ -183,6 +223,43 @@ dl:nth-of-type(odd) {
 #content-wrap {
   padding-bottom: 2.5rem;    /* Footer height */
 }
+
+.slideanim {visibility:hidden;}
+.slide {
+  /* The name of the animation */
+  animation-name: slide;
+  -webkit-animation-name: slide;
+  /* The duration of the animation */
+  animation-duration: 1s;
+  -webkit-animation-duration: 1s;
+  /* Make the element visible */
+  visibility: visible;
+}
+
+/* Go from 0% to 100% opacity (see-through) and specify the percentage from when to slide in the element along the Y-axis */
+@keyframes slide {
+  0% {
+    opacity: 0;
+    transform: translateY(70%);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0%);
+  }
+}
+@-webkit-keyframes slide {
+  0% {
+    opacity: 0;
+    -webkit-transform: translateY(70%);
+  }
+  100% {
+    opacity: 1;
+    -webkit-transform: translateY(0%);
+  }
+}
+
+
+
 
 @media screen and (max-width: 481px){
 #likes {

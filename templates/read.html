@@ -33,7 +33,7 @@
                 <form method="POST" style="display: inline-block">
                 Tags:
                 {% for i in range(tag_length) %}
-                <a href="/tag/{{tags[i]['id']}}">{{ tags[i]['title'] }}</a>
+                <a href="/tag/{{tags[i]['id']}}" class="btn btn-outline-secondary btn-sm" style="border-radius: 40px">{{ tags[i]['title'] }}</a>
                 {% if z == "true" %}
                 <button type="submit" name="delete" value="{{tags[i]['id']}}" class="btn btn-outline-primary btn-sm">-</button>
                 {% endif %}

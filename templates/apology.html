@@ -5,8 +5,19 @@
 {% endblock %}
 
 {% block main %}
-    <div class="container">
-        <h6>ERROR 404</h6>
-        <p>Please try refreshing the page or email dcyphrteam@gmail.com to report a problem</p>
+    <div class="container p-0 mx-auto">
+        <div class="jumbotron rounded bg-white">
+        <h1 style="color: #017bff">Oops! Please refresh the page.</h1>
+        </div>
+        {% set random = (range(1, 4) | random) %}
+        {% if random == 1 %}
+        <img class="resize" src="{{ url_for('static', filename='americans.png') }}" alt="">
+        {% elif random == 2 %}
+        <img class="resize" src="{{ url_for('static', filename='berniememe.png') }}" alt="">
+        {% elif random == 3%}
+        <img class="resize" src="{{ url_for('static', filename='lookatme.png') }}" alt="">
+        {% else %}
+        <img class="resize" src="{{ url_for('static', filename='scrolloftruth.png') }}" alt="">
+        {% endif %}
     </div>
 {% endblock %}

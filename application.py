@@ -206,11 +206,12 @@ def tag(tag_id):
     titles = db.execute("SELECT article, doi, summary.likes, username, users.id, summary.summary FROM users JOIN summary ON summary.user_id=users.id JOIN tagitem on summary.id=tagitem.item_id WHERE tagitem.tag_id=:tag_id AND summary.approved=1 AND summary.done = CAST(1 AS BIT)", tag_id=tag_id)
     length = len(titles)
     title = db.execute("SELECT title FROM tags WHERE id=:tag_id", tag_id=tag_id)
+    print(title[0]['title'])
     tags = db.execute("SELECT id, title FROM tags")
     tags_length = len(tags)
     if length == 0:
         p = "No summaries to show. Please contribute."
-        return render_template("tag.html", titles=titles, length=length, p=p)
+        return render_template("tag.html", titles=titles, length=length, p=p, title=title)
     else:
         soup = []
         for i in range(length):
