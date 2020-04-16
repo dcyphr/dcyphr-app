@@ -41,7 +41,10 @@ Session(app)
 # db = SQL("sqlite:///dcyphr.db")
 db = SQL(os.environ['DATABASE_URL'])
 # This allows the user to browse the different articles
-# Displays articles by recency of completion and displays only the article title and author as a link to the page that contains the actual summary
+@app.route("/form")
+def form():# Displays articles by recency of completion and displays only the article title and author as a link to the page that contains the actual summary
+    return render_template("form.html")
+
 @app.route("/browse", methods=["GET", "POST"])
 def browse():
     if request.method == "GET":

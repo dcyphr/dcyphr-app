@@ -1,7 +1,10 @@
 import os
 import requests
 import urllib.parse
-# import ntlk
+import ntlk
+from nltk.corpus import stopwords 
+from nltk.tokenize import word_tokenize, sent_tokenize 
+stop_words = set(stopwords.words('english')) 
 
 from flask import redirect, render_template, request, session
 from functools import wraps
@@ -131,15 +134,17 @@ def percent_remove(text):
     else:
         return text
 
-# def remove_complexity(p):
-#     if ", and" in p:
-#         new = p.split(", and")
-#         new[1] = new[1][0].toupper() + new[1].splice(1)
-#         return new.join()
-#     # if and or , surrounded by adjectives, delete one of the adjectives
-#     #
-#     else:
-#         return p
+def remove_complexity(p):
+    tokenized = sent_tokenize(p) 
+    for i in tokenized:
+        wordsList = nltk.word_tokenize(i)
+        wordsList = [w for w in wordsList if not w in stop_words]
+        tagged = nltk.pos_tag(wordsList) 
+    if ", and" in p:
+        new = p.split(", and")
+        new[1] = new[1][0].toupper() + new[1].splice(1)
+        return new.join()
+    
+        
 
-
-# print(remove_complexity("If you see a red highlight, your sentence is so dense and complicated that your readers will get lost trying to follow its meandering, splitting logic — try editing this sentence to remove the red."))
+print(remove_complexity("If you see a red highlight, your sentence is so dense and complicated that your readers will get lost trying to follow its meandering, splitting logic — try editing this sentence to remove the red."))

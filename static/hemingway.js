@@ -34,6 +34,8 @@
     paragraphs = paragraphs.map(p => p.replace(/<[^>]*>?/gm, ''));
     let outputArea = document.getElementById("output");
     let hardSentences = paragraphs.map(p => '<p>' + getDifficultSentences(p));
+    let newSentences = hardSentences.map(p => removeComplexity(p));
+    alert(newSentences);
     data.paragraphs = paragraphs.length;
     data.letters = paragraphs.join("").split("").join("").length;
     data.level = calculateLevel(data.letters, data.words, data.sentences);
@@ -44,6 +46,18 @@
     }
   }
   window.format = format;
+
+  function removeComplexity(p){
+
+    if (p.includes(", and")) {
+      newSentence = p.split(", and");
+      newSentence[1] = newSentence[1][0].toUpperCase() + newSentence[1].slice(1);
+      newSentence.join();
+      alert(newSentence);
+    }
+    
+
+  }
 
   function counters() {
     document.querySelector("#adverb").innerHTML = `You have used ${
