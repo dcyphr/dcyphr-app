@@ -10,7 +10,6 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from datetime import date, datetime
 from bs4 import BeautifulSoup
 import jellyfish
-from flask_github import GitHub
 # from flask_email_verifier import EmailVerifier
 # from validate_email import validate_email
 from helpers import apology, login_required, lookup, usd, readability, remove_scripts, percent_remove
@@ -21,7 +20,6 @@ app = Flask(__name__)
 
 # Ensure templates are auto-reloaded
 app.config["TEMPLATES_AUTO_RELOAD"] = True
-github = GitHub(app)
 
 # Ensure responses aren't cached
 @app.after_request
@@ -679,8 +677,3 @@ def errorhandler(e):
 # Listen for errors
 for code in default_exceptions:
     app.errorhandler(code)(errorhandler)
-
-@app.route('/repo')
-def repo():
-    repo_dict = github.get("repos/cenkalti/github-flask")
-    return str(repo_dict)
