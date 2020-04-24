@@ -38,8 +38,8 @@ Session(app)
 
 # Configure CS50 Library to use SQLite database
 # db = SQL('postgres://hwicvwhg:4zzgStNJkiEy3hC3gtFHrdlyLFR_vQUN@rajje.db.elephantsql.com:5432/hwicvwhg?sslmode=require')
-# db = SQL("sqlite:///dcyphr.db")
-db = SQL(os.environ['DATABASE_URL'])
+db = SQL("sqlite:///dcyphr.db")
+# db = SQL(os.environ['DATABASE_URL'])
 # This allows the user to browse the different articles
 @app.route("/form")
 def form():# Displays articles by recency of completion and displays only the article title and author as a link to the page that contains the actual summary

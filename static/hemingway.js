@@ -40,9 +40,9 @@
     data.level = calculateLevel(data.letters, data.words, data.sentences);
     console.log(data);
     counters();
-    if (confirm("Careful! This action will remove any formatting from the editor.")){
-      outputArea.innerHTML = hardSentences.join(" ");
-    }
+    // if (confirm("Careful! This action will remove any formatting from the editor.")){
+    //   outputArea.innerHTML = hardSentences.join(" ");
+    // }
   }
   window.format = format;
 
