@@ -244,7 +244,7 @@ def doi(summary_id):
     else:
         doi = request.form.get("doi")
         db.execute("UPDATE summary SET doi=:doi WHERE id=:summary_id", summary_id=summary_id, doi=doi)
-        return redirect("/read/{0}".format(summary_id))
+        return redirect("/")
 
 # Displays to the user a list of tasks that they can click on
 @app.route("/tasks", methods=["GET", "POST"])
