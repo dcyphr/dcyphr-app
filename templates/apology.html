@@ -8,6 +8,7 @@
     <div class="container p-0 mx-auto">
         <div class="jumbotron rounded bg-white">
         <h1 style="color: #017bff">Oops! Please refresh the page.</h1>
+        <p>{{ message }}</p>
         </div>
         {% set random = (range(1, 4) | random) %}
         {% if random == 1 %}

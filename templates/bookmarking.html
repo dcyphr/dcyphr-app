@@ -19,7 +19,7 @@
                 <div class="row">
                     <div class="col" style="font-size: 1.4em; color: #017bff">User</div>
                     <div class="col" style="font-size: 1.4em; color: #017bff">Article</div>
-                    <div class="col-3" style="font-size: 1.4em; color: #017bff">PMID</div>
+                    <div class="col-3" style="font-size: 1.4em; color: #017bff">DOI</div>
                     <div class="col-3" style="font-size: 1.4em; color: #017bff">Bookmarked Since</div>
                     <div class="col-3" style="font-size: 1.4em; color: #017bff"></div>
                 </div>
@@ -31,10 +31,10 @@
             <tr class="">
                 <div class=" border-top border-bottom row contributeTable" style="line-height: 40px" >
                     <div class="col" style="font-size: 1em"><a href="/public/{{ info[i]['bookmarked'] }}">{{ info[i]["username"] }}</a></div>
-                    <div class="col" style="font-size: 1em"><a href="/edit/{{ info[i]['doi'] }}">{{ info[i]["article"] }}</a></div>
+                    <div class="col" style="font-size: 1em"><a href="/edit/{{ info[i]['id'] }}">{{ info[i]["article"] }}</a></div>
                     <div class="col-3" style="font-size: 1em">{{ info[i]["doi"] }}</div>
                     <div class="col-3" style="font-size: 1em">{{ info[i]["bookmarked_date"] }}</div>
-                    <div class="col-3" style="font-size: 1em"><button class="btn btn-link btn-lg" type="submit" value="{{ info[i]['doi'] }}" name="unbookmark"><i class="fa fa-bookmark border-0"></i></button></div>
+                    <div class="col-3" style="font-size: 1em"><button class="btn btn-link btn-lg" type="submit" value="{{ info[i]['id'] }}" name="unbookmark"><i class="fa fa-bookmark border-0"></i></button></div>
 
                 </div>
             </tr>

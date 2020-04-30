@@ -17,7 +17,10 @@
             </p>
 
             <p style="font-size: medium;">
-                <a href="/apa/{{ doi }}" style="color: #017bff">APA citation (Click to edit): <em style="color: black">{{ citation }}</em></a>
+                <a href="/apa/{{ summary_id }}" style="color: #017bff">APA citation (Click to edit): <em style="color: black">{{ citation }}</em></a>
+            </p>
+            <p style="font-size: medium;">
+                <a href="/doi/{{ summary[0]['id'] }}" style="color: #017bff">DOI (Click to edit): <em style="color: black">{{ summary[0]['doi'] }}</em></a>
             </p>
 
             <p style="font-size: medium;">
@@ -65,7 +68,7 @@
             <p>
                 <b>See something wrong that you can fix?</b><br>
 
-                <font style="color: #017bff"><a href="/edit/{{ doi }}"><i class="fa fa-edit fa-2x border-0"></i><br>Edit</a></font>
+                <font style="color: #017bff"><a href="/edit/{{ summary_id }}"><i class="fa fa-edit fa-2x border-0"></i><br>Edit</a></font>
             </p>
             Share this summary:
             <a class="w-inline-block social-share-btn fb" href="https://www.facebook.com/sharer/sharer.php?u=&t=" title="Share on Facebook" target="_blank" onclick="window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(document.URL) + '&t=' + encodeURIComponent(document.URL)); return false;"><i style="color:#017bff" class="fa fa-facebook border-0 fa-lg"></i></a>
@@ -145,9 +148,9 @@
                     </div>
                     <div>
                         {% if y == "true" %}
-                        <button class="btn btn-default" type="submit" value="{{doi}}" disabled>Post</button>
+                        <button class="btn btn-default" type="submit" value="{{summary_id}}" disabled>Post</button>
                         {% else %}
-                        <button class="btn btn-default" type="submit" value="{{doi}}">Post</button>
+                        <button class="btn btn-default" type="submit" value="{{summary_id}}">Post</button>
                         {% endif %}
                     </div>
                 </div>
