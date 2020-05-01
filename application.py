@@ -62,7 +62,7 @@ def browse(page):
 
 
         # Gets length because there is no len function in jinja
-        length = db.execute("SELECT COUNT(*) FROM summary WHERE summary.done = CAST(1 AS BIT) and summary.approved = 1")[0]['COUNT(*)']
+        length = db.execute("SELECT COUNT(*) FROM summary WHERE summary.done = CAST(1 AS BIT) and summary.approved = 1")[0]['count']
         print(length)
         tags = db.execute("SELECT id, title FROM tags")
         tags_length = len(tags)
