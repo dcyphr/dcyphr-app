@@ -67,7 +67,7 @@
         <div style="color: #017bff">
             {% if page == 0 %}
             <a href="/browse/{{ page + 1 }}">next</a>
-            {%elif page == number %}
+            {%elif page == number - 1 %}
             <a href="/browse/{{ page - 1}}">previous</a>
             {% else %}
             <a href="/browse/{{ page - 1}}">previous</a>&nbsp<a href="/browse/{{ page + 1 }}">next</a>
