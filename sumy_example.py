@@ -14,7 +14,7 @@ SENTENCES_COUNT = 10
 
 
 if __name__ == "__main__":
-    url = "https://en.wikipedia.org/wiki/Automatic_summarization"
+    url = "https://www.eurosurveillance.org/content/10.2807/1560-7917.ES.2020.25.11.2000258"
     # parser = HtmlParser.from_url(url, Tokenizer(LANGUAGE))
     # or for plain text files
     parser = PlaintextParser.from_file("Untitled.txt", Tokenizer(LANGUAGE))

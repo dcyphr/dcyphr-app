@@ -1,5 +1,6 @@
 import os
 import re
+import math
 # import smtplib
 
 # from sendgrid import SendGridAPIClient
@@ -63,7 +64,7 @@ def browse(page):
 
         # Gets length because there is no len function in jinja
         length = db.execute("SELECT COUNT(*) FROM summary WHERE summary.done = CAST(1 AS BIT) and summary.approved = 1")[0]['count']
-        print(length)
+        number = int((length/page_length).floor())
         tags = db.execute("SELECT id, title FROM tags")
         tags_length = len(tags)
         if length == 0:
@@ -73,7 +74,7 @@ def browse(page):
             soup = []
             for i in range(len(summaries)):
                 soup.append(percent_remove(str(BeautifulSoup(summaries[i]["summary"], features = "html5lib").get_text()[0:500])))
-            return render_template("browse.html", tags=tags, tags_length=tags_length, summaries=summaries, length=length, preview=soup, page=page, page_length = page_length)
+            return render_template("browse.html", tags=tags, tags_length=tags_length, summaries=summaries, length=length, preview=soup, page=page, page_length = page_length, number=number)
 
 # This route displays the summaries to the people
 # Note that there is a variable in the route to specify what article they are looking at
