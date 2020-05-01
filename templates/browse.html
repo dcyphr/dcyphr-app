@@ -17,6 +17,7 @@
         <div class="text-left pl-5">
             <div class="btn-group">
             Sort By: &nbsp <a style="cursor:pointer; color: #017bff" onclick="w3.sortHTML('#id01', 'li')">Hot</a> &nbsp | &nbsp <a style="cursor:pointer; color: #017bff" onclick="w3.sortHTML('#id01', '.p-3', 'a')">A-Z</a>
+
             </div>
             <div class="float-right">
 
@@ -40,7 +41,7 @@
         </div>
         <ul style="text-align: left; list-style: none;" id="id01">
             {{ p }}
-            {% for i in range(length) %}
+            {% for i in range(page_length) %}
             <li class="p-3" style="">
                 <div class="row border-bottom border-dark pb-3">
                     <div class="col-1 text-center" id="likes" style="color: grey; font-size: 1.25em; width: 6%; margin: auto 0">
@@ -63,6 +64,18 @@
             </li>
             {% endfor %}
         </ul>
+        <div style="color: #017bff">
+            {% if page == 0 %}
+            <a href="/browse/{{ page + 1 }}">next</a>
+            {%elif page == (length - 1)/1 %}
+            <a href="/browse/{{ page - 1}}">previous</a>
+            {% else %}
+            <a href="/browse/{{ page - 1}}">previous</a>&nbsp<a href="/browse/{{ page + 1 }}">next</a>
+            {% endif %}
+        </div>
+        |{% for i in range(length) %}
+        <a href="/browse/{{ i }}">{{ i+1 }}</a> |
+        {% endfor %}
     </div>
 </div>
 

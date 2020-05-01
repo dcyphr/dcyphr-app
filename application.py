@@ -48,20 +48,22 @@ db = SQL(os.environ['DATABASE_URL'])
 def form():# Displays articles by recency of completion and displays only the article title and author as a link to the page that contains the actual summary
     return render_template("form.html")
 
-@app.route("/browse", methods=["GET", "POST"])
-def browse():
+@app.route("/browse/<int:page>", methods=["GET", "POST"])
+def browse(page):
     if request.method == "GET":
+        page_length = 10
         # Selects doi so we know where to route people when they click on the article link
 
         # Creates an array of links to route people to that corresponds to what people click on
 
         summaries = db.execute(
-            "SELECT summary.likes, article, username, users.id AS user, doi, summary.id, summary.summary FROM summary JOIN users ON summary.user_id = users.id WHERE summary.done = CAST(1 AS BIT) and summary.approved = 1 ORDER BY summary.likes DESC;")
+            "SELECT summary.likes, article, username, users.id AS user, doi, summary.id, summary.summary FROM summary JOIN users ON summary.user_id = users.id WHERE summary.done = CAST(1 AS BIT) and summary.approved = 1 ORDER BY summary.likes DESC LIMIT :limit OFFSET :offset;", limit=page_length, offset=page_length*page)
         # Displays preview information about articles
 
 
         # Gets length because there is no len function in jinja
-        length = len(summaries)
+        length = db.execute("SELECT COUNT(*) FROM summary WHERE summary.done = CAST(1 AS BIT) and summary.approved = 1")[0]['COUNT(*)']
+        print(length)
         tags = db.execute("SELECT id, title FROM tags")
         tags_length = len(tags)
         if length == 0:
@@ -71,7 +73,7 @@ def browse():
             soup = []
             for i in range(len(summaries)):
                 soup.append(percent_remove(str(BeautifulSoup(summaries[i]["summary"], features = "html5lib").get_text()[0:500])))
-            return render_template("browse.html", tags=tags, tags_length=tags_length, summaries=summaries, length=length, preview=soup)
+            return render_template("browse.html", tags=tags, tags_length=tags_length, summaries=summaries, length=length, preview=soup, page=page, page_length = page_length)
 
 # This route displays the summaries to the people
 # Note that there is a variable in the route to specify what article they are looking at
