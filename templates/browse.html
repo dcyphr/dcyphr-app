@@ -67,13 +67,13 @@
         <div style="color: #017bff">
             {% if page == 0 %}
             <a href="/browse/{{ page + 1 }}">next</a>
-            {%elif page == (length - 1)/1 %}
+            {%elif page == (length/page_length - 1) %}
             <a href="/browse/{{ page - 1}}">previous</a>
             {% else %}
             <a href="/browse/{{ page - 1}}">previous</a>&nbsp<a href="/browse/{{ page + 1 }}">next</a>
             {% endif %}
         </div>
-        |{% for i in range(length) %}
+        |{% for i in range((length/page_length - 1)) %}
         <a href="/browse/{{ i }}">{{ i+1 }}</a> |
         {% endfor %}
     </div>
