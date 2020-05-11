@@ -197,7 +197,7 @@ def read(summary_id):
         comments = db.execute("SELECT * FROM comments JOIN users ON comments.user_id = users.id WHERE summary_id=:summary_id ORDER BY comment_id, comments.id", summary_id=summary_id)
         link = db.execute("SELECT link FROM summary WHERE id=:summary_id", summary_id=summary_id)[0]["link"]
         try:
-            likes = db.execute("SELECT SUM(like) FROM likes WHERE summary_id=:summary_id", summary_id=summary_id)[0]["SUM(like)"]
+            likes = db.execute("SELECT SUM(vote) FROM likes WHERE summary_id=:summary_id", summary_id=summary_id)[0]["SUM(vote)"]
         except:
             likes = 0
         if likes == None:
@@ -251,10 +251,10 @@ def read(summary_id):
             if db.execute("SELECT admin FROM users WHERE id=:user_id", user_id=session['user_id'])[0]['admin'] == 1:
                 z = "true"
             # Checks if person already liked the post
-            liked = db.execute("SELECT likes.like FROM likes WHERE user_id=:user_id AND summary_id=:summary_id", user_id=session["user_id"], summary_id=summary_id)
+            liked = db.execute("SELECT vote FROM likes WHERE user_id=:user_id AND summary_id=:summary_id", user_id=session["user_id"], summary_id=summary_id)
             if liked == []:
                 x = "false"
-            elif liked[0]["like"] == 1:
+            elif liked[0]["vote"] == 1:
                 x = "enable-dislike"
             else:
                 x = "enable-like"
@@ -306,30 +306,30 @@ def read(summary_id):
         like = request.form.get("like")
         today = date.today()
         today = today.strftime("%B %d, %Y")
-        liked = db.execute("SELECT likes.like FROM likes WHERE user_id=:user_id AND summary_id=:summary_id", user_id=session["user_id"], summary_id=summary_id)
+        liked = db.execute("SELECT vote FROM likes WHERE user_id=:user_id AND summary_id=:summary_id", user_id=session["user_id"], summary_id=summary_id)
         if liked != []:
-            liked = liked[0]["like"]
+            liked = liked[0]["vote"]
         if like:
             if liked != []:
-                db.execute("UPDATE likes SET likes.like = 1 WHERE user_id=:user_id AND summary_id=:summary_id", user_id=session["user_id"], summary_id=summary_id)
+                db.execute("UPDATE likes SET vote = 1 WHERE user_id=:user_id AND summary_id=:summary_id", user_id=session["user_id"], summary_id=summary_id)
             else:
-                db.execute("INSERT INTO likes (user_id, summary_id, likes.like, date) VALUES (:user_id, :summary_id, 1, :date)",
+                db.execute("INSERT INTO likes (user_id, summary_id, vote, date) VALUES (:user_id, :summary_id, 1, :date)",
                             user_id=session["user_id"], summary_id=summary_id, date=today)
             db.execute("UPDATE users SET points = points + 1 WHERE id=:user_id", user_id=session["user_id"])
             try:
-                likes = db.execute("SELECT SUM(like) FROM likes WHERE summary_id=:summary_id", summary_id=summary_id)[0]["SUM(like)"]
+                likes = db.execute("SELECT SUM(vote) FROM likes WHERE summary_id=:summary_id", summary_id=summary_id)[0]["SUM(vote)"]
             except:
                 likes = 0
             db.execute("UPDATE summary SET likes=:likes WHERE id=:summary_id",likes=likes,summary_id=summary_id)
         elif dislike:
             if liked != []:
-                db.execute("UPDATE likes SET likes.like = 0 WHERE user_id=:user_id AND summary_id=:summary_id", user_id=session["user_id"], summary_id=summary_id)
+                db.execute("UPDATE likes SET vote = 0 WHERE user_id=:user_id AND summary_id=:summary_id", user_id=session["user_id"], summary_id=summary_id)
             else:
-                db.execute("INSERT INTO likes (user_id, summary_id, likes.like, date) VALUES (:user_id, :summary_id, -1, :date)",
+                db.execute("INSERT INTO likes (user_id, summary_id, vote, date) VALUES (:user_id, :summary_id, -1, :date)",
                             user_id=session["user_id"], summary_id=summary_id, date=today)
             db.execute("UPDATE users SET points = points - 1 WHERE id=:user_id", user_id=session["user_id"])
             try:
-                likes = db.execute("SELECT SUM(like) FROM likes WHERE summary_id=:summary_id", summary_id=summary_id)[0]["SUM(like)"]
+                likes = db.execute("SELECT SUM(vote) FROM likes WHERE summary_id=:summary_id", summary_id=summary_id)[0]["SUM(vote)"]
             except:
                 likes = 0
             db.execute("UPDATE summary SET likes=:likes WHERE id=:summary_id",likes=likes,summary_id=summary_id)
