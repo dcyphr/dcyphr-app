@@ -1,0 +1,101 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    {{ article[0]['article'] }}
+{% endblock %}
+
+{% block main %}
+
+<div class="container mb-5">
+    <div class="row jumbotron m-xs-1 rounded bg-white text-left">
+
+        <div class="col-md-9 col-xs-6">
+            <p class="" style="color: #017bff" id="title">
+                {{ article[0]['article'] }}
+            </p>
+
+            <p style="font-size: medium;">
+                <a href="/apa/{{ article[0]['id'] }}" style="color: #017bff">APA citation (Click to edit): <em style="color: black">{{ article[0]['citation'] }}</em></a>
+            </p>
+            <p style="font-size: medium;">
+                <a href="/doi/{{ article[0]['id'] }}" style="color: #017bff">DOI (Click to edit): <em style="color: black">{{ article[0]['doi'] }}</em></a>
+            </p>
+
+        </div>
+
+        </div>
+        <div class="row" style="margin:50px">
+            <font style="color: #017bff"><a href="/edit/{{ summary_id }}"><i class="fa fa-edit fa-2x border-0"></i><br>Edit</a></font>&nbsp
+            <font style="color: #017bff; text-align: center"><a href="/issues/{{ summary_id }}"><i class="fa fa-book fa-2x border-0"></i><br>Issues</a></font>&nbsp
+            <font style="color: #017bff; text-align: center"><a href="/read/{{ summary_id }}"><i class="fa fa-book fa-2x border-0"></i><br>Read</a></font>
+
+        </div>
+        {% if length == 0 %}
+        No version history!
+
+        {% else %}
+        <ul style="text-align: left; list-style: none;" >
+            <li class="p-3 border-bottom border-top bg-light">
+                <div class="row">
+                    <div class="col">
+                        Version #
+                    </div>
+                    <div class="col">
+                        User
+                    </div>
+                    <div class="col">
+                        Date
+                    </div>
+                    <div class="col">
+                        Revert
+                    </div>
+                    {% if x == True %}
+                    <div class="col">
+                        Delete
+                    </div>
+                    {% endif %}
+                </div>
+            </li>
+            {% for i in range(length) %}
+            <li class="p-3 border-bottom" style="">
+                <div class="row">
+                    <div class="col">
+                        <a href="/version/{{summary_id}}/{{ info[i]['version'] }}">{{ info[i]['version'] }}</a>
+                    </div>
+                    <div class="col">
+                        {{ info[i]['username'] }}
+                    </div>
+                    <div class="col">
+                        {{ info[i]['date'] }}
+                    </div>
+                    <div class="col">
+                        <form method="POST">
+                            <input type="text" value="{{ info[i]['version'] }}" class="d-none" name="version">
+                            {% if x == True %}
+                            <button class="btn btn-sm-default" style="padding:0">
+                                <i class="fa fa-recycle border-0" style="color: #017bff"></i>
+                            </button>
+                            {% else %}
+                            <button class="btn btn-sm-default" style="padding:0" disabled>
+                                <i class="fa fa-recycle border-0" style="color: #017bff"></i>
+                            </button>
+                            {% endif %}
+                        </form>
+                    </div>
+                    {% if x == True %}
+                    <div class="col">
+                        <form method="POST">
+                            <input type="text" value="{{ info[i]['version'] }}" class="d-none" name="delete">
+                            <button class="btn btn-sm-default" style="padding:0" value="delete">
+                                <i class="fa fa-times border-0" style="color: red"></i>
+                            </button>
+                        </form>
+                    </div>
+                    {% endif %}
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+{% endblock %}

@@ -5,103 +5,80 @@
 {% endblock %}
 
 {% block main %}
-<div class="p-3" style="">
-    <div class="row">
-    <div class="container my-4">
-        <i class="fa fa-user-circle border-0 fa-4x mb-2" aria-hidden="true" style="color: #017bff"></i>
-
-        <h5 class="mb-2"> {{ info[0]["username"] }} </h5>
-        <h5 class="mb-2">{{ info[0]["bio"] | safe}}</h5> <a href="/bio/{{ user_id }}">Edit Bio</a>
-
-        <div class="row mx-5 mb-3">
-            <div class="col-12 mt-2">
-                <i class="fa fa-trophy border-0 fa-4x" aria-hidden="true" style="color: #017bff"></i>
+<div class="main" style="font-family:Lato">
+    <div class="container mt-5" style="min-height: 100vh">
+        <div class="row h-25">
+            <div class="col-2">
+                <i class="fa fa-user-circle border-0 fa-5x" aria-hidden="true" style="color: #017bff; margin-top: 10px"></i>
+                {% if admin == 1 %}
+                <p class="text-muted">Admin</p>
+                {% endif %}
             </div>
-            <div class="col ml-5">
-                <div class="w-50 ml-auto mr-0">
-                    <div class="my-3" style="color: #017bff; font-size: 32px"> {{ length }}</div>
-                    <h6>Articles dcyphr-d</h6>
+
+            <div class="col-6 text-left">
+                <h3 style="font-family: Georgia">{{ info[0]['first'] }} {{ info[0]['last'] }}</h3>
+                <p class="">@{{ info[0]["username"] }}</p>
+                <p>{{ info[0]['bio'] | safe }}</p>
+                <a href="/bio/{{ user_id }}">Edit Bio</a>
+            </div>
+
+            <div class="col-4 text-left">
+                <div class="h-25">
+                </div>
+
+                <div class="h-50" style="color: DodgerBlue">
+                    <p>{{ points }} points</p>
+                    <p>{{ length }} articles dcyphr-d</p>
                 </div>
             </div>
-
-
-    <div class="col mr-5">
-        <div class="w-50 mr-auto ml-0">
-            <div class="my-3" style="color: #017bff; font-size: 32px"> {{ points }} </div>
-            <h6>Points Earned</h6>
-        </div>
-    </div>
-    </div>
-        <h6 style="color: #017bff">Keep up the good work!</h6>
-    </div>
-    </div>
-    <div>
-        <h2 class="mt-3" style="color: #017bff; font-weight: 200">Highlights</h2>
-        {% for i in range(length) %}
-        <a href="/read/{{ articles[i]['id'] }}" align="rights">{{ articles[i]["article"] }}</a><br>
-        {% endfor %}
-        <div class="container mt-3 p-3 w-50 border-bottom"></div>
-    </div>
-    <br>
-    <div class="row" id="wrap">
-            <div id="profile-stuff">
-                <a href="/bookmarks" class="btn btn-primary"><i class="fa fa-bookmark-o border-0"></i> Bookmarks</a>
-            </div>
-            <div id="profile-stuff">
-                <a href="/password" class="btn btn-primary" > Change Password </a>
-            </div>
         </div>
 
-    <!--<div class="container">-->
-
-    <!--    <div class="row"><br>-->
-
-    <!--	    <div class="d-block">-->
-
-    <!--    	    <div class="progress">-->
-
-    <!--                <div class="bar-step" style="width: 30%;">-->
-    <!--                    <div class="label-percent">Silver: 20 Articles</div>-->
-    <!--                    <div class="label-line"></div>-->
-    <!--                </div>-->
-
-    <!--                <div class="bar-step" style="width: 55%;">-->
-    <!--                    <div class="label-percent">Gold: 40 Articles</div>-->
-    <!--                    <div class="label-line"></div>-->
-    <!--                </div>-->
-
-    <!--                <div class="progress-bar bg-danger" style="width: {{ progress }}%;">{{ progress }}%</div>-->
-    <!--		    </div>-->
-
-    <!--	    </div>-->
-
-    <!--	    </div>-->
-    <!--    </div>-->
-    </div>
-<br>
-            {% if admin == 1 %}
-    <div class="container px-3">
-        <b>Administrative Tasks</b>
-        <br>
-        <div class="row" id="wrap">
-
-
-
-
-
-            <div id="profile-stuff1">
-                <a href="/approvalhome" class="btn btn-primary"> Summary Approvals </a>
-            </div>
-            <div id="profile-stuff1">
-                <a href="/bookmarking" class="btn btn-primary"> Bookmarkings </a>
-            </div>
-            <div id="profile-stuff1">
-                <a href="/comparehome" class="btn btn-primary"> Compare Edits </a>
+        <div class="row" style="min-height: 75%">
+            <div class="my-5 mx-auto p-4 col-xl-10 col-12 border border-dark border20 text-left">
+                <h4 class="mt-0 border-bottom" style="font-family:Georgia"><strong>Contributions</strong></h4>
+                {% for i in range(length) %}
+                    <a class="disabledButton my-4" href="/read/{{ articles[i]['id'] }}" align="rights">{{ articles[i]["article"] }}</a><br>
+                {% endfor %}
             </div>
 
+            <div class="col d-xl-none">
+            </div>
 
+            <div class="col-xl-2 col-md-4 col-8 my-5" style="">
+                <a href="/password" style="text-decoration:none">
+                    <div class="w-100 btn btn-outline-primary border20 my-3">
+                        Change Password
+                    </div>
+                </a>
+                {% if admin == 1 %}
+                <a href="/bookmarking" style="text-decoration:none">
+                    <div class="w-100 btn btn-outline-primary border20 my-3">
+                        Bookmarks
+                    </div>
+                </a>
+                <a href="/approvalhome" style="text-decoration:none">
+                    <div class="w-100 btn btn-outline-primary border20 my-3">
+                        Approvals
+                    </div>
+                </a>
+                <a href="/adminsuggestions" style="text-decoration:none">
+                    <div class="w-100 btn btn-outline-primary border20 my-3">
+                        Suggestions
+                    </div>
+                </a>
+                {% else %}
+                <a href="/bookmarks" style="text-decoration:none">
+                    <div class="w-100 btn btn-outline-primary border20 my-3">
+                        Bookmarks
+                    </div>
+                </a>
+                {% endif %}
+
+            </div>
+
+            <div class="col d-xl-none">
+            </div>
         </div>
     </div>
-    {% endif %}
 </div>
 {% endblock %}

@@ -30,7 +30,7 @@
                 <input type="text" class="form-control" placeholder="Search.." id="myInput" onkeyup="filterFunction()">
                 {% for i in range(tags_length) %}
 
-                <a class="dropdown-item" href="/tag/{{ tags[i]['id'] }}" style="color: #017bff">{{ tags[i]['title'] }}</a>
+                <a class="dropdown-item" href="/tag/{{ tags[i]['id'] }}/0" style="color: #017bff">{{ tags[i]['title'] }}</a>
 
                 {% endfor %}
               </div>
@@ -65,9 +65,10 @@
             {% endfor %}
         </ul>
         <div style="color: #017bff">
-            {% if page == 0 %}
+            {% if page == 0 and x %}
             <a href="/browse/{{ page + 1 }}">next</a>
-            {%elif page == number - 1 %}
+            {% elif page == 0 %}
+            {% elif page == number - 1 %}
             <a href="/browse/{{ page - 1}}">previous</a>
             {% else %}
             <a href="/browse/{{ page - 1}}">previous</a>&nbsp<a href="/browse/{{ page + 1 }}">next</a>

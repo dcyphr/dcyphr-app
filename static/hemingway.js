@@ -1,17 +1,6 @@
 (function() {
 
-  let data = {
-    paragraphs: 0,
-    sentences: 0,
-    words: 0,
-    hardSentences: 0,
-    veryHardSentences: 0,
-    adverbs: 0,
-    passiveVoice: 0,
-    complex: 0,
-    level: 0,
-    characters: 0
-  };
+
 
   function format() {
     data = {
@@ -30,19 +19,24 @@
     let inputArea = document.getElementById("summernote");
     let text = inputArea.value;
     let paragraphs = text.split("<p>");
+
     paragraphs = paragraphs.map(p => p.replace(/&nbsp;/gi, " "));
-    paragraphs = paragraphs.map(p => p.replace(/<[^>]*>?/gm, ''));
-    let outputArea = document.getElementById("output");
-    let hardSentences = paragraphs.map(p => '<p>' + getDifficultSentences(p));
+    let countParagraphs = paragraphs.map(p => p.replace(/<[^>]*>?/gi, ''));
+    countParagraphs = String(countParagraphs);
+
+    data.words = countParagraphs.split(" ").length;
+    data.letters = countParagraphs.split(" ").join("").length;
+    // paragraphs = paragraphs.map(p => p.replace(/<[^>]*>?/gm, ''));
+    let outputArea = document.getElementById("summernote");
+    let hardSentences = paragraphs.map(p => getDifficultSentences(p));
     let newSentences = hardSentences.map(p => removeComplexity(p));
     data.paragraphs = paragraphs.length;
-    data.letters = paragraphs.join("").split("").join("").length;
+    // data.letters = paragraphs.join("").split("").join("").length;
     data.level = calculateLevel(data.letters, data.words, data.sentences);
     console.log(data);
     counters();
-    // if (confirm("Careful! This action will remove any formatting from the editor.")){
-    //   outputArea.innerHTML = hardSentences.join(" ");
-    // }
+    // outputArea.value = hardSentences.join(" ");
+    $('#summernote').summernote('code', hardSentences.join(" "));
   }
   window.format = format;
 
@@ -88,10 +82,9 @@
     let sentences = getSentenceFromParagraph(p + " ");
     data.sentences += sentences.length;
     let hardOrNot = sentences.map(sent => {
-      let cleanSentence = sent.replace(/[^a-z0-9. ]/gi, "") + ".";
+      let cleanSentence = sent.replace(/<[^>]*>?/gi, '') + ".";
       let words = cleanSentence.split(" ").length;
       let letters = cleanSentence.split(" ").join("").length;
-      data.words += words;
       sent = getAdverbs(sent);
       sent = getComplex(sent);
       sent = getPassive(sent);
@@ -235,7 +228,7 @@
       "in my opinion": 1,
       "is kind of": 1,
       "is sort of": 1,
-      just: 1,
+      " just": 1,
       maybe: 1,
       perhaps: 1,
       possibly: 1,

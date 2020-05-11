@@ -4,7 +4,6 @@
     Tasks
 {% endblock %}
 {% block main %}
-
 <div class="container mt-5">
     <div class="text-left pl-3" style="font-size: 1.8em;">
         <div class="d-inline ml-4" style="border-left: 4px solid orange;"></div>
@@ -12,9 +11,24 @@
         <p class="ml-4 mt-2" style="font-size: 0.6em;  border-bottom: 1px solid black; padding: 10px">These are the articles that have been requested. Select one to start contributing! </p>
         <p class="ml-4 mt-2" style="font-size: 0.6em;  padding: 1px">
             <button class="btn btn-link"><a href="/bookmarks"> Click to see the articles you've bookmarked. </a></button></p>
+        <div class="row">
+        <p class="ml-4 mt-2" style="font-size: 0.6em;">
+            &nbsp &nbsp<button class="btn btn-link" data-toggle="collapse" data-target="#request">Want to contribute an article that's not listed?</button></p>
+
+
+        <form action="/request" method="POST" id="request" class="collapse">
+            <input type="text" class="form-control" placeholder="Article name" name="article" required>
+            <input type="text" class="form-control" placeholder="DOI" name="doi" required>
+            <input type="text" class="form-control" placeholder="Link" name="link" required>
+            <button type="submit" class="btn btn-default">Add</button>
+        </form>
+    </div>
     </div>
     <br>
+
     <div class="px-4">
+
+
         <table class="table table-striped contributeTable">
             <thead>
                 <div class="row">

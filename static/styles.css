@@ -19,6 +19,44 @@ main
     /* center contents */
     text-align: center;
     min-height:100%;
+    max-width:100%;
+}
+
+.tip {
+    display:None;
+}
+
+.form-group a:hover + .tip {
+  cursor: pointer;
+  display: block;
+  /*visibility: visible; */
+  width: 100%;
+  margin-bottom:10px;
+  line-height: 20px;
+  padding: 8px;
+  font-size: 14px;
+  text-align: left;
+  z-index: 999;
+  color: black;
+  background: #f8f9fa;
+  border-left: 1px solid #017bff;
+  -webkit-transition: opacity 100ms ease-in;
+  -o-transition: opacity 100ms ease-in;
+  -moz-transition: opacity 100ms ease-in;
+  transition: opacity 100ms ease-in;
+  pointer-events: none;
+}
+
+.tip:after {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-width: 10px;
+  border-style: solid;
+  border-color: transparent #FFFFFF transparent transparent;
+  top: 22px;
+  left: -23px;
 }
 
 i{
@@ -158,6 +196,10 @@ dl:nth-of-type(odd) {
     background: #fafafa;
 }
 
+.dropdown:hover>.dropdown-menu {
+  display: block;
+}
+
 .contributeTable:nth-of-type(even) {
     background: #f2f2f2;
 }
@@ -183,6 +225,78 @@ dl:nth-of-type(odd) {
     text-decoration: none;
     color: DodgerBlue;
 }
+
+.home_page {
+    min-height: 100vh;
+    max-width:100%;
+    margin: 0 auto;
+}
+
+.home_page:nth-of-type(odd) {
+    background: linear-gradient(#000d24, #0c4d9c);
+    color: white;
+}
+
+.border20 {
+    border-radius:20px;
+}
+.border10 {
+    border-radius:10px;
+}
+.b20t {
+    border-radius:20px 20px 0 0;
+}
+
+.index_info {
+    padding: 30% 13%;
+}
+
+.index_info div {
+    font-weight: 200;
+    font-size: 5.0em;
+}
+
+.index_info p {
+    font-weight: 200;
+    font-size: 1.3em;
+}
+
+#science{
+
+    /*position: absolute;*/
+    /*left: 53.54%;*/
+    /*right: 4.31%;*/
+    /*top: 23.73%;*/
+    /*bottom: 23.83%;*/
+    background: url(science.png);
+}
+
+
+
+#gene{
+    /*position: absolute;*/
+    /*left: 48.33%;*/
+    /*right: -12.85%;*/
+    /*top: 43.55%;*/
+    /*bottom: -25%;*/
+
+    margin-top: 10%;
+    background: url(gene.png);
+    background-blend-mode: luminosity;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #title{
     font-size: 2.5em;

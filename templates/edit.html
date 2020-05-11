@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block main %}
-
+<script type="text/javascript" src="{{ url_for('static', filename='hemingway.js') }}"></script>
 <div class="p-0 mx-0 w-100" style="">
     <div class="mx-5 text-left" style="">
         <div class="row jumbotron m-xs-1 rounded bg-white text-left">
@@ -29,23 +29,24 @@
     <div class="mx-5 text-left" style="">
         <div class="row">
 
-            <div id="format" class="col col-lg-2 collapse">
+            <div id="format" class="col col-lg-2">
                 <div style="text-align: center">
                     <p class="font-weight-bold">Readability</p>
                     <div id="level" style="color: green">
+                        Use our readability tool!
                     </div>
                 </div>
-                <div id="adverb" class="adverb counter"></div>
-                <div id="passive" class="passive counter"></div>
-                <div id="complex" class="complex counter"></div>
-                <div id="hardSentence" class="hardSentence counter"></div>
-                <div id="veryHardSentence" class="veryHardSentence counter"></div>
+                <div id="adverb" class="adverb counter"># of adverbs</div>
+                <div id="passive" class="passive counter"># of passive voice</div>
+                <div id="complex" class="complex counter"># of complex sentences</div>
+                <div id="hardSentence" class="hardSentence counter"># of hard sentences</div>
+                <div id="veryHardSentence" class="veryHardSentence counter"># of very hard sentences</div>
 
             </div>
             <div class="col">
 
                 <div class="mr-auto d-inline text-center w-25">
-                    <button class="btn btn-default bg-white" onclick="format()" data-toggle="collapse" data-target="#format" style="color: DodgerBlue;"  title="Careful! This will remove any formatting in the editor.">Test Readability</button>
+                    <button class="btn btn-default bg-white" onclick="format()" style="color: DodgerBlue;">Test Readability</button>
                     <button class="btn btn-default bg-white" style="color: DodgerBlue;" data-toggle="collapse" data-target="#format">Toggle Readability</button>
                 </div>
 
@@ -57,13 +58,12 @@
                 </div>
 
                 <form method="POST" >
-                    <textarea id="summernote" name="summary" id="summary">{{summary}}</textarea>
+                    <textarea id="summernote" name="summary">{{summary}}</textarea>
                     <div class="container text-center">
                         <button class="btn btn-default my-3" type="submit" style="color: white; background-color: DodgerBlue">Submit</button>
                     </div>
 
                 </form>
-                <div id="output"></div>
 
             </div>
 
@@ -106,8 +106,39 @@
             </div>
 
         </div>
+    <div class="mx-auto">
+        <button class="btn btn-default" data-target="#tool" data-toggle="collapse" style="color: #017bff">Use our AI tool!</button>
+    </div>
+    <div id="tool" class=collapse>
+
+
+    <div class="row">
+        <div class="col-6">
+            <div class="card mx-auto">
+                <form method="POST" style="margin:20px; text-align: left;">
+                    <div class="form-group">
+                        <label for="text" class="font-weight-bold text-muted" style="font-size:12px">Input section</label>
+                        <textarea name="text" id="text" class="w-100 form-control"></textarea>
+                    </div>
+                    <input type="submit" class="btn btn-outline-primary border20 btn-block" value="Continue">
+                </form>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="card mx-auto">
+                <div class="col-sm-12">
+                    <p class="font-weight-bold text-muted" style="font-size:12px; padding-top: 20px">Output</p>
+                <div class="col" style="text-align: left; padding: 20px; padding-top: 0px">
+                    <div class="border-left border-primary bg-light" style="padding:20px">
+                    <p>{{ output }}</p>
+                    </div>
+                </div>
+        </div>
     </div>
 </div>
-<script type="text/javascript" src="{{ url_for('static', filename='hemingway.js') }}"></script>
+</div>
+</div>
+</div>
+
 {% endblock %}
 

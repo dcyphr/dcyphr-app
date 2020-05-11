@@ -1,12 +1,30 @@
 import requests
+from crossref.restful import Works
 
-if __name__ == "__main__":
-    API_ENDPOINT = "https://api.smmry.com"
+def summry(text):
     API_KEY = "7A81ABB922"
+    API_ENDPOINT = "https://api.smmry.com"
 
     data = {
-        "SM_API_KEY":API_KEY,
-        "SM_URL":"https://www.eurosurveillance.org/content/10.2807/1560-7917.ES.2020.25.11.2000258"
+        "sm_api_input":text
     }
-    r = requests.get(url=API_ENDPOINT, params=data)
-    print(r.json())
+    params = {
+        "SM_API_KEY":API_KEY
+    }
+    header_params = {"Expect":"100-continue"}
+    r = requests.post(url=API_ENDPOINT, params=params, data=data, headers=header_params)
+
+    return r.json()['sm_api_content']
+
+def get_apa(doi):
+    works = Works()
+    output = works.doi(doi)
+    if output == None:
+        return "Not available"
+    authors = output['author']
+    length = len(authors)
+    citation = ""
+    for i in range(length):
+        citation = citation + authors[i]['family'] + ", " + authors[i]['given'][0] + "., "
+    citation = citation + "({}). ".format(output['published-print']['date-parts'][0][0]) + "{}. ".format(output['title'][0]) + output['publisher'] + ", " + "{0}({1}), {2}. doi: {3}".format(output['volume'], output["issue"], output['page'], doi)
+    return citation

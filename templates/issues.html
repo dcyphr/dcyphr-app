@@ -1,0 +1,144 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    {{ article[0]['article'] }}
+{% endblock %}
+
+{% block main %}
+
+<div class="container mb-5">
+    <div class="row jumbotron m-xs-1 rounded bg-white text-left">
+
+        <div class="col-md-9 col-xs-6">
+            <p class="" style="color: #017bff" id="title">
+                {{ article[0]['article'] }}
+            </p>
+
+            <p style="font-size: medium;">
+                <a href="/apa/{{ article[0]['id'] }}" style="color: #017bff">APA citation (Click to edit): <em style="color: black">{{ article[0]['citation'] }}</em></a>
+            </p>
+            <p style="font-size: medium;">
+                <a href="/doi/{{ article[0]['id'] }}" style="color: #017bff">DOI (Click to edit): <em style="color: black">{{ article[0]['doi'] }}</em></a>
+            </p>
+
+        </div>
+
+        </div>
+        <div class="row" style="margin:50px">
+            <font style="color: #017bff"><a href="/edit/{{ summary_id }}"><i class="fa fa-edit fa-2x border-0"></i><br>Edit</a></font>&nbsp
+            <font style="color: #017bff; text-align: center"><a href="/history/{{ summary_id }}"><i class="fa fa-book fa-2x border-0"></i><br>History</a></font> &nbsp
+            <font style="color: #017bff; text-align: center"><a href="/read/{{ summary_id }}"><i class="fa fa-book fa-2x border-0"></i><br>Read</a></font>
+        </div>
+        {% if length == 0 %}
+        No issues!
+
+        {% else %}
+        <ul style="text-align: left; list-style: none;" >
+            <li class="p-3 border-bottom border-top bg-light">
+                <div class="row">
+                    <div class="col">
+                        ID
+                    </div>
+                    <div class="col">
+                        Issue
+                    </div>
+                    <div class="col">
+                        Asker
+                    </div>
+                    <div class="col">
+                        Assigned to
+                    </div>
+                    <div class="col">
+                        Date asked
+                    </div>
+                    <div class="col">
+                        Resolved
+                    </div>
+                </div>
+            </li>
+            {% for i in range(length) %}
+            <li class="p-3 border-bottom" style="">
+                <div class="row">
+                    <div class="col">
+                        {{ info[i]['id'] }}
+                    </div>
+                    <div class="col">
+                        {{ info[i]['text'] }}
+                    </div>
+                    <div class="col">
+                        {{ info[i]['username'] }}
+                    </div>
+                    <div class="col">
+                        {{ info[i]['assignee'] }}
+                        {% if x == False %}
+                        <button class="btn btn-sm-default" data-target="#assignee_change" data-toggle="collapse" disabled><i class="fa fa-edit border-0" style="color: #017bff"></i></button>
+                        {% else %}
+                        <button class="btn btn-sm-default" data-target="#assignee_change" data-toggle="collapse"><i class="fa fa-edit border-0" style="color: #017bff"></i></button>
+                        {% endif %}
+                        <form method="POST" id="assignee_change" class="collapse">
+                            <div class="input-group">
+                                <input type="text" name="new_assignee" class="form-control" aria-describedby="basic-addon2">
+                                <div class="input-group-append">
+                                    <button type="submit" class="btn btn-sm-primary border" value="{{ info[i]['id'] }}" id="basic-addon2" name="assignee_button">Change</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="col">
+                        {{ info[i]['date'] }}
+                    </div>
+                    <div class="col">
+                        {% if y[i] == True %}
+                        <form method="POST">
+                            <input type="text" class="d-none" value="{{ info[i]['id'] }}" name="checked">
+                            {% if x == False %}
+                            <button class="btn btn-sm-default" name="checked_button" value="checked" disabled><i class="fa fa-check border-0" style="color: green"></i></button>
+                            {% else %}
+                            <button class="btn btn-sm-default" name="checked_button" value="checked"><i class="fa fa-check border-0" style="color: green"></i></button>
+                            {% endif %}
+                        </form>
+                        {% else %}
+                        <form method="POST">
+                            <input type="text" class="d-none" value="{{ info[i]['id'] }}" name="unchecked">
+                            {% if x == False %}
+                            <button class="btn btn-sm-default" name="unchecked_button" value="unchecked" disabled><i class="fa fa-times border-0" style="color: red"></i></button>
+                            {% else %}
+                            <button class="btn btn-sm-default" name="unchecked_button" value="unchecked"><i class="fa fa-times border-0" style="color: red"></i></button>
+                            {% endif %}
+                        </form>
+                        {% endif %}
+
+                    </div>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        {% if x == True %}
+        <div class="row">
+            <div class="col mx-auto">
+
+
+            <div class="mx-auto btn btn-default border" style="margin:20px; color:#017bff" data-toggle="collapse" data-target="#card">
+                New issue?
+            </div>
+            <div class="card mx-auto collapse" id="card">
+            <form method="POST" style="margin:20px; text-align:left">
+                    <div class="form-group">
+                        <label for="text">What's the issue?</label>
+                        <textarea id="text" type="text" name="text" class="form-control w-100" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="assignee">Know a user that can fix it? If not, please leave blank.</label>
+                        <input id="assignee" type="assignee" name="assignee" class="form-control w-100">
+                    </div>
+                    <input type="submit" class="btn btn-primary btn-block">
+
+            </form>
+            </div>
+        </div>
+        </div>
+        {% endif%}
+        </div>
+
+{% endblock %}

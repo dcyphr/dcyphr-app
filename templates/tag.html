@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 
 {% block title %}
-    Browse
+    {{ title[0]['title'] }}
 {% endblock %}
 
 {% block main %}
@@ -10,7 +10,17 @@
     <div class="text-left pl-3" style="font-size: 1.8em; ">
         <div class="d-inline ml-4" style="border-left: 4px solid orange;"></div>
         <div class="d-inline ml-2" style="color: #017bff">{{ title[0]['title'] }}</div>
-        <p class="ml-4 mt-2" style="font-size: 0.6em; border-bottom: 1px solid black; padding: 10px">Showing articles related to {{ title[0]['title'] }}</p>
+        <p class="ml-4 mt-2" style="font-size: 0.6em; border-bottom: 1px solid black; padding: 10px">{{ tags[0]['text'] }}
+        {% if admin == 1 %}
+        <button class="btn btn-link" style="padding-bottom:10px"data-target="#description" data-toggle="collapse">Edit</button>
+        {% endif %}
+        </p>
+        <div class="collapse" id="description">
+            <form method="POST">
+                <textarea name="description" class="border20 w-100" rows="5" style="font-size: 12px; padding:10px">{{ tags[0]['text'] }}</textarea>
+                <button class="btn btn-outline-primary border20">Submit</button>
+            </form>
+        </div>
     </div>
     {% if length == 0 %}
     No summaries on this topic!
@@ -27,7 +37,7 @@
 
               <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
                 {% for i in range(tags_length) %}
-                <a class="dropdown-item" href="/tag/{{ tags[i]['id'] }}" style="color: #017bff">{{ tags[i]['title'] }}</a>
+                <a class="dropdown-item" href="/tag/{{ tags[i]['id'] }}/0" style="color: #017bff">{{ tags[i]['title'] }}</a>
                 {% endfor %}
               </div>
             </div>
@@ -36,7 +46,7 @@
         </div>
         <ul style="text-align: left; list-style: none;" id="id01">
             {{ p }}
-    {% for i in range(length) %}
+    {% for i in range(page_length) %}
     <li class="p-3" style="">
                 <div class="row border-bottom border-dark pb-3">
                     <div class="col-1 text-center" id="likes" style="color: grey; font-size: 1.25em; width: 6%; margin: auto 0">
@@ -62,5 +72,19 @@
 </ul>
 </div>
 {% endif %}
+
+<div style="color: #017bff">
+            {% if page == 0 and x %}
+            <a href="/browse/{{ page + 1 }}">next</a>
+            {% elif page == 0 %}
+            {%elif page == number - 1 %}
+            <a href="/tag/{{ tag_id }}/{{ page - 1 }}">previous</a>
+            {% else %}
+            <a href="/tag/{{ tag_id }}/{{ page - 1 }}">previous</a>&nbsp<a href="/tag/{{ tag_id }}/{{ page + 1 }}">next</a>
+            {% endif %}
+        </div>
+        |{% for i in range(number) %}
+        <a href="/tag/{{ tag_id }}/{{ i }}">{{ i+1 }}</a> |
+        {% endfor %}
 </div>
 {% endblock %}

@@ -66,9 +66,11 @@
                 {% endif %}
             </p>
             <p>
-                <b>See something wrong that you can fix?</b><br>
-
-                <font style="color: #017bff"><a href="/edit/{{ summary_id }}"><i class="fa fa-edit fa-2x border-0"></i><br>Edit</a></font>
+                <div class="row" style="margin:10px">
+                    <font style="color: #017bff"><a href="/edit/{{ summary_id }}"><i class="fa fa-edit fa-2x border-0"></i><br>Edit</a></font>&nbsp
+                    <font style="color: #017bff; text-align: center"><a href="/issues/{{ summary_id }}"><i class="fa fa-exclamation-triangle fa-2x border-0"></i><br>Issues</a></font>&nbsp
+                    <font style="color: #017bff; text-align: center"><a href="/history/{{ summary_id }}"><i class="fa fa-history fa-2x border-0"></i><br>History</a></font>
+                </div>
             </p>
             Share this summary:
             <a class="w-inline-block social-share-btn fb" href="https://www.facebook.com/sharer/sharer.php?u=&t=" title="Share on Facebook" target="_blank" onclick="window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(document.URL) + '&t=' + encodeURIComponent(document.URL)); return false;"><i style="color:#017bff" class="fa fa-facebook border-0 fa-lg"></i></a>
@@ -87,6 +89,18 @@
                 <span style="">{{ likes }}</span>
                 <div><button class="btn btn-default bg-white pt-3" type="submit" name="dislike" value="dislike" disabled>
                     <i class="fa fa-chevron-down border-0 fa-lg" style="color: #017bff;"></i></button></div>
+                {% elif x == "enable-like" %}
+                <div><button class="btn btn-default bg-white pb-3" type="submit" name="like" value="like">
+                    <i class="fa fa-chevron-up border-0 fa-lg" style="color: #017bff;"></i></button></div>
+                <span style="">{{ likes }}</span>
+                <div><button class="btn btn-default bg-white pt-3" type="submit" name="dislike" value="dislike" disabled>
+                    <i class="fa fa-chevron-down border-0 fa-lg" style="color: #017bff;"></i></button></div>
+                {% elif x == "enable-dislike" %}
+                <div><button class="btn btn-default bg-white pb-3" type="submit" name="like" value="like" disabled>
+                    <i class="fa fa-chevron-up border-0 fa-lg" style="color: #017bff;"></i></button></div>
+                <span style="">{{ likes }}</span>
+                <div><button class="btn btn-default bg-white pt-3" type="submit" name="dislike" value="dislike">
+                    <i class="fa fa-chevron-down border-0 fa-lg" style="color: #017bff;"></i></button></div>
                 {% else %}
                 <div><button class="btn btn-default bg-white" type="submit" name="like" value="like">
                     <i class="fa fa-chevron-up border-0 fa-lg" style="color: #017bff;"></i></button></div>
@@ -103,6 +117,37 @@
                         <div class="my-1" style="color: #3b3b39">Flag For Moderation</div>
                     </button>
                 </form>
+            </div>
+
+            <div class="my-3" style="font-size: 0.7em">
+                <div class="row px-3 pl-4 bg-light border-bottom" style="font-family: Lato">
+                    <div class="col-2 p-0">
+
+                    </div>
+                    <div class="col-6" style="font-size: 14px">
+                        User
+                    </div>
+                    <div class="col-4" style="font-size: 14px">
+                        <div class="row">
+                            # Edits
+                        </div>
+                    </div>
+                </div>
+                {% for i in range(c_length) %}
+                    <div class="row px-3 pl-4 border-bottom" style="font-family: Lato">
+                        <div class="col-2 p-0">
+                            {% if i == 0 %}
+                                <span class="fa fa-trophy" style="color: gold"></span>
+                            {% endif %}
+                        </div>
+                        <div class="col-6" style="font-size: 14px">
+                            <a href="/public/{{ contributors[i]['user_id'] }}">{{ contributors[i]['first'] }} {{ contributors[i]['last'][0] }}.</a>
+                        </div>
+                        <div class="col-4" style="font-size: 14px">
+                            {{ contributors[i]['COUNT(*)'] }}
+                        </div>
+                    </div>
+                {% endfor %}
             </div>
         </div>
     </div>

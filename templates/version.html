@@ -1,0 +1,60 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    {{ info['article'] }}
+{% endblock %}
+
+{% block main %}
+
+
+
+<div class="container mb-5">
+    <div class="row jumbotron m-xs-1 rounded bg-white text-left">
+
+        <div class="col-md-9 col-xs-6">
+            <p class="" style="color: #017bff" id="title">
+                {{ info['article'] }}
+            </p>
+
+            <p style="font-size: medium;">
+                <a href="/apa/{{ summary_id }}" style="color: #017bff">APA citation (Click to edit): <em style="color: black">{{ info['citation'] }}</em></a>
+            </p>
+            <p style="font-size: medium;">
+                <a href="/doi/{{ summary_id }}" style="color: #017bff">DOI (Click to edit): <em style="color: black">{{ info['doi'] }}</em></a>
+            </p>
+
+            <p style="font-size: medium;">
+                dcyphr-d by <font style="color: #017bff"><a href="/public/{{ info['user_id'] }}">@{{ info["username"] }}</a></font>
+            </p>
+
+            <p style="font-size: medium;">
+                Link to Original Article: <font style="color: #017bff"><a href="{{ info['link'] }}" target="_blank">{{ info['article'] }}</a></font>
+            </p>
+
+            <p>
+                <div class="row" style="margin:10px">
+                    <font style="color: #017bff"><a href="/edit/{{ summary_id }}"><i class="fa fa-edit fa-2x border-0"></i><br>Edit</a></font>&nbsp
+                    <font style="color: #017bff; text-align: center"><a href="/issues/{{ summary_id }}"><i class="fa fa-exclamation-triangle fa-2x border-0"></i><br>Issues</a></font>&nbsp
+                    <font style="color: #017bff; text-align: center"><a href="/history/{{ summary_id }}"><i class="fa fa-history fa-2x border-0"></i><br>History</a></font>
+                </div>
+            </p>
+        </div>
+
+
+    </div>
+
+
+    <div class="container text-left">
+
+        <div id="summary" class="p-3 my-3">
+            <p class="pl-4 text-weight-light" style="line-height: 40px; font-size: 20px;">
+                {{info['text'] | safe}}
+            </p>
+        </div>
+
+
+    </div>
+</div>
+
+
+{% endblock %}
