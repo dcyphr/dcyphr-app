@@ -313,7 +313,7 @@ def read(summary_id):
             if liked != []:
                 db.execute("UPDATE likes SET likes.like = 1 WHERE user_id=:user_id AND summary_id=:summary_id", user_id=session["user_id"], summary_id=summary_id)
             else:
-                db.execute("INSERT INTO likes (user_id, summary_id, like, date) VALUES (:user_id, :summary_id, 1, :date)",
+                db.execute("INSERT INTO likes (user_id, summary_id, likes.like, date) VALUES (:user_id, :summary_id, 1, :date)",
                             user_id=session["user_id"], summary_id=summary_id, date=today)
             db.execute("UPDATE users SET points = points + 1 WHERE id=:user_id", user_id=session["user_id"])
             try:
@@ -325,7 +325,7 @@ def read(summary_id):
             if liked != []:
                 db.execute("UPDATE likes SET likes.like = 0 WHERE user_id=:user_id AND summary_id=:summary_id", user_id=session["user_id"], summary_id=summary_id)
             else:
-                db.execute("INSERT INTO likes (user_id, summary_id, like, date) VALUES (:user_id, :summary_id, -1, :date)",
+                db.execute("INSERT INTO likes (user_id, summary_id, likes.like, date) VALUES (:user_id, :summary_id, -1, :date)",
                             user_id=session["user_id"], summary_id=summary_id, date=today)
             db.execute("UPDATE users SET points = points - 1 WHERE id=:user_id", user_id=session["user_id"])
             try:
