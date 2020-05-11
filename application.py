@@ -197,7 +197,7 @@ def read(summary_id):
         comments = db.execute("SELECT * FROM comments JOIN users ON comments.user_id = users.id WHERE summary_id=:summary_id ORDER BY comment_id, comments.id", summary_id=summary_id)
         link = db.execute("SELECT link FROM summary WHERE id=:summary_id", summary_id=summary_id)[0]["link"]
 
-        likes = db.execute("SELECT SUM(vote) FROM likes WHERE summary_id=:summary_id", summary_id=summary_id)[0]["SUM(vote)"]
+        likes = db.execute("SELECT SUM(vote) AS sum FROM likes WHERE summary_id=:summary_id", summary_id=summary_id)[0]["sum"]
 
         if likes == None:
             likes = 0
@@ -315,7 +315,7 @@ def read(summary_id):
                 db.execute("INSERT INTO likes (user_id, summary_id, vote, date) VALUES (:user_id, :summary_id, 1, :date)",
                             user_id=session["user_id"], summary_id=summary_id, date=today)
             db.execute("UPDATE users SET points = points + 1 WHERE id=:user_id", user_id=session["user_id"])
-            likes = db.execute("SELECT SUM(vote) FROM likes WHERE summary_id=:summary_id", summary_id=summary_id)[0]["SUM(vote)"]
+            likes = db.execute("SELECT SUM(vote) AS sum FROM likes WHERE summary_id=:summary_id", summary_id=summary_id)[0]["sum"]
             db.execute("UPDATE summary SET likes=:likes WHERE id=:summary_id",likes=likes,summary_id=summary_id)
         elif dislike:
             if liked != []:
@@ -325,7 +325,7 @@ def read(summary_id):
                             user_id=session["user_id"], summary_id=summary_id, date=today)
             db.execute("UPDATE users SET points = points - 1 WHERE id=:user_id", user_id=session["user_id"])
 
-            likes = db.execute("SELECT SUM(vote) FROM likes WHERE summary_id=:summary_id", summary_id=summary_id)[0]["SUM(vote)"]
+            likes = db.execute("SELECT SUM(vote) AS sum FROM likes WHERE summary_id=:summary_id", summary_id=summary_id)[0]["sum"]
 
             db.execute("UPDATE summary SET likes=:likes WHERE id=:summary_id",likes=likes,summary_id=summary_id)
         else:
