@@ -399,8 +399,12 @@ def adminsuggestions():
         title = request.form.get("title")
         doi = request.form.get("doi")
         text = request.form.get("text")
+        api_length = int(len(text.split(".")) * 0.6)
         # API call for extracting key sentences
-        suggestion = summry(text)
+        try:
+            suggestion = summry(text, api_length)['sm_api_content']
+        except:
+            return redirect("/adminsuggestions")
         # need to add second level of NLP processing here
         summary_id = db.execute("SELECT id FROM summary WHERE doi=:doi", doi=doi)[0]['id']
         db.execute("INSERT INTO suggestions (title, display, suggestion, summary_id) VALUES (:title, :display, :suggestion, :summary_id)", title=title, display=text, summary_id=summary_id, suggestion=suggestion)

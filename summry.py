@@ -1,7 +1,7 @@
 import requests
 from crossref.restful import Works
 
-def summry(text):
+def summry(text, api_length):
     API_KEY = "7A81ABB922"
     API_ENDPOINT = "https://api.smmry.com"
 
@@ -9,12 +9,12 @@ def summry(text):
         "sm_api_input":text
     }
     params = {
-        "SM_API_KEY":API_KEY
+        "SM_API_KEY":API_KEY,
+        "SM_LENGTH":api_length,
     }
     header_params = {"Expect":"100-continue"}
     r = requests.post(url=API_ENDPOINT, params=params, data=data, headers=header_params)
-
-    return r.json()['sm_api_content']
+    return r.json()
 
 def get_apa(doi):
     works = Works()
