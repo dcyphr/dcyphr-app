@@ -109,7 +109,11 @@
     <div class="mx-auto">
         <button class="btn btn-default" data-target="#tool" data-toggle="collapse" style="color: #017bff">Use our AI tool!</button>
     </div>
-    <div id="tool" class=collapse>
+    {% if z == False %}
+    <div id="tool" class="collapse">
+    {% else %}
+    <div id="tool">
+    {% endif %}
 
 
     <div class="row">

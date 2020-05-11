@@ -43,8 +43,8 @@ Session(app)
 
 # Configure CS50 Library to use SQLite database
 # db = SQL('postgres://hwicvwhg:4zzgStNJkiEy3hC3gtFHrdlyLFR_vQUN@rajje.db.elephantsql.com:5432/hwicvwhg?sslmode=require')
-# db = SQL("sqlite:///dcyphr.db")
-db = SQL(os.environ['DATABASE_URL'])
+db = SQL("sqlite:///dcyphr.db")
+# db = SQL(os.environ['DATABASE_URL'])
 
 # notifications
 
@@ -536,15 +536,20 @@ def edit(summary_id):
         article = db.execute("SELECT article, user_id FROM summary WHERE id=:summary_id", summary_id=summary_id)
         username = db.execute("SELECT username FROM users WHERE id=:user_id", user_id=article[0]["user_id"])
         link = db.execute("SELECT link FROM summary WHERE id=:summary_id", summary_id=summary_id)[0]["link"]
-        return render_template("edit.html", article=article, link=link, summary=percent_remove(str(summary)), username=username, output="")
+        return render_template("edit.html", article=article, link=link, summary=percent_remove(str(summary)), username=username, output="", z=False)
     else:
         text=request.form.get("text")
         if text:
-            output=summry(text)
+            api_length = int(len(text.split(".")) * 0.6)
+            output=summry(text, api_length)
+            try:
+                output=output["sm_api_content"]
+            except:
+                output=output['sm_api_message']
             article = db.execute("SELECT article, user_id FROM summary WHERE id=:summary_id", summary_id=summary_id)
             username = db.execute("SELECT username FROM users WHERE id=:user_id", user_id=article[0]["user_id"])
             link = db.execute("SELECT link FROM summary WHERE id=:summary_id", summary_id=summary_id)[0]["link"]
-            return render_template("edit.html", article=article, link=link, summary=percent_remove(str(summary)), username=username, output=output)
+            return render_template("edit.html", article=article, link=link, summary=percent_remove(str(summary)), username=username, output=output, z=True)
         else:
             pass
         # inserts user summary from form into summary table
