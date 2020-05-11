@@ -196,7 +196,10 @@ def read(summary_id):
         username = db.execute("SELECT username FROM users WHERE id=:user_id", user_id=summary[0]["user_id"])
         comments = db.execute("SELECT * FROM comments JOIN users ON comments.user_id = users.id WHERE summary_id=:summary_id ORDER BY comment_id, comments.id", summary_id=summary_id)
         link = db.execute("SELECT link FROM summary WHERE id=:summary_id", summary_id=summary_id)[0]["link"]
-        likes = db.execute("SELECT SUM(like) FROM likes WHERE summary_id=:summary_id", summary_id=summary_id)[0]["SUM(like)"]
+        try:
+            likes = db.execute("SELECT SUM(like) FROM likes WHERE summary_id=:summary_id", summary_id=summary_id)[0]["SUM(like)"]
+        except:
+            likes = 0
         if likes == None:
             likes = 0
         citation = db.execute("SELECT citation FROM summary WHERE id=:summary_id", summary_id=summary_id)[0]["citation"]
@@ -249,14 +252,12 @@ def read(summary_id):
                 z = "true"
             # Checks if person already liked the post
             liked = db.execute("SELECT like FROM likes WHERE user_id=:user_id AND summary_id=:summary_id", user_id=session["user_id"], summary_id=summary_id)
-            print(liked)
             if liked == []:
                 x = "false"
             elif liked[0]["like"] == 1:
                 x = "enable-dislike"
             else:
                 x = "enable-like"
-            print(x)
         return render_template("read.html", contributors=contributors, c_length=c_length, z=z, all_tags=all_tags, all_tags_len=all_tags_len, tag_length=tag_length, tags=tags, summary_actual=percent_remove(str(summary_actual)), title_length=title_length, titles=title_list, summary_id=summary_id, username=username, method_length=method_length, summary=summary, article=article, link=link, likes=likes, x=x, y=y, comments=comments, citation=citation, methods_used=methods_used, method_id=method_id)
     else:
         flag = request.form.get("flag")
@@ -315,7 +316,10 @@ def read(summary_id):
                 db.execute("INSERT INTO likes (user_id, summary_id, like, date) VALUES (:user_id, :summary_id, 1, :date)",
                             user_id=session["user_id"], summary_id=summary_id, date=today)
             db.execute("UPDATE users SET points = points + 1 WHERE id=:user_id", user_id=session["user_id"])
-            likes = db.execute("SELECT SUM(like) FROM likes WHERE summary_id=:summary_id", summary_id=summary_id)[0]["SUM(like)"]
+            try:
+                likes = db.execute("SELECT SUM(like) FROM likes WHERE summary_id=:summary_id", summary_id=summary_id)[0]["SUM(like)"]
+            except:
+                likes = 0
             db.execute("UPDATE summary SET likes=:likes WHERE id=:summary_id",likes=likes,summary_id=summary_id)
         elif dislike:
             if liked != []:
@@ -324,7 +328,10 @@ def read(summary_id):
                 db.execute("INSERT INTO likes (user_id, summary_id, like, date) VALUES (:user_id, :summary_id, -1, :date)",
                             user_id=session["user_id"], summary_id=summary_id, date=today)
             db.execute("UPDATE users SET points = points - 1 WHERE id=:user_id", user_id=session["user_id"])
-            likes = db.execute("SELECT SUM(like) FROM likes WHERE summary_id=:summary_id", summary_id=summary_id)[0]["SUM(like)"]
+            try:
+                likes = db.execute("SELECT SUM(like) FROM likes WHERE summary_id=:summary_id", summary_id=summary_id)[0]["SUM(like)"]
+            except:
+                likes = 0
             db.execute("UPDATE summary SET likes=:likes WHERE id=:summary_id",likes=likes,summary_id=summary_id)
         else:
         # Handles comments
@@ -767,7 +774,6 @@ def public(user_id):
         "SELECT article, id FROM summary WHERE user_id=:user_id AND done = CAST(1 AS BIT) AND approved=1", user_id=user_id)
     length = len(articles)
     info = db.execute("SELECT bio, username, points, first, last, admin FROM users WHERE id=:user_id", user_id=user_id)
-    print(info[0]['admin'])
     if info[0]['points'] == None:
         info[0]['points'] = 0
     if info[0]['bio'] == None:
