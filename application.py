@@ -387,7 +387,7 @@ def tag(tag_id, page):
             return render_template("tag.html", tags=tags, tags_length=tags_length, admin=admin, titles=titles, length=length, title=title, preview=soup, page=page, page_length=page_length, tag_id=tag_id, number=number)
     else:
         desc = request.form.get("description")
-        db.execute("UPDATE tags SET text = :desc", desc=desc)
+        db.execute("UPDATE tags SET text = :desc WHERE id=:tag_id", desc=desc, tag_id=tag_id)
         return redirect("/tag/{}/0".format(tag_id))
 # page where admins input information for QuickTasks
 @app.route("/adminsuggestions", methods=["GET", "POST"])
