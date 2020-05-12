@@ -277,7 +277,6 @@ def read(summary_id):
         # Handles adding tags
         tag = request.form.get("tag")
         if tag:
-            tag = tag.lower()
             summary_tags = db.execute("SELECT title FROM tags JOIN tagitem ON tags.id=tagitem.tag_id WHERE tagitem.item_id=:summary_id", summary_id=summary_id)
             summary_tags_list = []
             for i in range(len(summary_tags)):
@@ -369,8 +368,7 @@ def tag(tag_id, page):
         if page + 1 == number:
             page_length = len(titles)
         length= len(titles)
-        title = db.execute("SELECT title FROM tags WHERE id=:tag_id", tag_id=tag_id)
-        tags = db.execute("SELECT id, title, text FROM tags")
+        tags = db.execute("SELECT id, title, text FROM tags WHERE id=:tag_id", tag_id=tag_id)
         tags_length = len(tags)
         if len(session) == 0:
             admin = 0
@@ -379,12 +377,12 @@ def tag(tag_id, page):
         # handles case where there are no summaries in that tag
         if length == 0:
             p = "No summaries to show. Please contribute."
-            return render_template("tag.html", titles=titles, tags=tags, tags_length=tags_length, length=length, x=x, p=p, title=title, admin=admin, tag_id=tag_id, number=number, page=page)
+            return render_template("tag.html", titles=titles, tags=tags, tags_length=tags_length, length=length, x=x, p=p, admin=admin, tag_id=tag_id, number=number, page=page)
         else:
             soup = []
             for i in range(length):
                 soup.append(percent_remove(str(BeautifulSoup(titles[i]["summary"], features = "html5lib").get_text()[0:500])))
-            return render_template("tag.html", tags=tags, tags_length=tags_length, admin=admin, titles=titles, length=length, title=title, preview=soup, page=page, page_length=page_length, tag_id=tag_id, number=number)
+            return render_template("tag.html", tags=tags, tags_length=tags_length, admin=admin, titles=titles, length=length, preview=soup, page=page, page_length=page_length, tag_id=tag_id, number=number)
     else:
         desc = request.form.get("description")
         db.execute("UPDATE tags SET text = :desc WHERE id=:tag_id", desc=desc, tag_id=tag_id)
