@@ -43,8 +43,8 @@ Session(app)
 
 # Configure CS50 Library to use SQLite database
 # db = SQL('postgres://hwicvwhg:4zzgStNJkiEy3hC3gtFHrdlyLFR_vQUN@rajje.db.elephantsql.com:5432/hwicvwhg?sslmode=require')
-db = SQL("sqlite:///dcyphr.db")
-# db = SQL(os.environ['DATABASE_URL'])
+# db = SQL("sqlite:///dcyphr.db")
+db = SQL(os.environ['DATABASE_URL'])
 
 # notifications
 
@@ -208,7 +208,7 @@ def read(summary_id):
         all_tags_len = len(all_tags)
 
         # gets top contributors
-        contributors = db.execute("SELECT first, last, user_id, COUNT(*) FROM history JOIN users ON user_id=users.id WHERE summary_id=:summary_id GROUP BY user_id, first, last ORDER BY COUNT(*) DESC LIMIT 3", summary_id=summary_id)
+        contributors = db.execute("SELECT first, last, user_id, COUNT(*) AS count FROM history JOIN users ON user_id=users.id WHERE summary_id=:summary_id GROUP BY user_id, first, last ORDER BY COUNT(*) DESC LIMIT 3", summary_id=summary_id)
         c_length = len(contributors)
 
         # handles the process of parsing for methods used in the summary
