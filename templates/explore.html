@@ -25,13 +25,15 @@
                         <div class="w-100 b20t" style="background: rgba(236, 91, 9, 0.48); height:50%"></div>
                         {% endif %}
                         <div class="p-1 px-4 m-0">
+                            <div style="max-height:15vh; min-height:15vh; overflow-y:auto">
                             <h3 class="card-title my-1" style="font-family:Lato; font-size:1.5em;"><strong>{{ tags[i]['title'] }}</strong></h3>
 
-                                <div class="p-0 m-0 pb-4" style="max-height:10vh; min-height:10vh; overflow:hidden">
+                                <div class="p-0 m-0 pb-4">
 
                                     {{ tags[i]['text'] }}
 
                                 </div>
+                            </div>
 
 
                             <div class="row">
