@@ -218,7 +218,6 @@ def read(summary_id):
         # gets top contributors
         contributors = db.execute("SELECT first, last, user_id, verified, bio, COUNT(*) AS count FROM history JOIN users ON user_id=users.id WHERE summary_id=:summary_id GROUP BY user_id, first, last ORDER BY COUNT(*) DESC LIMIT 3", summary_id=summary_id)
         c_length = len(contributors)
-        print(endorsements)
 
         # handles the process of parsing for methods used in the summary
         article_methods = summary[0]["summary"].lower()
@@ -637,7 +636,7 @@ def index():
     if request.method == "GET":
         leaderboard = db.execute("SELECT first, last, id, points FROM users WHERE points > 0 ORDER BY points DESC LIMIT 5")
         lead_length = len(leaderboard)
-        feature = db.execute("SELECT id, article FROM summary WHERE featured=1")[0]
+        # feature = db.execute("SELECT id, article FROM summary WHERE featured=1")[0]
         # db.execute("CREATE TABLE IF NOT EXISTS summary (id SERIAL PRIMARY KEY, user_id INTEGER, citation TEXT, doi TEXT, background TEXT, aims TEXT, methods TEXT, results TEXT, conclusion TEXT, task_id INTEGER, done BIT, reviewed INTEGER, remove BIT, likes INTEGER, reviewer_1 INTEGER, reviewer_2 INTEGER, FOREIGN KEY(doi) REFERENCES tasks(doi), FOREIGN KEY (user_id) REFERENCES users(id), FOREIGN KEY(task_id) REFERENCES tasks(id));")
         # db.execute("CREATE TABLE IF NOT EXISTS tasks (id SERIAL PRIMARY KEY, type TEXT, citation TEXT, requests INTEGER, article TEXT, doi TEXT, done INTEGER, user_id INTEGER, link TEXT, FOREIGN KEY(user_id) REFERENCES users(id));")
         # db.execute("CREATE TABLE IF NOT EXISTS comments (id SERIAL PRIMARY KEY, user_id INTEGER, doi INTEGER, comment TEXT, date DATE);")
