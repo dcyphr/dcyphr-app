@@ -640,7 +640,7 @@ def index():
         # db.execute("CREATE TABLE IF NOT EXISTS summary (id SERIAL PRIMARY KEY, user_id INTEGER, citation TEXT, doi TEXT, background TEXT, aims TEXT, methods TEXT, results TEXT, conclusion TEXT, task_id INTEGER, done BIT, reviewed INTEGER, remove BIT, likes INTEGER, reviewer_1 INTEGER, reviewer_2 INTEGER, FOREIGN KEY(doi) REFERENCES tasks(doi), FOREIGN KEY (user_id) REFERENCES users(id), FOREIGN KEY(task_id) REFERENCES tasks(id));")
         # db.execute("CREATE TABLE IF NOT EXISTS tasks (id SERIAL PRIMARY KEY, type TEXT, citation TEXT, requests INTEGER, article TEXT, doi TEXT, done INTEGER, user_id INTEGER, link TEXT, FOREIGN KEY(user_id) REFERENCES users(id));")
         # db.execute("CREATE TABLE IF NOT EXISTS comments (id SERIAL PRIMARY KEY, user_id INTEGER, doi INTEGER, comment TEXT, date DATE);")
-        return render_template("index.html", leaderboard=leaderboard, lead_length=lead_length, feature=feature)
+        return render_template("index.html", leaderboard=leaderboard, lead_length=lead_length)
     else:
         # search bar
         search = request.form.get("search").lower()
