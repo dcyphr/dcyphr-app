@@ -729,7 +729,7 @@ def profile(user_id):
     # progress bar based on how much the user has summarized
     progress = round(length/60 * 100)
     # gets their username
-    info = db.execute("SELECT bio, username, first, last FROM users WHERE id=:user_id", user_id=session["user_id"])
+    info = db.execute("SELECT bio, username, first, last, verified FROM users WHERE id=:user_id", user_id=session["user_id"])
     admin = db.execute("SELECT admin FROM users WHERE id=:user_id", user_id=session["user_id"])[0]['admin']
     if info[0]['bio'] == None:
         info[0]['bio'] = "This user has no bio right now."
@@ -784,7 +784,7 @@ def public(user_id):
     articles = db.execute(
         "SELECT article, id FROM summary WHERE user_id=:user_id AND done = CAST(1 AS BIT) AND approved=1", user_id=user_id)
     length = len(articles)
-    info = db.execute("SELECT bio, username, points, first, last, admin FROM users WHERE id=:user_id", user_id=user_id)
+    info = db.execute("SELECT bio, username, points, first, last, admin, verified FROM users WHERE id=:user_id", user_id=user_id)
     if info[0]['points'] == None:
         info[0]['points'] = 0
     if info[0]['bio'] == None:

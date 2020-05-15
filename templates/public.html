@@ -16,7 +16,10 @@
             </div>
 
             <div class="col-6 text-left">
-                <h3 style="font-family: Georgia">{{ info[0]['first'] }} {{ info[0]['last'] }} <img src="https://img.icons8.com/nolan/30/verified-account.png"/></h3>
+                <h3 style="font-family: Georgia">{{ info[0]['first'] }} {{ info[0]['last'] }}
+                {% if info[0]['verified'] == 1 %}
+                <img src="https://img.icons8.com/nolan/30/verified-account.png" class="pb-2"/>
+                {% endif %}</h3>
                 <p class="">@{{ info[0]["username"] }}</p>
                 <p>{{ info[0]['bio'] | safe }}</p>
             </div>
