@@ -216,7 +216,7 @@ def read(summary_id):
         all_tags_len = len(all_tags)
 
         # gets top contributors
-        contributors = db.execute("SELECT first, last, user_id, verified, bio, COUNT(*) AS count FROM history JOIN users ON user_id=users.id WHERE summary_id=:summary_id GROUP BY user_id, first, last ORDER BY COUNT(*) DESC LIMIT 3", summary_id=summary_id)
+        contributors = db.execute("SELECT first, last, user_id, verified, bio, COUNT(*) AS count FROM history JOIN users ON user_id=users.id WHERE summary_id=:summary_id GROUP BY user_id, first, last, verified, bio ORDER BY COUNT(*) DESC LIMIT 3", summary_id=summary_id)
         c_length = len(contributors)
 
         # handles the process of parsing for methods used in the summary
