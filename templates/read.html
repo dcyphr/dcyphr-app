@@ -6,37 +6,46 @@
 
 {% block main %}
 
-
-
-<div class="container mb-5">
+<div class="container-fluid mb-5" id="read" style="padding-left:20vh; padding-right:20vh">
     <div class="row jumbotron m-xs-1 rounded bg-white text-left">
 
         <div class="col-md-9 col-xs-6">
-            <p class="" style="color: #017bff" id="title">
-                {{ article }}
+            <p class="" style="color: #017bff; font-family: Lato" id="title">
+                <a href="{{ link }}" target="_blank">{{ article }}</a>
+                {% if endorsements[0]['count'] == 0 %}
+                {% else %}
+                <button class="btn btn-outline-primary border20" data-target="#endorsers" data-toggle="collapse">{{ endorsements[0]['count'] }}<i class="fa fa-check"></i></button>
+                {% endif %}
             </p>
+            <div id="endorsers" class="collapse my-3">
+                <div class="row px-3 pl-4 bg-light border-bottom" style="font-family: Georgia; color:black">
+                    Endorsers
+                </div>
+                {% for i in range(endorsements | length) %}
 
-            <p style="font-size: medium;">
-                <a href="/apa/{{ summary_id }}" style="color: #017bff">APA citation (Click to edit): <em style="color: black">{{ citation }}</em></a>
-            </p>
-            <p style="font-size: medium;">
-                <a href="/doi/{{ summary[0]['id'] }}" style="color: #017bff">DOI (Click to edit): <em style="color: black">{{ summary[0]['doi'] }}</em></a>
-            </p>
+                    <div class="row px-3 pl-0 border-bottom text-left" style="font-family: Lato;">
+                        <div class="col-12" style="font-size: 16px">
+                            {{ endorsements[i]['first'] }} {{ endorsements[i]['last'] }}
+                            {% if endorsements[i]['verified'] == 1 %}
+                            <img src="https://img.icons8.com/nolan/18/verified-account.png" class="pb-2"/>
+                            {% endif %}
+                            <div class="text-muted" style="font-size: 12px; display: inline"> &nbsp
+                            {% if endorsements[i]['bio'] == None %}
+                            </div>
+                            {% else %}
+                            {{ endorsements[i]['bio'][:120] }}...</div>
+                            {% endif %}
+                        </div>
 
-            <p style="font-size: medium;">
-                dcyphr-d by <font style="color: #017bff"><a href="/public/{{ summary[0]['user_id'] }}">@{{ username[0]["username"] }}</a></font>
-            </p>
 
-            <p style="font-size: medium;">
-                Link to Original Article: <font style="color: #017bff"><a href="{{ link }}" target="_blank">{{ article }}</a></font>
-            </p>
-
+                {% endfor %}
+                </div>
+            </div>
             <p style="font-size: medium">
 
                 <form method="POST" style="display: inline-block">
-                Tags:
                 {% for i in range(tag_length) %}
-                <a href="/tag/{{tags[i]['id']}}" class="btn btn-outline-secondary btn-sm" style="border-radius: 40px">{{ tags[i]['title'] }}</a>
+                <a href="/tag/{{tags[i]['id']}}" class="btn btn-outline-secondary btn-sm border20">{{ tags[i]['title'] }}</a>
                 {% if z == "true" %}
                 <button type="submit" name="delete" value="{{tags[i]['id']}}" class="btn btn-outline-primary btn-sm">-</button>
                 {% endif %}
@@ -65,19 +74,47 @@
 
                 {% endif %}
             </p>
-            <p>
-                <div class="row" style="margin:10px">
-                    <font style="color: #017bff"><a href="/edit/{{ summary_id }}"><i class="fa fa-edit fa-2x border-0"></i><br>Edit</a></font>&nbsp
-                    <font style="color: #017bff; text-align: center"><a href="/issues/{{ summary_id }}"><i class="fa fa-exclamation-triangle fa-2x border-0"></i><br>Issues</a></font>&nbsp
-                    <font style="color: #017bff; text-align: center"><a href="/history/{{ summary_id }}"><i class="fa fa-history fa-2x border-0"></i><br>History</a></font>
-                </div>
+            <p style="font-size: small;">
+                <a href="/apa/{{ summary_id }}" style="color: #017bff">APA citation: <em style="color: black">{{ citation }}</em></a>
             </p>
-            Share this summary:
+            <p style="font-size: small;">
+                <a href="/doi/{{ summary[0]['id'] }}" style="color: #017bff">DOI: <em style="color: black">{{ summary[0]['doi'] }}</em></a>
+            </p>
+
+            <p style="font-size: medium;">
+                dcyphr-d by <font style="color: #017bff"><a href="/public/{{ summary[0]['user_id'] }}">{{ summary[0]['first'] }} {{summary[0]['last']}}</a></font>
+                {% if summary[0]['verified'] == 1 %}
+                <img src="https://img.icons8.com/nolan/25/verified-account.png" class="pb-2" title="Verified User"/>
+                {% endif %}
+            </p>
+
+                <form action="/endorse/{{ summary[0]['id'] }}" method="POST" style="display:inline">
+                    {% if y == False %}
+                    <button class="btn btn-outline-primary border20" type="submit" disabled><i class="fa fa-thumbs-up border-0"></i> Endorse</button>
+                    {% else %}
+                    <button class="btn btn-outline-primary border20" type="submit"><i class="fa fa-thumbs-up border-0"></i> Endorse</button>
+                    {% endif %}
+                </form>
+
+                <a href="/edit/{{ summary_id }}">
+                    {% if y  == False %}
+                    <button class="btn btn-outline-primary border20" disabled>
+                    {% else %}
+                    <button class="btn btn-outline-primary border20">
+                    {% endif %}
+                        <i class="fa fa-pencil border-0"></i> Edit</button></a>
+                <a href="/issues/{{ summary_id }}"><button class="btn btn-outline-primary border20"><i class="fa fa-shield border-0"></i> Issues</button></a>
+                <a href="/history/{{ summary_id }}"><button class="btn btn-outline-primary border20"><i class="fa fa-cog border-0"></i> Activity</button></a>
+                <button class="btn btn-outline-primary border20"data-target="#share" data-toggle="collapse"><i class="fa fa-share-alt border-0"></i> Share</button>
+
+
+        <div class="collapse mt-2" id="share">
             <a class="w-inline-block social-share-btn fb" href="https://www.facebook.com/sharer/sharer.php?u=&t=" title="Share on Facebook" target="_blank" onclick="window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(document.URL) + '&t=' + encodeURIComponent(document.URL)); return false;"><i style="color:#017bff" class="fa fa-facebook border-0 fa-lg"></i></a>
             <a class="w-inline-block social-share-btn tw" href="https://twitter.com/intent/tweet?" target="_blank" title="Tweet" onclick="window.open('https://twitter.com/intent/tweet?text=%20Check%20up%20this%20awesome%20content' + encodeURIComponent(document.title) + ':%20 ' + encodeURIComponent(document.URL)); return false;"><i style="color:#017bff" class="fa fa-twitter border-0 fa-lg"></i></a>
             <a class="w-inline-block social-share-btn lnk" href="http://www.linkedin.com/shareArticle?mini=true&url=&title=&summary=&source=" target="_blank" title="Share on LinkedIn" onclick="window.open('http://www.linkedin.com/shareArticle?mini=true&url=' + encodeURIComponent(document.URL) + '&title=' + encodeURIComponent(document.title)); return false;"><i style="color:#017bff"class="fa fa-linkedin border-0 fa-lg"></i></a>
             <a class="w-inline-block social-share-btn email" href="mailto:?subject=&body=:%20" target="_blank" title="Email" onclick="window.open('mailto:?subject=' + encodeURIComponent(document.title) + '&body=' + encodeURIComponent(document.URL)); return false;"><i style="color: #017bff" class="fa fa-envelope fa-lg border-0"></i></a>
             <a class="w-inline-block social-share-btn redd" href="http://www.reddit.com/submit?url=&title=" target="_blank" title="Submit to Reddit" onclick="window.open('http://www.reddit.com/submit?url=' + encodeURIComponent(document.URL) + '&title=' + encodeURIComponent(document.title)); return false;"><i style="color: #017bff" class="fa fa-reddit fa-lg border-0"></i></a>
+        </div>
         </div>
 
 
@@ -120,31 +157,25 @@
             </div>
 
             <div class="my-3" style="font-size: 0.7em">
-                <div class="row px-3 pl-4 bg-light border-bottom" style="font-family: Lato">
-                    <div class="col-2 p-0">
-
-                    </div>
-                    <div class="col-6" style="font-size: 14px">
-                        User
-                    </div>
-                    <div class="col-4" style="font-size: 14px">
-                        <div class="row">
-                            # Edits
-                        </div>
-                    </div>
+                <div class="row px-3 pl-4 bg-light border-bottom" style="font-family: Georgia; color:black">
+                    Contributors
                 </div>
                 {% for i in range(c_length) %}
-                    <div class="row px-3 pl-4 border-bottom" style="font-family: Lato">
-                        <div class="col-2 p-0">
-                            {% if i == 0 %}
-                                <span class="fa fa-trophy" style="color: gold"></span>
+                    {% if i == 0 %}
+                    <div class="row px-3 pl-0 border-bottom text-left" style="font-family: Lato; background: rgb(251, 234, 194)">
+                    {% elif i ==1 %}
+                    <div class="row px-3 pl-0 border-bottom text-left" style="font-family: Lato; background: rgb(238, 238, 238)">
+                    {% elif i == 2 %}
+                    <div class="row px-3 pl-0 border-bottom text-left" style="font-family: Lato; background: rgb(240, 219, 198)">
+                    {% else %}
+                    <div class="row px-3 pl-0 border-bottom text-left" style="font-family: Lato;">
+                    {% endif %}
+                        <div class="col-12" style="font-size: 16px">
+                            <a href="/public/{{ contributors[i]['user_id'] }}" style="color: black">{{ contributors[i]['first'] }} {{ contributors[i]['last'] }}</a>
+                            {% if contributors[i]['verified'] == 1 %}
+                            <img src="https://img.icons8.com/nolan/18/verified-account.png" class="pb-2"/>
                             {% endif %}
-                        </div>
-                        <div class="col-6" style="font-size: 14px">
-                            <a href="/public/{{ contributors[i]['user_id'] }}">{{ contributors[i]['first'] }} {{ contributors[i]['last'][0] }}.</a>
-                        </div>
-                        <div class="col-4" style="font-size: 14px">
-                            {{ contributors[i]['count'] }}
+                            <p class="text-muted mb-0" style="font-size: 12px">{{ contributors[i]['bio'][:40] }}...</p>
                         </div>
                     </div>
                 {% endfor %}
@@ -154,16 +185,16 @@
 
 
 
-    <div class="p-2 bg-light border border-dark" id="content-box">
-        <h1 class="" style="color: #017bff; text-weight: 500;" id="title">Contents</h1>
+    <div class="p-0 bg-light border border-dark" id="content-box" >
+        <h1 class="" style="color: #017bff; text-weight: 500; font-family: Georgia" id="title">Contents</h1>
         <ul class="ml-3 text-left" style="list-style: none;">
             {% for i in range(title_length) %}
-            <li><a class="contentButton" href="#{{ titles[i] }}">{{ i + 1 }}.{{ titles[i] }}</a></li>
+            <li><a class="contentButton" href="#{{ titles[i] }}" style="font-family: Lato">{{ i + 1 }}.{{ titles[i] }}</a></li>
             {% endfor %}
         </ul>
     </div>
 
-    <div class="container text-left">
+    <div class="text-left border-bottom">
 
         <div id="summary" class="p-3 my-3">
             <p class="pl-4 text-weight-light" style="line-height: 40px; font-size: 20px;">
@@ -179,11 +210,9 @@
 
     </div>
 
-    <div class="container text-left">
+    <div class="container text-left mx-0">
         <div id="comments" class="p-3 my-3">
-            <div class="mb-4 display-4 text-center" id="title" style="color: #017bff">
-                Comments
-            </div>
+
 
             <form method="POST" class="form">
                 <div class="sticky-top form-group row">

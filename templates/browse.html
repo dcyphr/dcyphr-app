@@ -64,20 +64,36 @@
             </li>
             {% endfor %}
         </ul>
-        <div style="color: #017bff">
-            {% if page == 0 and x %}
-            <a href="/browse/{{ page + 1 }}">next</a>
-            {% elif page == 0 %}
-            {% elif page == number - 1 %}
-            <a href="/browse/{{ page - 1}}">previous</a>
-            {% else %}
-            <a href="/browse/{{ page - 1}}">previous</a>&nbsp<a href="/browse/{{ page + 1 }}">next</a>
-            {% endif %}
-        </div>
-        |{% for i in range(number) %}
-        <a href="/browse/{{ i }}">{{ i+1 }}</a> |
-        {% endfor %}
     </div>
+
+
+    <nav aria-label="Page navigation example">
+      <ul class="pagination justify-content-center">
+        {% if page == 0 and x %}
+        <li class="page-item">
+        {% elif page == 0 %}
+        <li class="page-item disabled">
+        {% endif %}
+          <a class="page-link" href="/browse/{{ page - 1}}" aria-label="Previous">
+            <span aria-hidden="true">&laquo;</span>
+          </a>
+        </li>
+        {% for i in range(number) %}
+        <li class="page-item"><a class="page-link" href="/browse/{{ i }}">{{ i+1 }}</a></li>
+        {% endfor %}
+        {% if page == number - 1 %}
+        <li class="page-item disabled">
+        {% else %}
+        <li class="page-item">
+        {% endif %}
+          <a class="page-link" href="/browse/{{ page + 1 }}" aria-label="Next">
+            <span aria-hidden="true">&raquo;</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+
 </div>
 
 

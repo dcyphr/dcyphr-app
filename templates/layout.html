@@ -23,6 +23,19 @@
 
         <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
 
+        <div id="preloader">
+            <div id="status" class="text-center">
+                <img style="margin-top: 20vh" src="{{ url_for('static', filename='dna.svg') }}" alt="Loading...">
+            </div>
+        </div>
+        <script>
+           window.onload = function(){
+                //hide the preloader
+                $("#preloader").fadeOut(1000, function(){
+                    $("#preloader").remove();
+                });
+            };
+        </script>
         <!-- include summernote bs4 css/js -->
         <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.15/dist/summernote-bs4.min.css" rel="stylesheet">
         <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.15/dist/summernote-bs4.min.js"></script>
@@ -50,6 +63,15 @@
         src="https://unpkg.com/verifalia-widget@1.2.0/dist/verifalia-widget.js"
         integrity="sha512-KNWaWGZz1V4Hm+9e4pdMB0rJ/wOY3ifDIYdfnHyoRnAXtpTxvxU+beMZ6nO//qqPYWcm9uFlIA1eye6/BAnbjQ=="
         crossorigin="anonymous"></script>
+
+        <script>
+        	var beamer_config = {
+        		product_id : 'FACxsuQA21706' //DO NOT CHANGE: This is your product code on Beamer
+        	};
+        </script>
+        <script type="text/javascript" src="https://app.getbeamer.com/js/beamer-embed.js" defer="defer"></script>
+
+
 
         <!-- Start of Async Drift Code -->
         <script>

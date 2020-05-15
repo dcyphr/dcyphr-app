@@ -145,7 +145,7 @@ def version(summary_id, version):
 def issues(summary_id):
     if request.method == "GET":
         article = db.execute("SELECT article, link, citation, doi, id FROM summary WHERE id=:summary_id", summary_id=summary_id)
-        info = db.execute("SELECT * FROM issues JOIN users ON users.id = asker_id WHERE summary_id=:summary_id", summary_id=summary_id)
+        info = db.execute("SELECT *, issues.id AS id FROM issues JOIN users ON users.id = asker_id WHERE summary_id=:summary_id", summary_id=summary_id)
         length = len(info)
         # checks if user is logged in
         if len(session) == 0:
@@ -184,6 +184,14 @@ def issues(summary_id):
             db.execute("INSERT INTO issues (summary_id, asker_id, assignee, text, date) VALUES (:summary_id, :asker_id, :assignee, :text, :timestamp)", summary_id=summary_id, asker_id=session["user_id"], assignee=assignee, timestamp=today, text=issue)
         return redirect("/issues/{}".format(summary_id))
 
+
+
+@app.route("/endorse/<int:summary_id>", methods=["POST"])
+@login_required
+def endorse(summary_id):
+    if request.method == "POST":
+        db.execute("INSERT INTO endorsements (user_id, summary_id) VALUES (:user_id, :summary_id)", user_id=session['user_id'], summary_id=summary_id)
+        return redirect("/read/{}".format(summary_id))
 # This route displays the summaries to the people
 # Note that there is a variable in the route to specify what article they are looking at
 @app.route("/read/<int:summary_id>", methods=["GET", "POST"])
@@ -192,11 +200,11 @@ def read(summary_id):
         # Gets information about article to display
         article = db.execute("SELECT article FROM summary WHERE id=:summary_id", summary_id=summary_id)[0]["article"]
         summary = db.execute(
-            "SELECT summary.id, summary.summary, user_id, doi, username FROM summary JOIN users ON summary.user_id = users.id WHERE summary.id=:summary_id", summary_id=summary_id)
+            "SELECT summary.id, summary.summary, user_id, doi, first, last, verified FROM summary JOIN users ON summary.user_id = users.id WHERE summary.id=:summary_id", summary_id=summary_id)
         username = db.execute("SELECT username FROM users WHERE id=:user_id", user_id=summary[0]["user_id"])
         comments = db.execute("SELECT * FROM comments JOIN users ON comments.user_id = users.id WHERE summary_id=:summary_id ORDER BY comment_id, comments.id", summary_id=summary_id)
         link = db.execute("SELECT link FROM summary WHERE id=:summary_id", summary_id=summary_id)[0]["link"]
-
+        endorsements = db.execute("SELECT COUNT(*) AS count, user_id, verified, first, last, bio FROM endorsements JOIN users ON user_id=users.id WHERE summary_id=:summary_id", summary_id=summary_id)
         likes = db.execute("SELECT SUM(vote) AS sum FROM likes WHERE summary_id=:summary_id", summary_id=summary_id)[0]["sum"]
 
         if likes == None:
@@ -208,8 +216,9 @@ def read(summary_id):
         all_tags_len = len(all_tags)
 
         # gets top contributors
-        contributors = db.execute("SELECT first, last, user_id, COUNT(*) AS count FROM history JOIN users ON user_id=users.id WHERE summary_id=:summary_id GROUP BY user_id, first, last ORDER BY COUNT(*) DESC LIMIT 3", summary_id=summary_id)
+        contributors = db.execute("SELECT first, last, user_id, verified, bio, COUNT(*) AS count FROM history JOIN users ON user_id=users.id WHERE summary_id=:summary_id GROUP BY user_id, first, last ORDER BY COUNT(*) DESC LIMIT 3", summary_id=summary_id)
         c_length = len(contributors)
+        print(endorsements)
 
         # handles the process of parsing for methods used in the summary
         article_methods = summary[0]["summary"].lower()
@@ -257,7 +266,7 @@ def read(summary_id):
                 x = "enable-dislike"
             else:
                 x = "enable-like"
-        return render_template("read.html", contributors=contributors, c_length=c_length, z=z, all_tags=all_tags, all_tags_len=all_tags_len, tag_length=tag_length, tags=tags, summary_actual=percent_remove(str(summary_actual)), title_length=title_length, titles=title_list, summary_id=summary_id, username=username, method_length=method_length, summary=summary, article=article, link=link, likes=likes, x=x, y=y, comments=comments, citation=citation, methods_used=methods_used, method_id=method_id)
+        return render_template("read.html", endorsements=endorsements, contributors=contributors, c_length=c_length, z=z, all_tags=all_tags, all_tags_len=all_tags_len, tag_length=tag_length, tags=tags, summary_actual=percent_remove(str(summary_actual)), title_length=title_length, titles=title_list, summary_id=summary_id, username=username, method_length=method_length, summary=summary, article=article, link=link, likes=likes, x=x, y=y, comments=comments, citation=citation, methods_used=methods_used, method_id=method_id)
     else:
         flag = request.form.get("flag")
         delete = request.form.get("delete")
@@ -628,10 +637,11 @@ def index():
     if request.method == "GET":
         leaderboard = db.execute("SELECT first, last, id, points FROM users WHERE points > 0 ORDER BY points DESC LIMIT 5")
         lead_length = len(leaderboard)
+        feature = db.execute("SELECT id, article FROM summary WHERE featured=1")[0]
         # db.execute("CREATE TABLE IF NOT EXISTS summary (id SERIAL PRIMARY KEY, user_id INTEGER, citation TEXT, doi TEXT, background TEXT, aims TEXT, methods TEXT, results TEXT, conclusion TEXT, task_id INTEGER, done BIT, reviewed INTEGER, remove BIT, likes INTEGER, reviewer_1 INTEGER, reviewer_2 INTEGER, FOREIGN KEY(doi) REFERENCES tasks(doi), FOREIGN KEY (user_id) REFERENCES users(id), FOREIGN KEY(task_id) REFERENCES tasks(id));")
         # db.execute("CREATE TABLE IF NOT EXISTS tasks (id SERIAL PRIMARY KEY, type TEXT, citation TEXT, requests INTEGER, article TEXT, doi TEXT, done INTEGER, user_id INTEGER, link TEXT, FOREIGN KEY(user_id) REFERENCES users(id));")
         # db.execute("CREATE TABLE IF NOT EXISTS comments (id SERIAL PRIMARY KEY, user_id INTEGER, doi INTEGER, comment TEXT, date DATE);")
-        return render_template("index.html", leaderboard=leaderboard, lead_length=lead_length)
+        return render_template("index.html", leaderboard=leaderboard, lead_length=lead_length, feature=feature)
     else:
         # search bar
         search = request.form.get("search").lower()
