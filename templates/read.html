@@ -12,7 +12,7 @@
         <div class="col-md-9 col-xs-6">
             <p class="" style="color: #017bff; font-family: Lato" id="title">
                 <a href="{{ link }}" target="_blank">{{ article }}</a>
-                {% if endorsements[0]['count'] == 0 %}
+                {% if endorsements | length == 0 %}
                 {% else %}
                 <button class="btn btn-outline-primary border20" data-target="#endorsers" data-toggle="collapse">{{ endorsements[0]['count'] }}<i class="fa fa-check"></i></button>
                 {% endif %}
@@ -21,6 +21,9 @@
                 <div class="row px-3 pl-4 bg-light border-bottom" style="font-family: Georgia; color:black">
                     Endorsers
                 </div>
+                {% if endorsements | length == 0 %}
+                <div class="row px-3 pl-0 border-bottom text-left" style="font-family: Lato;"></div>
+                {% else %}
                 {% for i in range(endorsements | length) %}
 
                     <div class="row px-3 pl-0 border-bottom text-left" style="font-family: Lato;">
@@ -39,6 +42,7 @@
 
 
                 {% endfor %}
+                {% endif %}
                 </div>
             </div>
             <p style="font-size: medium">
