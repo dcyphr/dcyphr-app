@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 
 {% block title %}
-    {{ article }}
+    {{ summary[0]['article'] }}
 {% endblock %}
 
 {% block main %}
@@ -11,7 +11,7 @@
 
         <div class="col-md-9 col-xs-6">
             <p class="" style="color: #017bff; font-family: Lato" id="title">
-                <a href="{{ link }}" target="_blank">{{ article }}</a>
+                <a href="{{ summary[0]['link'] }}" target="_blank">{{ summary[0]['article'] }}</a>
                 {% if endorsements | length == 0 %}
                 {% else %}
                 <button class="btn btn-outline-primary border20" data-target="#endorsers" data-toggle="collapse">{{ endorsements[0]['count'] }}<i class="fa fa-check"></i></button>
@@ -64,7 +64,7 @@
             </div>
             <p style="font-size: medium">
 
-                <form method="POST" style="display: inline-block">
+                <form method="POST" action="/delete/{{summary_id}}"style="display: inline-block">
                 {% for i in range(tag_length) %}
                 <a href="/tag/{{tags[i]['id']}}/0" class="btn btn-outline-secondary btn-sm border20">{{ tags[i]['title'] }}</a>
                 {% if z == "true" %}
@@ -75,7 +75,7 @@
                 {% if z == "true" %}
                 <button data-toggle="collapse" data-target="#add_tag" class="btn btn-outline-primary btn-sm" style="display: inline-block">+</button>
 
-                <form method="POST" id="add_tag" class="collapse">
+                <form method="POST" action="/add/{{summary_id}}"id="add_tag" class="collapse">
                     <div class="input-group">
                         <div class="col-xs-2">
                     <input type="text" name="tag" class="tag form-control" style="" placeholder="add tag" list="datalist1">
@@ -96,7 +96,7 @@
                 {% endif %}
             </p>
             <p style="font-size: small;">
-                <a href="/apa/{{ summary_id }}" style="color: #017bff">APA citation: <em style="color: black">{{ citation }}</em></a>
+                <a href="/apa/{{ summary_id }}" style="color: #017bff">APA citation: <em style="color: black">{{ summary[0]['citation'] }}</em></a>
             </p>
             <p style="font-size: small;">
                 <a href="/doi/{{ summary[0]['id'] }}" style="color: #017bff">DOI: <em style="color: black">{{ summary[0]['doi'] }}</em></a>
@@ -140,7 +140,7 @@
 
 
         <div class="col-md-3 col-xs-6 text-center text-secondary" style="font-size: 1.9em; padding-top: 10px">
-            <form method="POST">
+            <form method="POST" action="/likes/{{ summary_id }}">
                 {% if x == "true" %}
                 <div><button class="btn btn-default bg-white pb-3" type="submit" name="like" value="like" disabled>
                     <i class="fa fa-chevron-up border-0 fa-lg" style="color: #017bff;"></i></button></div>
@@ -169,7 +169,7 @@
             </form>
 
             <div class="my-3">
-                <form method="POST">
+                <form method="POST" action="/flag/{{ summary_id }}">
                     <button class="btn btn-default bg-white" name="flag" value="flag">
                         <i class="fa fa-flag fa-2x border-0" style="color: #eb9534;"></i>
                         <div class="my-1" style="color: #3b3b39">Flag For Moderation</div>
@@ -230,12 +230,21 @@
 
 
     </div>
+    <!--<div style="position: relative">-->
+    <!--<div onmouseout="document.getElementById('div1').style.display = 'none';" onmouseover="document.getElementById('div1').style.display = 'block';" class="bg-warning" style="position: absolute">-->
+    <!--    some text-->
+    <!--</div>-->
+    <!--<div id="div1" style="display:none; position:absolute" class="card">-->
+    <!--    some text to show-->
+    <!--</div>-->
+    <!--</div>-->
+
 
     <div class="container text-left mx-0">
         <div id="comments" class="p-3 my-3">
 
 
-            <form method="POST" class="form">
+            <form method="POST" action="/comments/{{ summary_id }}" class="form">
                 <div class="sticky-top form-group row">
                     <label for="comment" class="col-xs-2 col-form-label"><b>Leave a comment:</b> </label>
                     <div class="col">
@@ -272,7 +281,7 @@
 
 </div>
 
-                    <form method="POST" class="collapse" id="reply{{ comment['comment_id'] }}{{ comment['reply'] }}">
+                    <form method="POST" action="/comments/{{ summary_id }}" class="collapse" id="reply{{ comment['comment_id'] }}{{ comment['reply'] }}">
                         <div class="sticky-top form-group row">
                             <div class="col">
                                 <input type="text" name="reply" class="form-control text-wrap w-100" id="reply" placeholder="Reply here...">
@@ -338,7 +347,7 @@
 </div>
 
 
-                    <form method="POST" class="form collapse hide" id="reply{{ comment['comment_id'] }}{{ comment['reply'] }}">
+                    <form method="POST" action="/comments/{{ summary_id }}" class="form collapse hide" id="reply{{ comment['comment_id'] }}{{ comment['reply'] }}">
                         <div class="sticky-top form-group row">
 
                             <div class="col">

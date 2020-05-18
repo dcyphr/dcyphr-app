@@ -162,7 +162,11 @@
     return sentence
       .split(" ")
       .map(word => {
-        if (
+        if (word.replace(/[^a-z0-9. ]/gi, "").match(/family$/)
+          ) {
+            return word;
+          }
+        else if (
           word.replace(/[^a-z0-9. ]/gi, "").match(/ly$/) &&
           lyWords[word.replace(/[^a-z0-9. ]/gi, "").toLowerCase()] === undefined
         ) {

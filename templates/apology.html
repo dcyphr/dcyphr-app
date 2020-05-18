@@ -6,19 +6,13 @@
 
 {% block main %}
     <div class="container p-0 mx-auto">
-        <div class="jumbotron rounded bg-white">
-        <h1 style="color: #017bff">Oops! Please refresh the page.</h1>
-        <p>{{ message }}</p>
-        </div>
-        {% set random = (range(1, 4) | random) %}
-        {% if random == 1 %}
-        <img class="resize" src="{{ url_for('static', filename='americans.png') }}" alt="">
-        {% elif random == 2 %}
-        <img class="resize" src="{{ url_for('static', filename='berniememe.png') }}" alt="">
-        {% elif random == 3%}
-        <img class="resize" src="{{ url_for('static', filename='lookatme.png') }}" alt="">
+        <div class="jumbotron rounded bg-white pb-0 mb-0">
+        {% if not message %}
+        <h1 style="color: #017bff; font-family:Lato">Oops! Please refresh the page.</h1>
         {% else %}
-        <img class="resize" src="{{ url_for('static', filename='scrolloftruth.png') }}" alt="">
+        <h1 style="color: #017bff; font-family:Lato">{{ message }}</h1>
         {% endif %}
+        </div>
+        <img class="img-fluid mt-0 pt-0" style="max-height: 70vh"src="{{ url_for('static', filename='error.png') }}" alt="">
     </div>
 {% endblock %}

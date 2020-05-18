@@ -192,24 +192,111 @@ def endorse(summary_id):
     if request.method == "POST":
         db.execute("INSERT INTO endorsements (user_id, summary_id) VALUES (:user_id, :summary_id)", user_id=session['user_id'], summary_id=summary_id)
         return redirect("/read/{}".format(summary_id))
+@app.route("/likes/<int:summary_id>", methods=["POST"])
+def likes(summary_id):
+    dislike = request.form.get("dislike")
+    like = request.form.get("like")
+    today = date.today()
+    today = today.strftime("%B %d, %Y")
+    liked = db.execute("SELECT vote FROM likes WHERE user_id=:user_id AND summary_id=:summary_id", user_id=session["user_id"], summary_id=summary_id)
+    if liked != []:
+        liked = liked[0]["vote"]
+    if like:
+        if liked != []:
+            db.execute("UPDATE likes SET vote = 1 WHERE user_id=:user_id AND summary_id=:summary_id", user_id=session["user_id"], summary_id=summary_id)
+        else:
+            db.execute("INSERT INTO likes (user_id, summary_id, vote, date) VALUES (:user_id, :summary_id, 1, :date)",
+                        user_id=session["user_id"], summary_id=summary_id, date=today)
+        db.execute("UPDATE users SET points = points + 1 WHERE id=:user_id", user_id=session["user_id"])
+        likes = db.execute("SELECT SUM(vote) AS sum FROM likes WHERE summary_id=:summary_id", summary_id=summary_id)[0]["sum"]
+        db.execute("UPDATE summary SET likes=:likes WHERE id=:summary_id",likes=likes,summary_id=summary_id)
+    else:
+        if liked != []:
+            db.execute("UPDATE likes SET vote = 0 WHERE user_id=:user_id AND summary_id=:summary_id", user_id=session["user_id"], summary_id=summary_id)
+        else:
+            db.execute("INSERT INTO likes (user_id, summary_id, vote, date) VALUES (:user_id, :summary_id, -1, :date)",
+                        user_id=session["user_id"], summary_id=summary_id, date=today)
+        db.execute("UPDATE users SET points = points - 1 WHERE id=:user_id", user_id=session["user_id"])
+        likes = db.execute("SELECT SUM(vote) AS sum FROM likes WHERE summary_id=:summary_id", summary_id=summary_id)[0]["sum"]
+        db.execute("UPDATE summary SET likes=:likes WHERE id=:summary_id",likes=likes,summary_id=summary_id)
+    return redirect("/read/{}".format(summary_id))
+
+
+@app.route("/delete/<int:summary_id>", methods=["POST"])
+def delete(summary_id):
+    delete = request.form.get("delete")
+    db.execute("DELETE FROM tagitem WHERE tag_id=:tag_id AND item_id=:item_id", tag_id=delete, item_id=summary_id)
+    return redirect("/read/{0}".format(summary_id))
+
+@app.route("/add/<int:summary_id>", methods=["POST"])
+def add(summary_id):
+    tag = request.form.get("tag")
+    summary_tags = db.execute("SELECT title FROM tags JOIN tagitem ON tags.id=tagitem.tag_id WHERE tagitem.item_id=:summary_id", summary_id=summary_id)
+    summary_tags_list = []
+    for i in range(len(summary_tags)):
+        summary_tags_list.append(summary_tags[i]['title'])
+    tags = db.execute("SELECT title FROM tags")
+    tags_list = []
+    for i in range(len(tags)):
+        tags_list.append(tags[i]['title'])
+
+    if tag in summary_tags_list:
+        pass
+    elif tag in tags_list:
+        tag_id = db.execute("SELECT id FROM tags WHERE title=:tag", tag=tag)[0]['id']
+        db.execute("INSERT INTO tagitem (item_id, tag_id) VALUES (:summary_id, :tag_id)", summary_id=summary_id, tag_id=tag_id)
+    elif tag not in tags_list:
+        db.execute("INSERT INTO tags (title) VALUES (:tag)", tag=tag)
+        tag_id = db.execute("SELECT id FROM tags WHERE title=:tag", tag=tag)[0]['id']
+        db.execute("INSERT INTO tagitem (item_id, tag_id) VALUES (:summary_id, :tag_id)", summary_id=summary_id, tag_id=tag_id)
+    return redirect("/read/{0}".format(summary_id))
+
+@app.route("/flag/<int:summary_id>", methods=["POST"])
+def flag(summary_id):
+    flag = request.form.get("flag")
+    user = db.execute("SELECT user_id FROM summary WHERE id=:summary_id", summary_id=summary_id)[0]["user_id"]
+    db.execute("UPDATE summary SET approved=0 WHERE id=:summary_id", summary_id=summary_id)
+    db.execute("UPDATE users SET points = points - 20 WHERE id=:user_id", user_id=user)
+    return redirect("/")
+
+@app.route("/comments/<int:summary_id>", methods=["POST"])
+def comments(summary_id):
+    comment = request.form.get('comment')
+    reply = request.form.get('reply')
+    if comment == None and reply == None:
+        return render_template("apology.html", message="Error, please input text for your post")
+    today = date.today()
+    today = today.strftime("%B %d, %Y")
+    # Comment
+    if not reply:
+        db.execute("INSERT INTO comments (user_id, summary_id, comment, date, likes, reply) VALUES (:user_id, :summary_id, :comment, :date, :likes, :reply)",
+                    user_id=session["user_id"], summary_id=summary_id, comment=comment, date=today, likes=0, reply=0)
+        comment_id = db.execute("SELECT id FROM comments WHERE summary_id=:summary_id AND comment=:comment ORDER BY id DESC LIMIT 1", summary_id=summary_id, comment=comment)[0]["id"]
+        db.execute("UPDATE comments SET comment_id=:comment_id WHERE summary_id=:summary_id AND comment=:comment ORDER BY id DESC LIMIT 1", comment_id=comment_id, summary_id=summary_id, comment=comment)
+    # Reply
+    else:
+        comment_id = request.form.get('comment_button')
+        db.execute("UPDATE comments SET last=0 WHERE (summary_id=:summary_id) AND (comment_id=:comment_id) AND last=1", summary_id=summary_id, comment_id=comment_id)
+        db.execute("INSERT INTO comments (user_id, summary_id, comment, date, likes, reply, comment_id, last) VALUES (:user_id, :summary_id, :comment, :date, :likes, :reply, :comment_id, :last)",
+                    user_id=session["user_id"], summary_id=summary_id, comment=reply, date=today, likes=0, reply=1, comment_id=comment_id, last=1)
+    return redirect("/read/{0}".format(summary_id))
+
+
 # This route displays the summaries to the people
 # Note that there is a variable in the route to specify what article they are looking at
 @app.route("/read/<int:summary_id>", methods=["GET", "POST"])
 def read(summary_id):
     if request.method == "GET":
         # Gets information about article to display
-        article = db.execute("SELECT article FROM summary WHERE id=:summary_id", summary_id=summary_id)[0]["article"]
+
         summary = db.execute(
-            "SELECT summary.id, summary.summary, user_id, doi, first, last, verified FROM summary JOIN users ON summary.user_id = users.id WHERE summary.id=:summary_id", summary_id=summary_id)
+            "SELECT summary.id, summary.summary, link, article, citation, user_id, doi, first, last, verified FROM summary JOIN users ON summary.user_id = users.id WHERE summary.id=:summary_id", summary_id=summary_id)
         username = db.execute("SELECT username FROM users WHERE id=:user_id", user_id=summary[0]["user_id"])
         comments = db.execute("SELECT * FROM comments JOIN users ON comments.user_id = users.id WHERE summary_id=:summary_id ORDER BY comment_id, comments.id", summary_id=summary_id)
-        link = db.execute("SELECT link FROM summary WHERE id=:summary_id", summary_id=summary_id)[0]["link"]
-        endorsements = db.execute("SELECT COUNT(*) AS count, user_id, verified, first, last, bio FROM endorsements JOIN users ON user_id=users.id WHERE summary_id=:summary_id GROUP BY user_id, verified, first, last, bio", summary_id=summary_id)
-        likes = db.execute("SELECT SUM(vote) AS sum FROM likes WHERE summary_id=:summary_id", summary_id=summary_id)[0]["sum"]
 
-        if likes == None:
-            likes = 0
-        citation = db.execute("SELECT citation FROM summary WHERE id=:summary_id", summary_id=summary_id)[0]["citation"]
+        endorsements = db.execute("SELECT COUNT(*) AS count, user_id, verified, first, last, bio FROM endorsements JOIN users ON user_id=users.id WHERE summary_id=:summary_id GROUP BY user_id, verified, first, last, bio", summary_id=summary_id)
+        likes = db.execute("SELECT COALESCE(SUM(vote), 0) AS sum FROM likes WHERE summary_id=:summary_id", summary_id=summary_id)[0]["sum"]
+
         tags = db.execute("SELECT title, tags.id FROM tags JOIN tagitem ON tags.id=tagitem.tag_id WHERE tagitem.item_id=:summary_id", summary_id=summary[0]['id'])
         tag_length = len(tags)
         all_tags = db.execute("SELECT title FROM tags")
@@ -236,7 +323,7 @@ def read(summary_id):
         method_length = len(methods_used)
 
         # handles display of the html
-        html = db.execute("SELECT summary FROM summary WHERE id=:summary_id", summary_id=summary_id)[0]["summary"]
+        html = summary[0]['summary']
         soup = BeautifulSoup(html, features="html5lib")
         title_list=[]
         for title in soup.find_all("h2"):
@@ -265,97 +352,96 @@ def read(summary_id):
                 x = "enable-dislike"
             else:
                 x = "enable-like"
-        return render_template("read.html", endorsements=endorsements, contributors=contributors, c_length=c_length, z=z, all_tags=all_tags, all_tags_len=all_tags_len, tag_length=tag_length, tags=tags, summary_actual=percent_remove(str(summary_actual)), title_length=title_length, titles=title_list, summary_id=summary_id, username=username, method_length=method_length, summary=summary, article=article, link=link, likes=likes, x=x, y=y, comments=comments, citation=citation, methods_used=methods_used, method_id=method_id)
-    else:
-        flag = request.form.get("flag")
-        delete = request.form.get("delete")
+        return render_template("read.html", endorsements=endorsements, contributors=contributors, c_length=c_length, z=z, all_tags=all_tags, all_tags_len=all_tags_len, tag_length=tag_length, tags=tags, summary_actual=percent_remove(str(summary_actual)), title_length=title_length, titles=title_list, summary_id=summary_id, username=username, method_length=method_length, summary=summary, likes=likes, x=x, y=y, comments=comments, methods_used=methods_used, method_id=method_id)
 
-        # checks if action is to delete a tag
-        if delete:
-            db.execute("DELETE FROM tagitem WHERE tag_id=:tag_id AND item_id=:item_id", tag_id=delete, item_id=summary_id)
-            return redirect("/read/{0}".format(summary_id))
+        # flag = request.form.get("flag")
+        # delete = request.form.get("delete")
+
+        # # checks if action is to delete a tag
+        # if delete:
+        #     db.execute("DELETE FROM tagitem WHERE tag_id=:tag_id AND item_id=:item_id", tag_id=delete, item_id=summary_id)
+        #     return redirect("/read/{0}".format(summary_id))
 
         # checks if action is to flag the post and send back to approvals
-        if flag == "flag":
-            user = db.execute("SELECT user_id FROM summary WHERE id=:summary_id", summary_id=summary_id)[0]["user_id"]
-            db.execute("UPDATE summary SET approved=0 WHERE id=:summary_id", summary_id=summary_id)
-            db.execute("UPDATE users SET points = points - 20 WHERE id=:user_id", user_id=user)
-            return redirect("/")
+        # if flag == "flag":
+        #     user = db.execute("SELECT user_id FROM summary WHERE id=:summary_id", summary_id=summary_id)[0]["user_id"]
+        #     db.execute("UPDATE summary SET approved=0 WHERE id=:summary_id", summary_id=summary_id)
+        #     db.execute("UPDATE users SET points = points - 20 WHERE id=:user_id", user_id=user)
+        #     return redirect("/")
 
         # Handles adding tags
-        tag = request.form.get("tag")
-        if tag:
-            summary_tags = db.execute("SELECT title FROM tags JOIN tagitem ON tags.id=tagitem.tag_id WHERE tagitem.item_id=:summary_id", summary_id=summary_id)
-            summary_tags_list = []
-            for i in range(len(summary_tags)):
-                summary_tags_list.append(summary_tags[i]['title'])
+        # tag = request.form.get("tag")
+        # if tag:
+        #     summary_tags = db.execute("SELECT title FROM tags JOIN tagitem ON tags.id=tagitem.tag_id WHERE tagitem.item_id=:summary_id", summary_id=summary_id)
+        #     summary_tags_list = []
+        #     for i in range(len(summary_tags)):
+        #         summary_tags_list.append(summary_tags[i]['title'])
 
-            tags = db.execute("SELECT title FROM tags")
-            tags_list = []
-            for i in range(len(tags)):
-                tags_list.append(tags[i]['title'])
+        #     tags = db.execute("SELECT title FROM tags")
+        #     tags_list = []
+        #     for i in range(len(tags)):
+        #         tags_list.append(tags[i]['title'])
 
-            if tag in summary_tags_list:
-                pass
-            elif tag in tags_list:
-                tag_id = db.execute("SELECT id FROM tags WHERE title=:tag", tag=tag)[0]['id']
-                db.execute("INSERT INTO tagitem (item_id, tag_id) VALUES (:summary_id, :tag_id)", summary_id=summary_id, tag_id=tag_id)
-            elif tag not in tags_list:
-                db.execute("INSERT INTO tags (title) VALUES (:tag)", tag=tag)
-                tag_id = db.execute("SELECT id FROM tags WHERE title=:tag", tag=tag)[0]['id']
-                db.execute("INSERT INTO tagitem (item_id, tag_id) VALUES (:summary_id, :tag_id)", summary_id=summary_id, tag_id=tag_id)
-            return redirect("/read/{0}".format(summary_id))
+        #     if tag in summary_tags_list:
+        #         pass
+        #     elif tag in tags_list:
+        #         tag_id = db.execute("SELECT id FROM tags WHERE title=:tag", tag=tag)[0]['id']
+        #         db.execute("INSERT INTO tagitem (item_id, tag_id) VALUES (:summary_id, :tag_id)", summary_id=summary_id, tag_id=tag_id)
+        #     elif tag not in tags_list:
+        #         db.execute("INSERT INTO tags (title) VALUES (:tag)", tag=tag)
+        #         tag_id = db.execute("SELECT id FROM tags WHERE title=:tag", tag=tag)[0]['id']
+        #         db.execute("INSERT INTO tagitem (item_id, tag_id) VALUES (:summary_id, :tag_id)", summary_id=summary_id, tag_id=tag_id)
+        #     return redirect("/read/{0}".format(summary_id))
 
         # Handles the liking and disliking action
-        author = db.execute("SELECT user_id FROM summary WHERE id=:summary_id", summary_id=summary_id)[0]["user_id"]
-        dislike = request.form.get("dislike")
-        like = request.form.get("like")
-        today = date.today()
-        today = today.strftime("%B %d, %Y")
-        liked = db.execute("SELECT vote FROM likes WHERE user_id=:user_id AND summary_id=:summary_id", user_id=session["user_id"], summary_id=summary_id)
-        if liked != []:
-            liked = liked[0]["vote"]
-        if like:
-            if liked != []:
-                db.execute("UPDATE likes SET vote = 1 WHERE user_id=:user_id AND summary_id=:summary_id", user_id=session["user_id"], summary_id=summary_id)
-            else:
-                db.execute("INSERT INTO likes (user_id, summary_id, vote, date) VALUES (:user_id, :summary_id, 1, :date)",
-                            user_id=session["user_id"], summary_id=summary_id, date=today)
-            db.execute("UPDATE users SET points = points + 1 WHERE id=:user_id", user_id=session["user_id"])
-            likes = db.execute("SELECT SUM(vote) AS sum FROM likes WHERE summary_id=:summary_id", summary_id=summary_id)[0]["sum"]
-            db.execute("UPDATE summary SET likes=:likes WHERE id=:summary_id",likes=likes,summary_id=summary_id)
-        elif dislike:
-            if liked != []:
-                db.execute("UPDATE likes SET vote = 0 WHERE user_id=:user_id AND summary_id=:summary_id", user_id=session["user_id"], summary_id=summary_id)
-            else:
-                db.execute("INSERT INTO likes (user_id, summary_id, vote, date) VALUES (:user_id, :summary_id, -1, :date)",
-                            user_id=session["user_id"], summary_id=summary_id, date=today)
-            db.execute("UPDATE users SET points = points - 1 WHERE id=:user_id", user_id=session["user_id"])
+        # dislike = request.form.get("dislike")
+        # like = request.form.get("like")
+        # today = date.today()
+        # today = today.strftime("%B %d, %Y")
+        # liked = db.execute("SELECT vote FROM likes WHERE user_id=:user_id AND summary_id=:summary_id", user_id=session["user_id"], summary_id=summary_id)
+        # if liked != []:
+        #     liked = liked[0]["vote"]
+        # if like:
+        #     if liked != []:
+        #         db.execute("UPDATE likes SET vote = 1 WHERE user_id=:user_id AND summary_id=:summary_id", user_id=session["user_id"], summary_id=summary_id)
+        #     else:
+        #         db.execute("INSERT INTO likes (user_id, summary_id, vote, date) VALUES (:user_id, :summary_id, 1, :date)",
+        #                     user_id=session["user_id"], summary_id=summary_id, date=today)
+        #     db.execute("UPDATE users SET points = points + 1 WHERE id=:user_id", user_id=session["user_id"])
+        #     likes = db.execute("SELECT SUM(vote) AS sum FROM likes WHERE summary_id=:summary_id", summary_id=summary_id)[0]["sum"]
+        #     db.execute("UPDATE summary SET likes=:likes WHERE id=:summary_id",likes=likes,summary_id=summary_id)
+        # elif dislike:
+        #     if liked != []:
+        #         db.execute("UPDATE likes SET vote = 0 WHERE user_id=:user_id AND summary_id=:summary_id", user_id=session["user_id"], summary_id=summary_id)
+        #     else:
+        #         db.execute("INSERT INTO likes (user_id, summary_id, vote, date) VALUES (:user_id, :summary_id, -1, :date)",
+        #                     user_id=session["user_id"], summary_id=summary_id, date=today)
+        #     db.execute("UPDATE users SET points = points - 1 WHERE id=:user_id", user_id=session["user_id"])
 
-            likes = db.execute("SELECT SUM(vote) AS sum FROM likes WHERE summary_id=:summary_id", summary_id=summary_id)[0]["sum"]
+        #     likes = db.execute("SELECT SUM(vote) AS sum FROM likes WHERE summary_id=:summary_id", summary_id=summary_id)[0]["sum"]
 
-            db.execute("UPDATE summary SET likes=:likes WHERE id=:summary_id",likes=likes,summary_id=summary_id)
-        else:
+        #     db.execute("UPDATE summary SET likes=:likes WHERE id=:summary_id",likes=likes,summary_id=summary_id)
+
         # Handles comments
-            comment = request.form.get('comment')
-            reply = request.form.get('reply')
-            if comment == None and reply == None:
-                return render_template("apology.html", message="Error, please input text for your post")
-            today = date.today()
-            today = today.strftime("%B %d, %Y")
-            # Comment
-            if not reply:
-                db.execute("INSERT INTO comments (user_id, summary_id, comment, date, likes, reply) VALUES (:user_id, :summary_id, :comment, :date, :likes, :reply)",
-                            user_id=session["user_id"], summary_id=summary_id, comment=comment, date=today, likes=0, reply=0)
-                comment_id = db.execute("SELECT id FROM comments WHERE summary_id=:summary_id AND comment=:comment ORDER BY id DESC LIMIT 1", summary_id=summary_id, comment=comment)[0]["id"]
-                db.execute("UPDATE comments SET comment_id=:comment_id WHERE summary_id=:summary_id AND comment=:comment ORDER BY id DESC LIMIT 1", comment_id=comment_id, summary_id=summary_id, comment=comment)
-            # Reply
-            else:
-                comment_id = request.form.get('comment_button')
-                db.execute("UPDATE comments SET last=0 WHERE (summary_id=:summary_id) AND (comment_id=:comment_id) AND last=1", summary_id=summary_id, comment_id=comment_id)
-                db.execute("INSERT INTO comments (user_id, summary_id, comment, date, likes, reply, comment_id, last) VALUES (:user_id, :summary_id, :comment, :date, :likes, :reply, :comment_id, :last)",
-                            user_id=session["user_id"], summary_id=summary_id, comment=reply, date=today, likes=0, reply=1, comment_id=comment_id, last=1)
-        return redirect("/read/{0}".format(summary_id))
+        #     comment = request.form.get('comment')
+        #     reply = request.form.get('reply')
+        #     if comment == None and reply == None:
+        #         return render_template("apology.html", message="Error, please input text for your post")
+        #     today = date.today()
+        #     today = today.strftime("%B %d, %Y")
+        #     # Comment
+        #     if not reply:
+        #         db.execute("INSERT INTO comments (user_id, summary_id, comment, date, likes, reply) VALUES (:user_id, :summary_id, :comment, :date, :likes, :reply)",
+        #                     user_id=session["user_id"], summary_id=summary_id, comment=comment, date=today, likes=0, reply=0)
+        #         comment_id = db.execute("SELECT id FROM comments WHERE summary_id=:summary_id AND comment=:comment ORDER BY id DESC LIMIT 1", summary_id=summary_id, comment=comment)[0]["id"]
+        #         db.execute("UPDATE comments SET comment_id=:comment_id WHERE summary_id=:summary_id AND comment=:comment ORDER BY id DESC LIMIT 1", comment_id=comment_id, summary_id=summary_id, comment=comment)
+        #     # Reply
+        #     else:
+        #         comment_id = request.form.get('comment_button')
+        #         db.execute("UPDATE comments SET last=0 WHERE (summary_id=:summary_id) AND (comment_id=:comment_id) AND last=1", summary_id=summary_id, comment_id=comment_id)
+        #         db.execute("INSERT INTO comments (user_id, summary_id, comment, date, likes, reply, comment_id, last) VALUES (:user_id, :summary_id, :comment, :date, :likes, :reply, :comment_id, :last)",
+        #                     user_id=session["user_id"], summary_id=summary_id, comment=reply, date=today, likes=0, reply=1, comment_id=comment_id, last=1)
+        # return redirect("/read/{0}".format(summary_id))
 
 # gives browse page for a specific tag
 @app.route("/tag/<int:tag_id>/<int:page>", methods=["GET", "POST"])
@@ -527,71 +613,64 @@ def bookmarks():
         return render_template("bookmarks.html", tasks=tasks, length=length)
 
 
+@app.route("/ai/<int:summary_id>", methods=["POST"])
+def ai(summary_id):
+    text=request.form.get("text")
+    api_length = int(len(text.split(".")) * 0.6)
+    output=summry(text, api_length)
+    try:
+        output=output["sm_api_content"]
+    except:
+        output=output['sm_api_message']
+    return redirect(url_for('edit', summary_id=summary_id, z=True, output=output, **request.args))
+
 # Allows user to make edits to a task or summary
 @app.route("/edit/<int:summary_id>", methods=["GET", "POST"])
 @login_required
 def edit(summary_id):
     # gets the existing summary or sets a None value to empty string
-    summary = db.execute("SELECT summary FROM summary WHERE id=:summary_id", summary_id=summary_id)[0]["summary"]
-    if summary == None:
-        summary = ""
+    # summary = db.execute("SELECT summary FROM summary WHERE id=:summary_id", summary_id=summary_id)[0]["summary"]
+    # if summary == None:
+    #     summary = ""
     # else:
         # summary = remove_html_tags(summary_dirty)
     if request.method == "GET":
         # provides contributor with information about the article they are summarizing
-        article = db.execute("SELECT article, user_id FROM summary WHERE id=:summary_id", summary_id=summary_id)
+        article = db.execute("SELECT article, user_id, link, summary FROM summary WHERE id=:summary_id", summary_id=summary_id)
         username = db.execute("SELECT username FROM users WHERE id=:user_id", user_id=article[0]["user_id"])
-        link = db.execute("SELECT link FROM summary WHERE id=:summary_id", summary_id=summary_id)[0]["link"]
-        return render_template("edit.html", article=article, link=link, summary=percent_remove(str(summary)), username=username, output="", z=False)
+        return render_template("edit.html", article=article, summary=percent_remove(str(article[0]['summary'])), username=username, output="", z=False, summary_id=summary_id)
     else:
-        text=request.form.get("text")
-        if text:
-            api_length = int(len(text.split(".")) * 0.6)
-            output=summry(text, api_length)
-            try:
-                output=output["sm_api_content"]
-            except:
-                output=output['sm_api_message']
-            article = db.execute("SELECT article, user_id FROM summary WHERE id=:summary_id", summary_id=summary_id)
-            username = db.execute("SELECT username FROM users WHERE id=:user_id", user_id=article[0]["user_id"])
-            link = db.execute("SELECT link FROM summary WHERE id=:summary_id", summary_id=summary_id)[0]["link"]
-            return render_template("edit.html", article=article, link=link, summary=percent_remove(str(summary)), username=username, output=output, z=True)
-        else:
-            pass
         # inserts user summary from form into summary table
-        summary_new = remove_html_tags(request.form.get("summary"))
+
         summary_new_html = remove_scripts(request.form.get("summary"))
         user = db.execute("SELECT user_id FROM summary WHERE id=:summary_id", summary_id=summary_id)[0]["user_id"]
-        db.execute("UPDATE summary SET summary=:summary, done=CAST(1 AS BIT) WHERE id=:summary_id;",
-                   summary=summary_new_html, summary_id=summary_id)
 
         # checks if user is primary author
         if not user:
-            db.execute("UPDATE summary SET user_id=:user_id WHERE id=:summary_id;",
-                   user_id=session["user_id"], summary_id=summary_id)
+            db.execute("UPDATE summary SET summary=:summary, done=CAST(1 AS BIT), user_id=:user_id WHERE id=:summary_id;",
+                   user_id=session["user_id"], summary_id=summary_id, summary=summary_new_html)
+        else:
+            db.execute("UPDATE summary SET summary=:summary, done=CAST(1 AS BIT) WHERE id=:summary_id;",
+                   summary=summary_new_html, summary_id=summary_id)
 
         # create points bot
-        difference = jellyfish.damerau_levenshtein_distance(summary, summary_new)
-        if len(summary) > len(summary_new):
-            max_diff = len(summary)
-        else:
-            max_diff = len(summary_new)
-        if max_diff == 0:
-            diff_ratio = 0
-        else:
-            diff_ratio = difference/max_diff
-        if diff_ratio < 0.05:
-            pass
-        else:
-            if readability(summary_new) - readability(summary) < 0:
-               db.execute("UPDATE users SET points=points+10 WHERE id=:user_id", user_id=session['user_id'])
+        # difference = jellyfish.damerau_levenshtein_distance(summary, summary_new)
+        # if len(summary) > len(summary_new):
+        #     max_diff = len(summary)
+        # else:
+        #     max_diff = len(summary_new)
+        # if max_diff == 0:
+        #     diff_ratio = 0
+        # else:
+        #     diff_ratio = difference/max_diff
+        # if diff_ratio < 0.05:
+        #     pass
+        # else:
+        #     if readability(summary_new) - readability(summary) < 0:
+        db.execute("UPDATE users SET points=points+10 WHERE id=:user_id", user_id=session['user_id'])
 
         # handles versioning and saving version information
-        version = db.execute("SELECT MAX(version) AS max_version FROM history WHERE summary_id=:summary_id", summary_id=summary_id)[0]['max_version']
-        if not version:
-            version=0
-        else:
-            version=version + 1
+        version = db.execute("SELECT COALESCE(MAX(version), -1) AS max_version FROM history WHERE summary_id=:summary_id", summary_id=summary_id)[0]['max_version'] + 1
         db.execute("INSERT INTO history (version, date, user_id, text, summary_id) VALUES (:version, :date, :user_id, :text, :summary_id)", version=version, date=date.today(), user_id=session["user_id"], text=summary_new_html, summary_id=summary_id)
 
         # handles compare edits logic for the admin task
@@ -600,7 +679,7 @@ def edit(summary_id):
         #     db.execute("INSERT INTO compare (summary_id, old, new, user_id) VALUES (:summary_id, :old, :new, :user_id)", summary_id=summary_id, old=summary, new=summary_new_html, user_id=session["user_id"])
         # else:
         #     db.execute("UPDATE compare SET old=new, new=:new WHERE summary_id=:summary_id AND user_id=:user_id", summary_id=summary_id, new=summary_new_html, user_id=session["user_id"])
-        return redirect("/")
+        return redirect("/read/{}".format(summary_id))
 
 # Allows user to request an article to be summarized
 @app.route("/request", methods=["GET", "POST"])

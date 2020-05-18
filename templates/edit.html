@@ -6,6 +6,7 @@
 
 {% block main %}
 <script type="text/javascript" src="{{ url_for('static', filename='hemingway.js') }}"></script>
+
 <div class="p-0 mx-0 w-100" style="">
     <div class="mx-5 text-left" style="">
         <div class="row jumbotron m-xs-1 rounded bg-white text-left">
@@ -17,7 +18,7 @@
 
 
                 <p style="font-size: medium;">
-                    Link to Original Article: <font color="#017bff"><a href="{{ link }}" target="_blank">{{ article[0]["article"] }}</a></font>
+                    Link to Original Article: <font color="#017bff"><a href="{{ article[0]['link'] }}" target="_blank">{{ article[0]["article"] }}</a></font>
                 </p>
             </div>
 
@@ -109,21 +110,23 @@
     <div class="mx-auto">
         <button class="btn btn-default" data-target="#tool" data-toggle="collapse" style="color: #017bff">Use our AI tool!</button>
     </div>
-    {% if z == False %}
-    <div id="tool" class="collapse">
+
+    {% if request.args.get('z') or z %}
+    <div id="tool" class="show">
     {% else %}
-    <div id="tool">
+    <div id="tool" class="collapse">
     {% endif %}
 
 
     <div class="row">
         <div class="col-6">
             <div class="card mx-auto">
-                <form method="POST" style="margin:20px; text-align: left;">
+                <form method="POST" action="/ai/{{ summary_id }}"style="margin:20px; text-align: left;">
                     <div class="form-group">
                         <label for="text" class="font-weight-bold text-muted" style="font-size:12px">Input section</label>
-                        <textarea name="text" id="text" class="w-100 form-control"></textarea>
+                        <textarea name="text" id="text" class="w-100 form-control" id="input"></textarea>
                     </div>
+
                     <input type="submit" class="btn btn-outline-primary border20 btn-block" value="Continue">
                 </form>
             </div>
@@ -131,10 +134,10 @@
         <div class="col-6">
             <div class="card mx-auto">
                 <div class="col-sm-12">
-                    <p class="font-weight-bold text-muted" style="font-size:12px; padding-top: 20px">Output</p>
+                    <p class="font-weight-bold text-muted" style="font-size:12px; padding-top: 20px" id="output">Output</p>
                 <div class="col" style="text-align: left; padding: 20px; padding-top: 0px">
                     <div class="border-left border-primary bg-light" style="padding:20px">
-                    <p>{{ output }}</p>
+                    <p>{{ request.args.get('output') }}</p>
                     </div>
                 </div>
         </div>
