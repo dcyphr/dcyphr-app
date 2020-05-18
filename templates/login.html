@@ -1,5 +1,30 @@
 {% extends "layout.html" %}
+{% block verifalia %}
+<script defer>
+    window.VerifaliaWidgetConfig = {
+    appKey: '72fe6c88d9ea43e4a8a32c6f70c0c25d',
+    inputBindings: {
+        autoWireup: true,
+        debounceTime: 1000,
+        preventSubmission: "invalid, throttled",
+        appendHiddenFields: true,
+        classNames: {
+            base: 'verifalia-field',
+            processing: 'verifalia-field-processing',
+            valid: 'verifalia-field-valid',
+            invalid: 'verifalia-field-invalid',
+            throttled: 'verifalia-field-throttled',
+            exception: 'verifalia-field-exception'
+        },
+    }
+    };
 
+</script>
+<script defer
+src="https://unpkg.com/verifalia-widget@1.2.0/dist/verifalia-widget.js"
+integrity="sha512-KNWaWGZz1V4Hm+9e4pdMB0rJ/wOY3ifDIYdfnHyoRnAXtpTxvxU+beMZ6nO//qqPYWcm9uFlIA1eye6/BAnbjQ=="
+crossorigin="anonymous"></script>
+{% endblock %}
 {% block title %}
     Log In
 {% endblock %}

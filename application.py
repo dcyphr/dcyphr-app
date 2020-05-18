@@ -290,7 +290,7 @@ def read(summary_id):
         # Gets information about article to display
 
         summary = db.execute(
-            "SELECT summary.id, summary.summary, link, article, citation, user_id, doi, first, last, verified FROM summary JOIN users ON summary.user_id = users.id WHERE summary.id=:summary_id", summary_id=summary_id)
+            "SELECT summary.id, summary.summary, link, article, citation, user_id, doi, first, last, bio, verified FROM summary JOIN users ON summary.user_id = users.id WHERE summary.id=:summary_id", summary_id=summary_id)
         username = db.execute("SELECT username FROM users WHERE id=:user_id", user_id=summary[0]["user_id"])
         comments = db.execute("SELECT * FROM comments JOIN users ON comments.user_id = users.id WHERE summary_id=:summary_id ORDER BY comment_id, comments.id", summary_id=summary_id)
 

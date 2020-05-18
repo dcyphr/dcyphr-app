@@ -181,6 +181,17 @@
                 <div class="row px-3 pl-4 bg-light border-bottom" style="font-family: Georgia; color:black">
                     Contributors
                 </div>
+                {% if c_length == 0 %}
+                <div class="row px-3 pl-0 border-bottom text-left" style="font-family: Lato; background: rgb(251, 234, 194)">
+                    <div class="col-12" style="font-size: 16px">
+                            <a href="/public/{{ summary[0]['user_id'] }}" style="color: black">{{ summary[0]['first'] }} {{ summary[0]['last'] }}</a>
+                            {% if summary[0]['verified'] == 1 %}
+                            <img src="https://img.icons8.com/nolan/18/verified-account.png" class="pb-2"/>
+                            {% endif %}
+                            <p class="text-muted mb-0" style="font-size: 12px">{{ summary[0]['bio'][:40] }}...</p>
+                    </div>
+                </div>
+                {% else %}
                 {% for i in range(c_length) %}
                     {% if i == 0 %}
                     <div class="row px-3 pl-0 border-bottom text-left" style="font-family: Lato; background: rgb(251, 234, 194)">
@@ -200,6 +211,7 @@
                         </div>
                     </div>
                 {% endfor %}
+                {% endif %}
             </div>
         </div>
     </div>
