@@ -31,7 +31,7 @@
         <script>
            window.onload = function(){
                 //hide the preloader
-                $("#preloader").fadeOut(1000, function(){
+                $("#preloader").fadeOut(500, function(){
                     $("#preloader").remove();
                 });
             };
@@ -52,7 +52,7 @@
         <script defer>
         "use strict";
 
-        !function() {
+        function LoadDriftWidget() {
           var t = window.driftt = window.drift = window.driftt || [];
           if (!t.init) {
             if (t.invoked) return void (window.console && console.error && console.error("Drift snippet included twice."));
@@ -71,9 +71,12 @@
               i.parentNode.insertBefore(o, i);
             };
           }
-        }();
         drift.SNIPPET_VERSION = '0.3.1';
-        drift.load('k23xikig2n5u');
+        drift.load('k23xikig2n5u')};
+
+        setTimeout(function(){
+             LoadDriftWidget();
+        }, 3000);
         </script>
         <!-- End of Async Drift Code -->
 
@@ -134,7 +137,7 @@
                               Help
                             </a>
                             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                              <a class="dropdown-item" href="/about" style="color: #017bff">How to Use</a>
+                              <a class="dropdown-item" href="/about" style="color: #017bff">About</a>
                               <a class="dropdown-item" href="/contact" style="color: #017bff">Contact Us</a>
                             </div>
                          </li>
@@ -264,7 +267,7 @@
     <a href="https://www.dcyphr.org" style="color:white" target="_blank"> www.dcyphr.org </a>
   </div>
   <!-- Copyright -->
-
+    <script type="text/javascript" src="//downloads.mailchimp.com/js/signup-forms/popup/unique-methods/embed.js" data-dojo-config="usePlainJson: true, isDebug: false"></script><script type="text/javascript">window.dojoRequire(["mojo/signup-forms/Loader"], function(L) { L.start({"baseUrl":"mc.us8.list-manage.com","uuid":"1c38534c3ddafced299e23a1c","lid":"52012213fb","uniqueMethods":true}) })</script>
 </footer>
 <!-- Footer -->
 </html>

@@ -1,54 +1,60 @@
 {% extends "layout.html" %}
 {% block title %}
-    Help
+    About
 {% endblock %}
 {% block main %}
 <div class="container mt-5">
     <div class="text-left pl-3" style="font-size: 1.8em; ">
         <div class="d-inline ml-4" style="border-left: 4px solid orange;"></div>
-        <div class="d-inline ml-2" style="color: #017bff">Help</div>
+        <div class="d-inline ml-2" style="color: #017bff">About</div>
         <p class="ml-4 mt-2" style="font-size: 0.6em; border-bottom: 1px solid black; padding: 10px">This page is meant to provide you with help on how to use dcyphr.</p>
     </div>
 
-<br>
-<div class="container">
-    <div class="row">
-        <div class="col-sm">
-            <h3><font color="#017bff"><b><a href="/browse/0">Read</a></b></font> or <font color="#017bff"><b><a href="/">find</a></b></font> an article</h3>
-<p align="left">Use the search bar in the navigation panel or on the homepage to search our database of summaries. Or go to browse to peruse what we have.
-If you don't see the article, that means it hasn't been summarized yet.</p>
+<!--<br>-->
+<!--<div class="container">-->
+<!--    <div class="row">-->
+<!--        <div class="col-sm">-->
+<!--            <h3><font color="#017bff"><b><a href="/browse/0">Read</a></b></font> or <font color="#017bff"><b><a href="/">find</a></b></font> an article</h3>-->
+<!--<p align="left">Use the search bar in the navigation panel or on the homepage to search our database of summaries. Or go to browse to peruse what we have.-->
+<!--If you don't see the article, that means it hasn't been summarized yet.</p>-->
 
-        </div>
-        <div class="col-sm">
-            <h3 id="request"><font color="#017bff"><b><a href="/request">Request</a></b></font> an article</h3>
-<p align="left">If the article you want summarized is not available yet, go to the requests tab and input the relevant information about the article
-for it to be summarized.</p>
-        </div>
-        </div>
+<!--        </div>-->
+<!--        <div class="col-sm">-->
+<!--            <h3 id="request"><font color="#017bff"><b><a href="/request">Request</a></b></font> an article</h3>-->
+<!--<p align="left">If the article you want summarized is not available yet, go to the requests tab and input the relevant information about the article-->
+<!--for it to be summarized.</p>-->
+<!--        </div>-->
+<!--        </div>-->
 
-<div class="row">
-    <div class="col">
-        <h3 id="contribute"><font color="#017bff"><b><a href="/tasks">Summarize</a></b></font> or <font color="#017bff"><b>edit</b></font> an article</h3>
-<p align="left">If you have read an article and wish to contribute a summary, just log in to your account and go to the contribute tab and click on the relevant task.
-If it hasn't been requested, you can <font color="#017bff"><a href="/request">request</a></font> it first under requests and then accept the task on the contribute page.</p>
-<p align="left">If you notice an inaccuracy or inconsistency in one of the summaries that you are reading, just click the edit button
-to fix the mistake and refine the summary. You can also earn points through summarizing and editing!</p>
-<p align="left">Other reasons to contribute and edit summaries are to test yourself to see how well you know the information because
-if you can't explain it simply, then you don't know it well enough! Also, your contributions will benefit future readers
-and have a large impact on scientific accessibility.</p>
-    </div>
-    <div class="col">
-        <h3><font color="#017bff"><b>Navigating</b></font> the site</h3>
-        <p align="left">Navigation bar at the top of each page will take you to the main pages. The dcyphr logo will take
-        you back to the home page. Once you login, you will have access to the profile page and contribute page. The homepage
-        and navigation bar have a search tool. The homepage also has the leaderboard and mission statement. Enjoy dcyphr!</p>
-    </div>
-</div>
-    </div>
+<!--<div class="row">-->
+<!--    <div class="col">-->
+<!--        <h3 id="contribute"><font color="#017bff"><b><a href="/tasks">Summarize</a></b></font> or <font color="#017bff"><b>edit</b></font> an article</h3>-->
+<!--<p align="left">If you have read an article and wish to contribute a summary, just log in to your account and go to the contribute tab and click on the relevant task.-->
+<!--If it hasn't been requested, you can <font color="#017bff"><a href="/request">request</a></font> it first under requests and then accept the task on the contribute page.</p>-->
+<!--<p align="left">If you notice an inaccuracy or inconsistency in one of the summaries that you are reading, just click the edit button-->
+<!--to fix the mistake and refine the summary. You can also earn points through summarizing and editing!</p>-->
+<!--<p align="left">Other reasons to contribute and edit summaries are to test yourself to see how well you know the information because-->
+<!--if you can't explain it simply, then you don't know it well enough! Also, your contributions will benefit future readers-->
+<!--and have a large impact on scientific accessibility.</p>-->
+<!--    </div>-->
+<!--    <div class="col">-->
+<!--        <h3><font color="#017bff"><b>Navigating</b></font> the site</h3>-->
+<!--        <p align="left">Navigation bar at the top of each page will take you to the main pages. The dcyphr logo will take-->
+<!--        you back to the home page. Once you login, you will have access to the profile page and contribute page. The homepage-->
+<!--        and navigation bar have a search tool. The homepage also has the leaderboard and mission statement. Enjoy dcyphr!</p>-->
+<!--    </div>-->
+<!--</div>-->
+<!--    </div>-->
+<div id="retainable-rss-embed"
+data-rss="https://medium.com/feed/@jeffreyma"
+data-maxcols="3"
+data-layout="slider"
+data-poststyle="modal"
+data-readmore="Keep reading"
+data-buttonclass="btn btn-outline-primary border20 btn-block mt-2"
+data-offset="-100"></div>
 
-
-
-
+<script src="https://www.retainable.io/assets/retainable/rss-embed/retainable-rss-embed.js"></script>
 
 </div>
 

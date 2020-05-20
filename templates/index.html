@@ -43,7 +43,7 @@
                               Help
                             </a>
                             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                              <a class="dropdown-item" href="/about" style="color: #000d25">How to Use</a>
+                              <a class="dropdown-item" href="/about" style="color: #000d25">About</a>
                               <a class="dropdown-item" href="/contact" style="color: #000d25">Contact Us</a>
                             </div>
                          </li>
@@ -118,7 +118,7 @@
         <script>
            window.onload = function(){
                 //hide the preloader
-                $("#preloader").fadeOut(1000, function(){
+                $("#preloader").fadeOut(500, function(){
                     $("#preloader").remove();
                 });
             };
@@ -150,7 +150,7 @@
             <div class="h-50 row w-100" style="font-family: Lato">
 
             </div>
-            <picture class="h-50 w-100 mt-auto" >
+            <picture class="h-50 w-100 mt-auto">
                 <source type="image/webp" srcset="{{ url_for('static', filename='gene1.webp') }}">
                 <img class="h-50 w-100 mt-auto" src="{{ url_for('static', filename='gene1.png') }}" alt="">
             </picture>
@@ -185,7 +185,7 @@
         <div class="col-lg m-0 p-0">
             <div class="h-20">
             </div>
-            <picture class="h-60 w-100" style="margin-top: 5vh;" >
+            <picture class="h-60 w-100" style="margin-top: 5vh;" id="pic">
                 <source type="image/webp" srcset="{{ url_for('static', filename='research.webp') }}">
                 <img src="{{ url_for('static', filename='research.png') }}" alt="">
             </picture>
@@ -247,7 +247,7 @@
                         {% elif i == 1 %}
                         <i class="fa fa-trophy border-0 fa-lg" style="color:silver"></i>
                         {% elif i == 2 %}
-                        <i class="fa fa-trophy border-0 fa-lg" style="color:bronze"></i>
+                        <i class="fa fa-trophy border-0 fa-lg" style="color: rgb(240, 219, 198)"></i>
                         {% endif %}
                     </div>
 
@@ -260,7 +260,7 @@
                     </div>
                 </div>
                 {% endfor %}
-                <div class="text-left"style="bottom:2vh; left:2vh; position:absolute">
+                <div class="text-left" style="bottom:2vh; left:2vh; position:absolute">
                      <small class="text-muted">All-time top contributors. Points are earned through creating summaries, editing articles to improve accuracy, and others' engaging with your content.</small>
                 </div>
             </div>
@@ -291,7 +291,7 @@
         <div class="col m-0 pr-5">
             <div class="h-20">
             </div>
-            <picture class="h-60 w-100" style="margin-top: 10vh;">
+            <picture class="h-60 w-100" style="margin-top: 10vh;" id="pic">
                 <source type="image/webp" srcset="{{ url_for('static', filename='network.webp') }}">
                 <img class="h-60 w-100" style="margin-top: 10vh;"src="{{ url_for('static', filename='network.png') }}" alt="">
             </picture>

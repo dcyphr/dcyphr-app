@@ -11,7 +11,12 @@
         <div class="d-inline ml-2" style="color: #017bff">Showing search results for "<span style="color: orange">{{ search }}</span>":</div>
         <p class="ml-4 mt-2" style="font-size: 0.6em; border-bottom: 1px solid black; padding: 10px"></p>
     </div>
-
+{% if length == 0 %}
+<picture>
+    <source type="image/webp" srcset="{{ url_for('static', filename='noresults.webp') }}">
+    <img  class="searchResults" src="nosearchresults.png" alt="">
+</picture>
+{% else %}
 <ul style="text-align: left; list-style: none">
     {% for i in range(length) %}
         <li class="mx-3 py-3 border-bottom border-dark">
@@ -26,6 +31,7 @@
         </li>
     {% endfor %}
 </ul>
+{% endif %}
 </div>
 
 

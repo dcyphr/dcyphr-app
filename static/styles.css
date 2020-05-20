@@ -366,6 +366,9 @@ dl:nth-of-type(odd) {
 
 
 @media screen and (max-width: 481px){
+.searchResults{
+    margin-top: 0vh !important;
+}
 #likes {
     padding-right: 30px;
 }
@@ -390,5 +393,30 @@ dl:nth-of-type(odd) {
 }
 #status{
     margin-right: 1vh;
+}
+svg{
+    height:75%;
+}
+#scroll2 img{
+    height:75%;
+    margin-top:0vh;
+}
+.mb-2{
+    font-size:2.0em !important;
+}
+small.text-muted{
+    display:none;
+}
+img{
+    margin-top:-10vh;
+}
+.h-25{
+    display:none;
+}
+.index_info{
+    padding-bottom:0vh;
+}
+.col.m-0.pr-5{
+    padding-left:3.0rem;
 }
 }

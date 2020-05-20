@@ -14,6 +14,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from datetime import date, datetime
 from bs4 import BeautifulSoup
 import jellyfish
+from flask_optimize import FlaskOptimize
 # from flask_email_verifier import EmailVerifier
 # from validate_email import validate_email
 from helpers import apology, login_required, lookup, usd, readability, remove_scripts, percent_remove
@@ -879,8 +880,18 @@ def methods(method_id):
         length = len(methods)
         return render_template("methods.html", methods=methods, preview=preview, length=length)
     else:
-        methods = db.execute("SELECT name, description FROM methods WHERE id=:method_id", method_id=method_id)
-        return render_template("method_summary.html", methods=methods)
+        x = False
+        if len(session) != 0:
+            x = True
+        methods = db.execute("SELECT name, description, id FROM methods WHERE id=:method_id", method_id=method_id)
+        return render_template("method_summary.html", methods=methods, x=x)
+
+@app.route("/methodupdate/<int:method_id>", methods=["POST"])
+@login_required
+def methodupdate(method_id):
+    summary = request.form.get("summary")
+    db.execute("UPDATE methods SET description = :summary WHERE id=:method_id", summary=summary, method_id=method_id)
+    return redirect("/method/{}".format(method_id))
 
 # route to change password
 @app.route("/password", methods=["GET", "POST"])
