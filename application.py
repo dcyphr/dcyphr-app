@@ -14,7 +14,6 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from datetime import date, datetime
 from bs4 import BeautifulSoup
 import jellyfish
-from flask_optimize import FlaskOptimize
 # from flask_email_verifier import EmailVerifier
 # from validate_email import validate_email
 from helpers import apology, login_required, lookup, usd, readability, remove_scripts, percent_remove
