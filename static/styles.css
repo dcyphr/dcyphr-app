@@ -261,6 +261,10 @@ dl:nth-of-type(odd) {
     font-size: 1.3em;
 }
 
+.VueCarousel-slide, h2{
+    min-height: 6.5vh;
+}
+
 #science{
 
     /*position: absolute;*/

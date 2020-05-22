@@ -18,10 +18,13 @@ import jellyfish
 # from validate_email import validate_email
 from helpers import apology, login_required, lookup, usd, readability, remove_scripts, percent_remove
 from summry import summry, get_apa
+# from flask_mail import Mail, Message
+
 
 # Configure application
 app = Flask(__name__)
-# verifier = EmailVerifier(app)
+
+
 
 # Ensure templates are auto-reloaded
 app.config["TEMPLATES_AUTO_RELOAD"] = True
@@ -38,6 +41,31 @@ def after_request(response):
 app.config["SESSION_FILE_DIR"] = mkdtemp()
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
+
+# # configure flask mail
+# app.config['DEBUG'] = False
+# app.config['TESTING'] = False
+# #email domain host
+# app.config['MAIL_SERVER'] = "smtp.office365.com"
+# #check email client
+# app.config['MAIL_PORT'] = 587
+# #TLS or SSL may be one or the other
+# app.config['MAIL_USE_TLS'] = True
+# app.config['MAIL_USE_SSL'] = False
+# app.config['MAIL_DEBUG'] = app.debug
+# app.config['MAIL_USERNAME'] = "team@dcyphr.org"
+# app.config['MAIL_PASSWORD'] = "dcyphr2000!"
+# app.config['MAIL_DEFAULT_SENDER'] = "team@dcyphr.org"
+# #to prefvent from sending tons of emails
+# app.config['MAIL_MAX_EMAILS'] = None
+# app.config['MAIL_SUPPRESS_SEND'] = False
+# #converts file to ascii
+# app.config['MAIL_ASCII_ATTACHMENTS'] = False
+
+
+mail = Mail(app)
+# verifier = EmailVerifier(app)
+
 
 Session(app)
 
@@ -761,7 +789,6 @@ def login():
         # Ensure username exists and password is correct
         if len(rows) != 1 or not check_password_hash(rows[0]["hash"], request.form.get("password")):
             return render_template("apology.html", message="invalid username/password combination")
-
         # Remember which user has logged in
         session["user_id"] = rows[0]["id"]
         session["remember_me"] = True
@@ -923,6 +950,9 @@ def register():
         username = request.form.get("username")
         email = request.form.get("email")
         newsletter = request.form.get("newsletter")
+#mail test!!
+#       msg = Message ('test', sender='team@dcyphr.org', recipients=["sekofi4440@chordmi.com"])
+#       mail.send(msg)
         if not email:
             return render_template("apology.html", message="You must enter an email")
         if not username:
@@ -953,6 +983,7 @@ def register():
             else:
                 db.execute("INSERT INTO users (username, hash, email, first, last, newsletter) VALUES (:username, :hashed, :email, :first, :last, 0)", username=username, hashed=hashed, email=email, first=first, last=last)
             return redirect("/login")
+
 
 # displays search results
 @app.route("/results")
