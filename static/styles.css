@@ -262,7 +262,14 @@ dl:nth-of-type(odd) {
 }
 
 .VueCarousel-slide, h2{
-    min-height: 6.5vh;
+    min-height: 9vh;
+}
+.tagx{
+    color: gray;
+}
+.tagx:hover{
+    color: white;
+    text-decoration: none;
 }
 
 #science{

@@ -1,44 +1,19 @@
 {% extends "layout.html" %}
-{% block verifalia %}
-<script defer>
-    window.VerifaliaWidgetConfig = {
-    appKey: '72fe6c88d9ea43e4a8a32c6f70c0c25d',
-    inputBindings: {
-        autoWireup: true,
-        debounceTime: 1000,
-        preventSubmission: "invalid, throttled",
-        appendHiddenFields: true,
-        classNames: {
-            base: 'verifalia-field',
-            processing: 'verifalia-field-processing',
-            valid: 'verifalia-field-valid',
-            invalid: 'verifalia-field-invalid',
-            throttled: 'verifalia-field-throttled',
-            exception: 'verifalia-field-exception'
-        },
-    }
-    };
-
-</script>
-<script defer
-src="https://unpkg.com/verifalia-widget@1.2.0/dist/verifalia-widget.js"
-integrity="sha512-KNWaWGZz1V4Hm+9e4pdMB0rJ/wOY3ifDIYdfnHyoRnAXtpTxvxU+beMZ6nO//qqPYWcm9uFlIA1eye6/BAnbjQ=="
-crossorigin="anonymous"></script>
-{% endblock %}
 {% block title %}
     Log In
 {% endblock %}
 
 {% block main %}
 
+<div class="container">
 <br>
 <br>
 <h2 style="font-family: Georgia;">Log in</h2>
-<div class="p-0 mx-0 w-100" style="">
+<div class="p-0 mx-0 w-100">
     <div class="row">
         <div class="col-sm">
             <div class="card mx-auto border20" style="width: 30rem;">
-                <form action="/login" method="POST" style="margin:20px; text-align: left;s">
+                <form action="/login" method="POST" style="margin:20px; text-align: left;">
                     <div class="form-group">
                         <label for="username" class="font-weight text-muted" style="font-size:12px">Username</label>
                         <input type="text" id="username" class="form-control border20" style="width:100%;" name="username">
@@ -48,13 +23,47 @@ crossorigin="anonymous"></script>
                         <input type="password" id="password" class="form-control border20" style="width:100%" name="password">
                     </div>
                     <input type="submit" class="btn btn-outline-primary btn-block border20" value="Log In">
-
+                    <a class="btn btn-outline-primary btn-block border20" href="/google-login">Continue with Google</a>
+                    <a class="btn btn-outline-primary btn-block border20" href="/facebook-login">Continue with Facebook</a>
                 </form>
             </div>
         </div>
     </div>
-    <div class="row" style="margin: 20px">
+    <div class="row mt-2">
         <small class="mx-auto text-muted">Not registered? <a href="/register" class="text-primary">Sign up!</a></small>
+    </div>
+</div>
+
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-link" data-toggle="modal" data-target="#resetModal">
+  <small>Forgot password?</small>
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="resetModal" tabindex="-1" role="dialog" aria-labelledby="resetModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+
+                <h5 class="modal-title" id="resetModalLongTitle" style="font-family: Georgia">Send reset email</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form method="POST" action="/reset">
+            <div class="modal-body">
+
+                    <div class="form-group">
+                        <label for="emailInput" class="font-weight text-muted" style="font-size:12px">Please enter the email address associated with your account.</label>
+                        <input required type="email" id="emailInput" name="email" class="form-control border20" style="width:100%" placeholder="Email">
+                    </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary border20" data-dismiss="modal">Cancel</button>
+                <button type="submit" id="submit_btn" class="btn btn-outline-primary border20">Send</button>
+            </div>
+            </form>
+        </div>
     </div>
 </div>
 {% endblock %}

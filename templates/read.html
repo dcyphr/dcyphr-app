@@ -66,10 +66,14 @@
 
                 <form method="POST" action="/delete/{{summary_id}}"style="display: inline-block">
                 {% for i in range(tag_length) %}
-                <a href="/tag/{{tags[i]['id']}}/0" class="btn btn-outline-secondary btn-sm border20">{{ tags[i]['title'] }}</a>
+
                 {% if z == "true" %}
-                <button type="submit" name="delete" value="{{tags[i]['id']}}" class="btn btn-outline-primary btn-sm">-</button>
+                <a href="/tag/{{tags[i]['id']}}/0" class="btn btn-outline-secondary border20 pb-0">{{ tags[i]['title'] }}
+                <button type="submit" name="delete" value="{{tags[i]['id']}}" class="btn btn-link btn-sm m-0 pt-0 pr-0 tagx">x</button>
+                {% else %}
+                <a href="/tag/{{tags[i]['id']}}/0" class="btn btn-outline-secondary border20">{{ tags[i]['title'] }}
                 {% endif %}
+                </a>
                 {% endfor %}
                 </form>
                 {% if z == "true" %}

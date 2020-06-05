@@ -2,9 +2,11 @@ import os
 import re
 import math
 # import smtplib
+import sendgrid
+import datetime
 
-# from sendgrid import SendGridAPIClient
-# from sendgrid.helpers.mail import Mail
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail
 from cs50 import SQL
 from flask import Flask, flash, jsonify, redirect, render_template, request, session, url_for, send_from_directory
 from flask_session import Session
@@ -18,13 +20,15 @@ import jellyfish
 # from validate_email import validate_email
 from helpers import apology, login_required, lookup, usd, readability, remove_scripts, percent_remove
 from summry import summry, get_apa
-# from flask_mail import Mail, Message
+from itsdangerous import URLSafeTimedSerializer
 
+# from flask_mail import Mail, Message
 
 # Configure application
 app = Flask(__name__)
+app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 
-
+from token1 import generate_confirmation_token, confirm_token
 
 # Ensure templates are auto-reloaded
 app.config["TEMPLATES_AUTO_RELOAD"] = True
@@ -42,37 +46,13 @@ app.config["SESSION_FILE_DIR"] = mkdtemp()
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 
-# # configure flask mail
-# app.config['DEBUG'] = False
-# app.config['TESTING'] = False
-# #email domain host
-# app.config['MAIL_SERVER'] = "smtp.office365.com"
-# #check email client
-# app.config['MAIL_PORT'] = 587
-# #TLS or SSL may be one or the other
-# app.config['MAIL_USE_TLS'] = True
-# app.config['MAIL_USE_SSL'] = False
-# app.config['MAIL_DEBUG'] = app.debug
-# app.config['MAIL_USERNAME'] = "team@dcyphr.org"
-# app.config['MAIL_PASSWORD'] = "dcyphr2000!"
-# app.config['MAIL_DEFAULT_SENDER'] = "team@dcyphr.org"
-# #to prefvent from sending tons of emails
-# app.config['MAIL_MAX_EMAILS'] = None
-# app.config['MAIL_SUPPRESS_SEND'] = False
-# #converts file to ascii
-# app.config['MAIL_ASCII_ATTACHMENTS'] = False
-
-
-# mail = Mail(app)
-# verifier = EmailVerifier(app)
-
 
 Session(app)
 
 # Configure CS50 Library to use SQLite database
 # db = SQL('postgres://hwicvwhg:4zzgStNJkiEy3hC3gtFHrdlyLFR_vQUN@rajje.db.elephantsql.com:5432/hwicvwhg?sslmode=require')
-# db = SQL("sqlite:///dcyphr.db")
-db = SQL(os.environ['DATABASE_URL'])
+db = SQL("sqlite:///dcyphr.db")
+#db = SQL(os.environ['DATABASE_URL'])
 
 # notifications
 
@@ -108,7 +88,7 @@ def browse(page):
 
         # gets summary information from database that are done and approved
         summaries = db.execute(
-            "SELECT summary.likes, article, username, users.id AS user, doi, summary.id, summary.summary FROM summary JOIN users ON summary.user_id = users.id WHERE summary.done = CAST(1 AS BIT) and summary.approved = 1 ORDER BY summary.likes DESC LIMIT :limit OFFSET :offset;", limit=page_length, offset=page_length*page)
+            "SELECT summary.likes, article, first, last, users.id AS user, doi, summary.id, summary.summary FROM summary JOIN users ON summary.user_id = users.id WHERE summary.done = CAST(1 AS BIT) and summary.approved = 1 ORDER BY summary.likes DESC LIMIT :limit OFFSET :offset;", limit=page_length, offset=page_length*page)
 
         if page + 1 == number:
             page_length = len(summaries)
@@ -319,7 +299,6 @@ def read(summary_id):
 
         summary = db.execute(
             "SELECT summary.id, summary.summary, link, article, citation, user_id, doi, first, last, bio, verified FROM summary JOIN users ON summary.user_id = users.id WHERE summary.id=:summary_id", summary_id=summary_id)
-        username = db.execute("SELECT username FROM users WHERE id=:user_id", user_id=summary[0]["user_id"])
         comments = db.execute("SELECT * FROM comments JOIN users ON comments.user_id = users.id WHERE summary_id=:summary_id ORDER BY comment_id, comments.id", summary_id=summary_id)
 
         endorsements = db.execute("SELECT COUNT(*) AS count, user_id, verified, first, last, bio FROM endorsements JOIN users ON user_id=users.id WHERE summary_id=:summary_id GROUP BY user_id, verified, first, last, bio", summary_id=summary_id)
@@ -380,7 +359,7 @@ def read(summary_id):
                 x = "enable-dislike"
             else:
                 x = "enable-like"
-        return render_template("read.html", endorsements=endorsements, contributors=contributors, c_length=c_length, z=z, all_tags=all_tags, all_tags_len=all_tags_len, tag_length=tag_length, tags=tags, summary_actual=percent_remove(str(summary_actual)), title_length=title_length, titles=title_list, summary_id=summary_id, username=username, method_length=method_length, summary=summary, likes=likes, x=x, y=y, comments=comments, methods_used=methods_used, method_id=method_id)
+        return render_template("read.html", endorsements=endorsements, contributors=contributors, c_length=c_length, z=z, all_tags=all_tags, all_tags_len=all_tags_len, tag_length=tag_length, tags=tags, summary_actual=percent_remove(str(summary_actual)), title_length=title_length, titles=title_list, summary_id=summary_id, method_length=method_length, summary=summary, likes=likes, x=x, y=y, comments=comments, methods_used=methods_used, method_id=method_id)
 
         # flag = request.form.get("flag")
         # delete = request.form.get("delete")
@@ -477,7 +456,7 @@ def tag(tag_id, page):
     if request.method == "GET":
         page_length = 10
 
-        titles = db.execute("SELECT article, summary.id AS summary_id, summary.likes, username, users.id, summary.summary FROM users JOIN summary ON summary.user_id=users.id JOIN tagitem on summary.id=tagitem.item_id WHERE tagitem.tag_id=:tag_id AND summary.approved=1 AND summary.done = CAST(1 AS BIT) ORDER BY summary.likes DESC LIMIT :limit OFFSET :offset;", limit=page_length, offset=page_length*page, tag_id=tag_id)
+        titles = db.execute("SELECT article, summary.id AS summary_id, summary.likes, first, last, users.id, summary.summary FROM users JOIN summary ON summary.user_id=users.id JOIN tagitem on summary.id=tagitem.item_id WHERE tagitem.tag_id=:tag_id AND summary.approved=1 AND summary.done = CAST(1 AS BIT) ORDER BY summary.likes DESC LIMIT :limit OFFSET :offset;", limit=page_length, offset=page_length*page, tag_id=tag_id)
 
         plength = db.execute("SELECT COUNT(*) AS count FROM tagitem JOIN summary on summary.id=item_id WHERE summary.done = CAST(1 AS BIT) AND summary.approved = 1 AND tag_id=:tag_id", tag_id=tag_id)[0]['count']
 
@@ -613,6 +592,7 @@ def tasks():
         tasks = db.execute("SELECT article, id, doi FROM summary WHERE done = CAST(0 AS BIT) AND bookmarked = :user_id ORDER BY requests DESC", user_id=user_id)
         length = len(tasks)
 
+
         #return render_template("bookmarks.html", tasks=tasks, length=length)
         return redirect("/bookmarks")
 
@@ -707,7 +687,7 @@ def edit(summary_id):
         #     db.execute("INSERT INTO compare (summary_id, old, new, user_id) VALUES (:summary_id, :old, :new, :user_id)", summary_id=summary_id, old=summary, new=summary_new_html, user_id=session["user_id"])
         # else:
         #     db.execute("UPDATE compare SET old=new, new=:new WHERE summary_id=:summary_id AND user_id=:user_id", summary_id=summary_id, new=summary_new_html, user_id=session["user_id"])
-        return redirect("/read/{}".format(summary_id))
+        return redirect("/")
 
 # Allows user to request an article to be summarized
 @app.route("/request", methods=["GET", "POST"])
@@ -763,7 +743,7 @@ def index():
 
         return render_template("results.html", results=results, links=links, length=length, search=search, preview=soup)
 
-
+#LOGIN_HERE
 @app.route("/login", methods=["GET", "POST"])
 def login():
     """Log user in"""
@@ -783,17 +763,25 @@ def login():
             return render_template("apology.html", message="must provide password")
 
         # Query database for username
+        username = request.form.get("username")
         rows = db.execute("SELECT * FROM users WHERE username = :username",
-                          username=request.form.get("username"))
+                          username=username)
 
         # Ensure username exists and password is correct
         if len(rows) != 1 or not check_password_hash(rows[0]["hash"], request.form.get("password")):
             return render_template("apology.html", message="invalid username/password combination")
-        # Remember which user has logged in
-        session["user_id"] = rows[0]["id"]
-        session["remember_me"] = True
-        # Redirect user to home page
-        return redirect("/")
+
+        # Check to see if user has confirmed their account
+        email = rows[0]['email']
+        if rows[0]['confirmed'] == 0:
+            session["user_id"] = rows[0]["id"]
+            return redirect("/unconfirmed/{}".format(session['user_id']))
+        else:
+            # Remember which user has logged in
+            session["user_id"] = rows[0]["id"]
+            session["remember_me"] = True
+            # Redirect user to home page
+            return redirect("/")
 
     # User reached route via GET (as by clicking a link or via redirect)
     else:
@@ -832,8 +820,7 @@ def profile(user_id):
     # gets number of articles they have written
     length = len(articles)
     points = db.execute("SELECT points FROM users WHERE id=:user_id", user_id=session["user_id"])[0]['points']
-    # progress bar based on how much the user has summarized
-    progress = round(length/60 * 100)
+
     # gets their username
     info = db.execute("SELECT bio, username, first, last, verified FROM users WHERE id=:user_id", user_id=session["user_id"])
     admin = db.execute("SELECT admin FROM users WHERE id=:user_id", user_id=session["user_id"])[0]['admin']
@@ -841,48 +828,8 @@ def profile(user_id):
         info[0]['bio'] = "This user has no bio right now."
     if points == None:
         points = 0
-    # ranks = db.execute("SELECT id, RANK () OVER (ORDER BY points DESC) as points_rank FROM users")
-    # for i in len(ranks):
-    #     if ranks[i]["id"] == user_id:
-    #         rank = ranks[i]["points_rank"]
     return render_template("profile.html", info=info, articles=articles, length=length, progress=progress, admin=admin, points=points, user_id=user_id)
 
-# allows admin to compare edit versions
-# @app.route("/compare/<int:compare_id>", methods=["GET", "POST"])
-# @login_required
-# def compare(compare_id):
-#     if request.method == "GET":
-#         articles = db.execute("SELECT compare.id, old, new, summary.id, article, link FROM compare JOIN summary ON compare.summary_id=summary.id WHERE compare.id=:compare_id", compare_id=compare_id)
-#         return render_template("compare.html", articles=articles)
-#     else:
-#         approve = request.form.get("approve")
-#         disapprove = request.form.get("disapprove")
-#         summary_id = db.execute("SELECT summary_id FROM compare WHERE id=:compare_id", compare_id=compare_id)[0]['summary_id']
-#         if not approve:
-#             old = db.execute("SELECT old FROM compare WHERE summary_id=:summary_id", summary_id=summary_id)[0]['old']
-#             db.execute("UPDATE summary SET summary=:old WHERE id=:summary_id", old=old, summary_id=summary_id)
-#             db.execute("DELETE FROM compare WHERE id=:doi", doi=compare_id)
-#         else:
-#             new = db.execute("SELECT new FROM compare WHERE summary_id=:summary_id", summary_id=summary_id)[0]['new']
-#             db.execute("UPDATE summary SET summary=:new WHERE id=:summary_id", summary_id=summary_id, new=new)
-#             user = db.execute("SELECT user_id FROM compare WHERE id=:doi", doi=compare_id)[0]['user_id']
-#             if user == None:
-#                 pass
-#             else:
-#                 db.execute("UPDATE users SET points=points + 10 WHERE id=:user_id", user_id=user)
-#             db.execute("DELETE FROM compare WHERE id=:doi", doi=compare_id)
-#         articles = db.execute("SELECT compare.id, article FROM compare JOIN summary ON compare.summary_id=summary.id")
-#         length = len(articles)
-#         return render_template("compare_home.html", articles=articles, length=length)
-
-
-# homepage for new edit notifications for admin
-# @app.route("/comparehome", methods=["GET"])
-# @login_required
-# def comparehome():
-#         articles = db.execute("SELECT compare.id, article FROM compare JOIN summary ON compare.summary_id=summary.id")
-#         length = len(articles)
-#         return render_template("compare_home.html", articles=articles, length=length)
 
 # public profile that other users view
 @app.route("/public/<int:user_id>")
@@ -920,9 +867,8 @@ def methodupdate(method_id):
     return redirect("/method/{}".format(method_id))
 
 # route to change password
-@app.route("/password", methods=["GET", "POST"])
-@login_required
-def password():
+@app.route("/password/<password_token>", methods=["GET", "POST"])
+def password(password_token):
     if request.method == "GET":
         return render_template("password.html")
     else:
@@ -941,6 +887,7 @@ def password():
 def register():
     # db.execute("CREATE TABLE IF NOT EXISTS users (id SERIAL PRIMARY KEY, username TEXT, hash TEXT, summarized INTEGER, reviewed INTEGER, likes TEXT, email TEXT)")
     if request.method == "GET":
+        db.execute("DELETE FROM users WHERE email = :email", email="444@aprimail.com")
         return render_template("register.html")
     else:
         # gets form inputs
@@ -950,9 +897,7 @@ def register():
         username = request.form.get("username")
         email = request.form.get("email")
         newsletter = request.form.get("newsletter")
-#mail test!!
-#       msg = Message ('test', sender='team@dcyphr.org', recipients=["sekofi4440@chordmi.com"])
-#       mail.send(msg)
+
         if not email:
             return render_template("apology.html", message="You must enter an email")
         if not username:
@@ -982,8 +927,69 @@ def register():
                 db.execute("INSERT INTO users (username, hash, email, first, last, newsletter) VALUES (:username, :hashed, :email, :first, :last, 1)", username=username, hashed=hashed, email=email, first=first, last=last)
             else:
                 db.execute("INSERT INTO users (username, hash, email, first, last, newsletter) VALUES (:username, :hashed, :email, :first, :last, 0)", username=username, hashed=hashed, email=email, first=first, last=last)
+#send confirmation email
+            token = generate_confirmation_token(email)
+            user = db.execute("SELECT first FROM users WHERE username=:username", username=username)
+            confirm_url = url_for('confirm_email', token=token, _external=True)
+            message = Mail(
+                from_email='team@dcyphr.org',
+                to_emails=email,
+                subject='Confirm your dcyphr account',
+                html_content='<h2 style="font-family: Georgia">Welcome to <span style="color: #017bff">dcyphr</span>, {0}!<p>Please follow this link to confirm that this is your email.</p><a href={1}><button class="btn btn-primary border20">Confirm account</button></a>'.format(user[0]['first'], confirm_url))
+            try:
+                sg = SendGridAPIClient('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')
+                response = sg.send(message)
+                print(response.status_code)
+                print(response.body)
+                print(response.headers)
+            except Exception as e:
+                print(e)
             return redirect("/login")
 
+#change password
+@app.route('/reset', methods=['POST'])
+def reset():
+    email = request.form.get('email')
+    return redirect("/login")
+
+#confirm account
+@app.route("/confirm/<token>")
+def confirm_email(token):
+    try:
+        email = confirm_token(token)
+    except:
+        flash('The confirmation link is invalid or has expired.', 'danger')
+    status = db.execute("SELECT confirmed FROM users WHERE email=:email", email=email)
+    if status[0]['confirmed'] == 1:
+        status = 'Account already confirmed. Please login <a href="/login" style="color: #017bff">here</a>.'
+    else:
+        db.execute("UPDATE users SET confirmed = 1 WHERE email=:email", email=email)
+        status = 'You have confirmed your account. Thanks!'
+    return render_template("confirm.html", status=status)
+
+@app.route("/unconfirmed/<int:user_id>", methods=["GET", "POST"])
+def unconfirmed(user_id):
+    if request.method == "GET":
+        session.clear()
+        return render_template("unconfirmed.html")
+    else:
+        user = db.execute("SELECT email, first FROM users WHERE id=:user_id", user_id=user_id)[0]
+        token = generate_confirmation_token(user['email'])
+        confirm_url = url_for('confirm_email', token=token, _external=True)
+        message = Mail(
+            from_email=('team@dcyphr.org', 'dcyphr'),
+            to_emails=user['email'],
+            subject='Confirm Your dcyphr Account',
+                html_content='<h2 style="font-family: Georgia">Welcome to <span style="color: #017bff">dcyphr</span>, {0}!👋</h2><a href={1}>Please follow this link to confirm your account.</a><p>[{2}] End of message.</p>'.format(user['first'], confirm_url, date.today()))
+        try:
+            sg = SendGridAPIClient('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')
+            response = sg.send(message)
+            print(response.status_code)
+            print(response.body)
+            print(response.headers)
+        except Exception as e:
+            print(e)
+        return redirect("/unconfirmed/{}".format(user_id))
 
 # displays search results
 @app.route("/results")
@@ -1017,9 +1023,7 @@ def approvals(approval_id):
         # handles approval of a summary
         else:
             user_id = db.execute("SELECT user_id FROM summary WHERE id=:summary_id", summary_id=summary_id)[0]["user_id"]
-            points = db.execute("SELECT points FROM users WHERE id=:user_id", user_id=user_id)[0]['points']
-            if points == None:
-                points = 0
+            points = db.execute("SELECT COALESCE(points, 0) FROM users WHERE id=:user_id", user_id=user_id)[0]['points']
             points = points + 20
             db.execute("UPDATE users SET points=:points WHERE id=:user_id", points=points, user_id=user_id)
             db.execute("UPDATE summary SET summary = :summary, approved=1, bookmarked=0 WHERE id=:summary_id", summary=summary, summary_id=summary_id)
@@ -1054,33 +1058,6 @@ def bookmarking():
 # shows the help page
 @app.route("/about")
 def about():
-    # msg = Message("Hello",
-    #               sender="jeffzma2000@gmail.com",
-    #               recipients=["jeffzma2000@gmail.com"])
-    # mail.send(msg)
-
-
-    # sent_from = 'jeffzma2000@gmail.com'
-    # to = ['jeffzma2000@gmail.com', 'jeffzma2000@gmail.com']
-    # subject = 'OMG Super Important Message'
-    # body = "Hello"
-
-    # email_text = """\
-    # From: %s
-    # To: %s
-    # Subject: %s
-
-    # %s
-    # """ % (sent_from, ", ".join(to), subject, body)
-    # try:
-    #     server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
-    #     server.ehlo()
-    #     server.login("jeffzma2000@gmail.com", "Swimming2000")
-    #     server.sendmail(sent_from, to, email_text)
-    #     server.close()
-    #     print('Email sent!')
-    # except:
-    #     print('Something went wrong...')
     return render_template("about.html")
 
 # access browser icon information
@@ -1099,3 +1076,5 @@ def errorhandler(e):
 # Listen for errors
 for code in default_exceptions:
     app.errorhandler(code)(errorhandler)
+
+

@@ -3,12 +3,9 @@
     About
 {% endblock %}
 {% block main %}
-<div class="container mt-5">
-    <div class="text-left pl-3" style="font-size: 1.8em; ">
-        <div class="d-inline ml-4" style="border-left: 4px solid orange;"></div>
-        <div class="d-inline ml-2" style="color: #017bff">About</div>
-        <p class="ml-4 mt-2" style="font-size: 0.6em; border-bottom: 1px solid black; padding: 10px">This page is meant to provide you with help on how to use dcyphr.</p>
-    </div>
+<div class="main">
+    <div class="container">
+        <h1 class="my-5 text-left" style="font-family:Lato; font-weight:600">About <span style="color: #017bff">dcyphr</span></h1>
 
 <!--<br>-->
 <!--<div class="container">-->
@@ -45,17 +42,50 @@
 <!--    </div>-->
 <!--</div>-->
 <!--    </div>-->
-<div id="retainable-rss-embed"
-data-rss="https://medium.com/feed/@jeffreyma"
-data-maxcols="3"
-data-layout="slider"
-data-poststyle="modal"
-data-readmore="Keep reading"
-data-buttonclass="btn btn-outline-primary border20 btn-block mt-2"
-data-offset="-100"></div>
 
-<script src="https://www.retainable.io/assets/retainable/rss-embed/retainable-rss-embed.js"></script>
+<p style="font-family: Lato; font-size: 3vh" class="py-3 mb-0">What's your role in the <span style="color: #017bff">dcyphr</span> network?</p>
+    <picture class="w-100">
+        <source type="image/webp" srcset="{{ url_for('static', filename='dcyphrnet.webp') }}">
+        <img class="w-100 pb-5 mb-5 border-bottom" src="{{ url_for('static', filename='dcyphrnet.png') }}" alt="">
+    </picture>
 
+<div class="border-bottom w-100">
+<p style="font-family: Lato; font-size: 3vh" class="pb-1 mb-0">News about <span style="color: #017bff">dcyphr</span>.</p>
+    <div id="retainable-rss-embed"
+        data-rss="https://medium.com/feed/@jeffreyma"
+        data-maxcols="3"
+        data-layout="slider"
+        data-poststyle="external"
+        data-readmore="Read"
+        data-buttonclass="btn btn-outline-primary border20 btn-block mt-2"
+        data-offset="-100">
+    </div>
+    <br>
+</div>
+
+<!-- Begin Mailchimp Signup Form -->
+<link href="//cdn-images.mailchimp.com/embedcode/horizontal-slim-10_7.css" rel="stylesheet" type="text/css">
+<style type="text/css">
+	#mc_embed_signup{background:#fff; clear:left; font:14px Helvetica,Arial,sans-serif; width:100%;}
+	/* Add your own Mailchimp form style overrides in your site stylesheet or in this style block.
+	   We recommend moving this block and the preceding CSS link to the HEAD of your HTML file. */
+</style>
+<div id="mc_embed_signup">
+<form action="https://dcyphr.us8.list-manage.com/subscribe/post?u=1c38534c3ddafced299e23a1c&amp;id=52012213fb" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank" novalidate>
+    <div id="mc_embed_signup_scroll">
+	<p style="font-family: Lato; font-size:3vh" class="py-4">Get <span style="color: #017bff">bite-sized science</span> in your inbox!</p>
+	<input type="email" value="" name="EMAIL" class="border20 form-control w-50" id="mce-EMAIL" placeholder="email address" required>
+    <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
+    <div style="position: absolute; left: -5000px;" aria-hidden="true"><input type="text" name="b_1c38534c3ddafced299e23a1c_52012213fb" tabindex="-1" value=""></div>
+    <div class="clear"><input type="submit" value="Subscribe" name="subscribe" id="mc-embedded-subscribe" class="btn btn-outline-primary border20"></div>
+    </div>
+</form>
+</div>
+
+<!--End mc_embed_signup-->
+
+    <script src="https://www.retainable.io/assets/retainable/rss-embed/retainable-rss-embed.js"></script>
+</div>
 </div>
 
 {% endblock %}

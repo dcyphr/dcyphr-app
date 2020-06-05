@@ -1,4 +1,76 @@
 {% extends "layout.html" %}
+
+{% block summernote %}
+<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.15/dist/summernote-bs4.min.css" rel="stylesheet" defer>
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.15/dist/summernote-bs4.min.js" defer></script>
+<script>
+        var HelloButton = function (context) {
+            var ui = $.summernote.ui;
+
+            // create button
+            var button = ui.button({
+                contents: '<i class="fa fa-wikipedia-w border-0"/></i>',
+                tooltip: 'Link to any Wiki page',
+                click: function () {
+                 // invoke insertText method with 'hello' on editor module.
+                var highlight = window.getSelection();
+                var html = "<a href='https://en.wikipedia.org/wiki/" + highlight + "' target='_blank'>" + highlight + "</a>";
+                context.invoke('editor.pasteHTML', html);
+            }
+            }  );
+
+            return button.render();   // return button as jquery object
+        };
+
+        var removeHighlights = function(context){
+            var ui = $.summernote.ui;
+
+            // create button
+            var button = ui.button({
+                contents: '<i class="fa fa-eraser border-0"/></i>',
+                tooltip: 'Remove readability suggestions',
+                click: function () {
+                 // invoke insertText method with 'hello' on editor module.
+                var highlight = $('#summernote').summernote('code');
+                var html = highlight.replace(/adverb|passive|veryHardSentence|complex|hardSentence/, "");
+                $('#summernote').summernote('code', html);
+            }
+            }  );
+
+            return button.render();
+        }
+
+
+
+
+
+    $(document).ready(function() {
+        $('#summernote').summernote({
+        toolbar: [
+        ['style', ['style']],
+        ['font', ['bold', 'underline', 'clear']],
+        ['fontname', ['fontname']],
+        ['color', ['color']],
+        ['para', ['ul', 'ol', 'paragraph']],
+        ['table', ['table']],
+        ['insert', ['link', 'picture', 'video']],
+        ['view', ['fullscreen', 'codeview', 'help']], ['mybutton', ['wiki', 'comment']]
+        ],
+        buttons: {
+            wiki: HelloButton,
+            comment: removeHighlights
+        }
+        });
+    });
+</script>
+<script>
+    $(document).ready(function() {
+        $("#summernote").summernote();
+    });
+</script>
+{% endblock %}
+
+
 {% block title %}
     Approvals
 {% endblock %}
@@ -17,7 +89,7 @@
 
 
 <form method="POST" >
-    <textarea rows="10" cols="50" name="summary" id="summernote" id="summary">{{ articles[0]['summary'] }}</textarea>
+    <textarea rows="10" cols="50" name="summary" id="summernote" id="summary">{{ articles[0]['summary'] | safe }}</textarea>
     <br>
     <input type="radio" name="approve">
     <label for="approve">Approve</label>

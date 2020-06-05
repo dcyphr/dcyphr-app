@@ -723,6 +723,10 @@ def index():
     if request.method == "GET":
         leaderboard = db.execute("SELECT first, last, id, points FROM users WHERE points > 0 ORDER BY points DESC LIMIT 5")
         lead_length = len(leaderboard)
+        # feature = db.execute("SELECT id, article FROM summary WHERE featured=1")[0]
+        # db.execute("CREATE TABLE IF NOT EXISTS summary (id SERIAL PRIMARY KEY, user_id INTEGER, citation TEXT, doi TEXT, background TEXT, aims TEXT, methods TEXT, results TEXT, conclusion TEXT, task_id INTEGER, done BIT, reviewed INTEGER, remove BIT, likes INTEGER, reviewer_1 INTEGER, reviewer_2 INTEGER, FOREIGN KEY(doi) REFERENCES tasks(doi), FOREIGN KEY (user_id) REFERENCES users(id), FOREIGN KEY(task_id) REFERENCES tasks(id));")
+        # db.execute("CREATE TABLE IF NOT EXISTS tasks (id SERIAL PRIMARY KEY, type TEXT, citation TEXT, requests INTEGER, article TEXT, doi TEXT, done INTEGER, user_id INTEGER, link TEXT, FOREIGN KEY(user_id) REFERENCES users(id));")
+        # db.execute("CREATE TABLE IF NOT EXISTS comments (id SERIAL PRIMARY KEY, user_id INTEGER, doi INTEGER, comment TEXT, date DATE);")
         return render_template("index.html", leaderboard=leaderboard, lead_length=lead_length)
     else:
         # search bar
@@ -865,11 +869,8 @@ def methodupdate(method_id):
 # route to change password
 @app.route("/password/<password_token>", methods=["GET", "POST"])
 def password(password_token):
-    try:
-        email = confirm_token(password_token)
-    except:
-        flash('The link is invalid or has expired.', 'danger')
     if request.method == "GET":
+        try 
         return render_template("password.html")
     else:
         password = request.form.get("password")
@@ -878,8 +879,8 @@ def password(password_token):
             return render_template("apology.html", message="Your passwords do not match")
         else:
             hashed = generate_password_hash(password)
-            db.execute("UPDATE users SET hash = :hashed WHERE email=:email", hashed=hashed, email=email)
-        return render_template("login.html")
+            db.execute("UPDATE users SET hash = :hashed WHERE id=:user_id", hashed=hashed, user_id=session["user_id"])
+        return render_template("index.html")
 
 
 # allows user registration
@@ -950,22 +951,6 @@ def register():
 @app.route('/reset', methods=['POST'])
 def reset():
     email = request.form.get('email')
-    token = generate_confirmation_token(email)
-    confirm_url = url_for('password', password_token=token, _external=True)
-    print(confirm_url)
-    message = Mail(
-        from_email='team@dcyphr.org',
-        to_emails=email,
-        subject='Change your password',
-        html_content='<p>Please follow this link to change your password.</p><a href={}><button>Confirm account</button></a>'.format(confirm_url))
-    try:
-        sg = SendGridAPIClient('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')
-        response = sg.send(message)
-        print(response.status_code)
-        print(response.body)
-        print(response.headers)
-    except Exception as e:
-        print(e)
     return redirect("/login")
 
 #confirm account
