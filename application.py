@@ -865,7 +865,7 @@ def reset():
         from_email='team@dcyphr.org',
         to_emails=email,
         subject='Change your password',
-        html_content='<p>Please follow this link to change your password.</p><a href={}><button>Confirm account</button></a>'.format(confirm_url))
+        html_content='<p>Please follow this link to change your password.</p><a href="{}">Confirm account</a>'.format(confirm_url))
     try:
         sg = SendGridAPIClient('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')
         response = sg.send(message)

@@ -21,6 +21,18 @@ main
     min-height:100%;
     max-width:100%;
 }
+.or-seperator {
+    margin-top: 20px;
+    text-align: center;
+    border-top: 1px solid #ccc;
+}
+.or-seperator i {
+    padding: 0 10px;
+    background: #f7f7f7;
+    position: relative;
+    top: -11px;
+    z-index: 1;
+}
 
 .tip {
     display:None;

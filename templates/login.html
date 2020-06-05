@@ -5,6 +5,8 @@
 
 {% block main %}
 
+<link rel="stylesheet" href="/static/bootstrap-social.css">
+
 <div class="container">
 <br>
 <br>
@@ -23,8 +25,15 @@
                         <input type="password" id="password" class="form-control border20" style="width:100%" name="password">
                     </div>
                     <input type="submit" class="btn btn-outline-primary btn-block border20" value="Log In">
-                    <a class="btn btn-outline-primary btn-block border20" href="/google-login">Continue with Google</a>
-                    <a class="btn btn-outline-primary btn-block border20" href="/facebook-login">Continue with Facebook</a>
+                    <div class="or-seperator"><i>or</i></div>
+                    <a class="btn btn-block btn-social btn-facebook text-white">
+                        <span class="fa fa-facebook"></span> Sign in with Facebook
+                    </a>
+
+                    <a class="btn btn-block btn-social btn-google text-white">
+                        <span class="fa fa-google"></span> Sign in with Google
+                    </a>
+
                 </form>
             </div>
         </div>
