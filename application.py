@@ -793,9 +793,7 @@ def password(password_token):
 # allows user registration
 @app.route("/register", methods=["GET", "POST"])
 def register():
-    # db.execute("CREATE TABLE IF NOT EXISTS users (id SERIAL PRIMARY KEY, username TEXT, hash TEXT, summarized INTEGER, reviewed INTEGER, likes TEXT, email TEXT)")
     if request.method == "GET":
-        db.execute("DELETE FROM users WHERE email = :email", email="444@aprimail.com")
         return render_template("register.html")
     else:
         # gets form inputs
@@ -825,11 +823,7 @@ def register():
         if password != confirm:
             return render_template("apology.html", message="Your passwords do not match")
         else:
-            # email_address_info = verifier.verify(email)
-            # is_valid = validate_email(email_address=email, check_regex=True, check_mx=True, smtp_timeout=10, dns_timeout=10, use_blacklist=True)
-            # generates hash of password which is stored in database
-            # is_valid = validate_email(email, check_mx=True, verify=True)
-            # print(is_valid)
+
             hashed = generate_password_hash(password)
             if newsletter:
                 db.execute("INSERT INTO users (username, hash, email, first, last, newsletter) VALUES (:username, :hashed, :email, :first, :last, 1)", username=username, hashed=hashed, email=email, first=first, last=last)
@@ -839,11 +833,14 @@ def register():
             token = generate_confirmation_token(email)
             user = db.execute("SELECT first FROM users WHERE username=:username", username=username)
             confirm_url = url_for('confirm_email', token=token, _external=True)
+            with open('templates/register_email.html', 'r') as f:
+                html_string = f.read()
             message = Mail(
                 from_email='team@dcyphr.org',
                 to_emails=email,
                 subject='Confirm your dcyphr account',
-                html_content='<h2 style="font-family: Georgia">Welcome to <span style="color: #017bff">dcyphr</span>, {0}!<p>Please follow this link to confirm that this is your email.</p><a href={1}><button class="btn btn-primary border20">Confirm account</button></a>'.format(user[0]['first'], confirm_url))
+                html_content=html_string.format(user[0]['first'], confirm_url))
+                # html_content='<h2 style="font-family: Georgia">Welcome to <span style="color: #017bff">dcyphr</span>, {0}!<p>Please follow this link to confirm that this is your email.</p><a href={1}><button class="btn btn-primary border20">Confirm account</button></a>'.format(user[0]['first'], confirm_url))
             try:
                 sg = SendGridAPIClient('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')
                 response = sg.send(message)
@@ -860,12 +857,14 @@ def reset():
     email = request.form.get('email')
     token = generate_confirmation_token(email)
     confirm_url = url_for('password', password_token=token, _external=True)
-    print(confirm_url)
+    with open('templates/password_email.html', 'r') as f:
+        html_string = f.read()
     message = Mail(
         from_email='team@dcyphr.org',
         to_emails=email,
         subject='Change your password',
-        html_content='<p>Please follow this link to change your password.</p><a href="{}">Confirm account</a>'.format(confirm_url))
+        html_content=html_string.format(confirm_url=confirm_url))
+        # html_content='<p>Please follow this link to change your password.</p><a href="{}">Confirm account</a>'.format(confirm_url))
     try:
         sg = SendGridAPIClient('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')
         response = sg.send(message)
