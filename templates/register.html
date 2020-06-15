@@ -6,6 +6,8 @@ Register
 
 
 {% block main %}
+<link rel="stylesheet" href="/static/bootstrap-social.css">
+
 <div class="container">
 <br>
 <br>
@@ -53,6 +55,14 @@ Register
                       </label>
                     </div><br>
                     <input type="submit" class="btn btn-outline-primary btn-block border20" value="Continue">
+                    <div class="or-seperator"><i>or</i></div>
+                    <a class="btn btn-block btn-social btn-facebook text-white" href = "/login" >
+                        <span class="fa fa-facebook"></span> Register with Facebook
+                    </a>
+
+                    <a class="btn btn-block btn-social btn-google text-white" href ="/google-register">
+                        <span class="fa fa-google"></span> Register with Google
+                    </a>
 
                 </form>
             </div>

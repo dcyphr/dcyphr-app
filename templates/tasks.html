@@ -32,8 +32,10 @@
         <table class="table table-striped contributeTable">
             <thead>
                 <div class="row">
-                    <div class="col" style="font-size: 1.4em; color: #017bff"> Article</div>
+                    <div class="col" style="font-size: 1.4em; color: #017bff">Article</div>
                     <div class="col-3" style="font-size: 1.4em; color: #017bff">DOI</div>
+                    <div class="col" style="font-size: 1.4em; color:#017bff">Requested by</div>
+                    <div class="col" style="font-size: 1.4em; color:#017bff">Date</div>
                     <div class="col-2" style="font-size: 1.4em; color: #017bff"></div>
 
                 </div>
@@ -46,6 +48,8 @@
                 <div class=" border-top border-bottom row contributeTable" style="line-height: 40px" >
                     <div class="col" style="font-size: 1em"><a href="/edit/{{ tasks[i]['id'] }}">{{ tasks[i]["article"] }}</a></div>
                     <div class="col-3" style="font-size: 1em"><a href="/doi/{{ tasks[i]['id'] }}">{{ tasks[i]["doi"] }}</a></div>
+                    <div class="col" style="font-size:1em"><a href="/public/{{ tasks[i]['user_id'] }}">{{ tasks[i]['first'] }} {{ tasks[i]['last'] }}</a></div>
+                    <div class="col" style="font-size:1em">{{ tasks[i]['request_date'] }}</div>
                     <div class="col-2" style="font-size: 1em"><button class="btn btn-link btn-lg" type="submit" value="{{ tasks[i]['id'] }}" name="bookmark"><i class="fa fa-bookmark-o border-0"></i></button></div>
 
                 </div>

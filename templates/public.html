@@ -36,10 +36,12 @@
         </div>
 
         <div class="row" style="min-height: 75%">
-            <div class="m-5 p-4 col border border-dark text-left border20">
+            <div class="m-5 p-4 col border border-dark text-left border20 alternate">
                 <h4 class="mt-0 border-bottom" style="font-family: Georgia"><strong>Contributions</strong></h4>
                 {% for i in range(length) %}
+                <div class="w-100 py-1 border-bottom pl-2">
                     <a class="disabledButton my-4" href="/read/{{ articles[i]['id'] }}" align="rights">{{ articles[i]["article"] }}</a><br>
+                </div>
                 {% endfor %}
             </div>
         </div>

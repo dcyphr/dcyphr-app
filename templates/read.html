@@ -237,11 +237,7 @@
             <p class="pl-4 text-weight-light" style="line-height: 40px; font-size: 20px;">
                 {{summary_actual | safe}}
             </p>
-            <p class="pl-4 text-weight-light" style="line-height: 40px; font-size: 20px;">
-                {% for i in range(method_length) %}
-                <a href="/method/{{ method_id[i] }}">{{ methods_used[i] }}</a>
-                {% endfor %}
-            </p>
+
         </div>
 
 
@@ -280,8 +276,8 @@
             {% if comment['reply'] == 1 and comment['last'] == 1 %}
 
                 <div class="container" style="width: 80%">
-                    <div>
-                        {{ comment['comment'] }} &mdash; <span class="text-danger"> <a href="/public/{{ comment['user_id'] }}">{{ comment['username'] }}</a></span> on <span class="text-danger">{{ comment['date'] }}</span>
+                    <div id="{{comment['id']}}">
+                        {{ comment['comment'] }} &mdash; <span class="text-danger"> <a href="/public/{{ comment['user_id'] }}">{{ comment['first'] }} {{ comment['last'][0] }}.</a></span> on <span class="text-danger">{{ comment['date'] }}</span>
                         <!--{% if y == "true" %}
                             <button style="float: right;" class="btn btn-default" type="submit" name="like" value="like" disabled>Like</button>
                         {% else %}
@@ -295,7 +291,7 @@
 
                     <button class="btn btn-default bg-white" data-toggle="collapse" data-target="#reply{{ comment['comment_id'] }}{{ comment['reply'] }}" style="color: DodgerBlue;"><i class="fa fa-reply-all border-0 fa-lg"></i>  Reply</button>
 
-</div>
+                    </div>
 
                     <form method="POST" action="/comments/{{ summary_id }}" class="collapse" id="reply{{ comment['comment_id'] }}{{ comment['reply'] }}">
                         <div class="sticky-top form-group row">
@@ -315,7 +311,7 @@
             {% elif comment['reply'] == 1 %}
                 <div class="container" style="width: 80%">
                     <div>
-                       {{ comment['comment'] }} &mdash; <span class="text-danger"> <a href="/public/{{ comment['user_id'] }}">{{ comment['username'] }}</a></span> on <span class="text-danger">{{ comment['date'] }}</span>
+                       {{ comment['comment'] }} &mdash; <span class="text-danger"> <a href="/public/{{ comment['user_id'] }}">{{ comment['first'] }} {{ comment['last'][0] }}.</a></span> on <span class="text-danger">{{ comment['date'] }}</span>
                         <!--{% if y == "true" %}
                             <button style="float: right;" class="btn btn-default" type="submit" name="like" value="like" disabled>Like</button>
                         {% else %}
@@ -347,7 +343,7 @@
             {% else %}
                 <div class="container">
                     <div>
-                         {{ comment['comment'] }} &mdash;<span class="text-danger"><a href="/public/{{ comment['user_id'] }}"> {{ comment['username'] }}</a></span>  on <span class="text-danger">{{ comment['date'] }}</span>
+                         {{ comment['comment'] }} &mdash;<span class="text-danger"><a href="/public/{{ comment['user_id'] }}">{{ comment['first'] }} {{ comment['last'][0] }}.</a></span>  on <span class="text-danger">{{ comment['date'] }}</span>
                         <!--{% if y == "true" %}
                             <button style="float: right;" class="btn btn-default" type="submit" name="like" value="like" disabled>Like</button>
                         {% else %}

@@ -5,6 +5,7 @@ import math
 import sendgrid
 import datetime
 
+from oauthlib.oauth2 import WebApplicationClient
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
 from cs50 import SQL
@@ -22,6 +23,9 @@ from helpers import apology, login_required, lookup, usd, readability, remove_sc
 from summry import summry, get_apa
 from itsdangerous import URLSafeTimedSerializer
 
+import requests
+import random
+import json
 # from flask_mail import Mail, Message
 
 # Configure application
@@ -52,9 +56,19 @@ Session(app)
 # Configure CS50 Library to use SQLite database
 # db = SQL('postgres://hwicvwhg:4zzgStNJkiEy3hC3gtFHrdlyLFR_vQUN@rajje.db.elephantsql.com:5432/hwicvwhg?sslmode=require')
 db = SQL("sqlite:///dcyphr.db")
-#db = SQL(os.environ['DATABASE_URL'])
+# db = SQL(os.environ['DATABASE_URL'])
 
-# notifications
+# Google authentication
+GOOGLE_CLIENT_ID = "809605574601-dcuiplqktluk68ih4p61jstg2g44n1ld.apps.googleusercontent.com"
+GOOGLE_CLIENT_SECRET = "iZA7d5-tR_KBg2rdyHsrmAI5"
+
+GOOGLE_DISCOVERY_URL = (
+    "https://accounts.google.com/.well-known/openid-configuration"
+)
+
+client = WebApplicationClient(GOOGLE_CLIENT_ID)
+def get_google_provider_cfg():
+    return requests.get(GOOGLE_DISCOVERY_URL).json()
 
 
 # one-time form for write-a-thon
@@ -300,7 +314,7 @@ def read(summary_id):
         endorsements = db.execute("SELECT COUNT(*) AS count, user_id, verified, first, last, bio FROM endorsements JOIN users ON user_id=users.id WHERE summary_id=:summary_id GROUP BY user_id, verified, first, last, bio", summary_id=summary_id)
         likes = db.execute("SELECT COALESCE(SUM(vote), 0) AS sum FROM likes WHERE summary_id=:summary_id", summary_id=summary_id)[0]["sum"]
 
-        tags = db.execute("SELECT title, tags.id FROM tags JOIN tagitem ON tags.id=tagitem.tag_id WHERE tagitem.item_id=:summary_id", summary_id=summary[0]['id'])
+        tags = db.execute("SELECT title, tags.id FROM tags JOIN tagitem ON tags.id=tagitem.tag_id WHERE tagitem.item_id=:summary_id", summary_id=summary_id)
         tag_length = len(tags)
         all_tags = db.execute("SELECT title FROM tags")
         all_tags_len = len(all_tags)
@@ -310,20 +324,20 @@ def read(summary_id):
         c_length = len(contributors)
 
         # handles the process of parsing for methods used in the summary
-        article_methods = summary[0]["summary"].lower()
-        methods = db.execute("SELECT name FROM methods")
-        methods_list = []
-        for i in range(len(methods)):
-            methods_list.append(methods[i]["name"])
-        methods_used = []
-        method_id = []
-        for method in methods_list:
-            for word in method.split():
-                if word.lower() in article_methods:
-                    methods_used.append(method)
-                    method_id.append(db.execute("SELECT id FROM methods WHERE name=:method", method=method)[0]["id"])
-        methods_used = list(dict.fromkeys(methods_used))
-        method_length = len(methods_used)
+        # article_methods = summary[0]["summary"].lower()
+        # methods = db.execute("SELECT name FROM methods")
+        # methods_list = []
+        # for i in range(len(methods)):
+        #     methods_list.append(methods[i]["name"])
+        # methods_used = []
+        # method_id = []
+        # for method in methods_list:
+        #     for word in method.split():
+        #         if word.lower() in article_methods:
+        #             methods_used.append(method)
+        #             method_id.append(db.execute("SELECT id FROM methods WHERE name=:method", method=method)[0]["id"])
+        # methods_used = list(dict.fromkeys(methods_used))
+        # method_length = len(methods_used)
 
         # handles display of the html
         html = summary[0]['summary']
@@ -355,7 +369,7 @@ def read(summary_id):
                 x = "enable-dislike"
             else:
                 x = "enable-like"
-        return render_template("read.html", endorsements=endorsements, contributors=contributors, c_length=c_length, z=z, all_tags=all_tags, all_tags_len=all_tags_len, tag_length=tag_length, tags=tags, summary_actual=percent_remove(str(summary_actual)), title_length=title_length, titles=title_list, summary_id=summary_id, method_length=method_length, summary=summary, likes=likes, x=x, y=y, comments=comments, methods_used=methods_used, method_id=method_id)
+        return render_template("read.html", endorsements=endorsements, contributors=contributors, c_length=c_length, z=z, all_tags=all_tags, all_tags_len=all_tags_len, tag_length=tag_length, tags=tags, summary_actual=percent_remove(str(summary_actual)), title_length=title_length, titles=title_list, summary_id=summary_id, summary=summary, likes=likes, x=x, y=y, comments=comments)
 
 
 # gives browse page for a specific tag
@@ -486,7 +500,7 @@ def doi(summary_id):
 def tasks():
     if request.method == "GET":
         # Gets tasks that are not marked as done and orders it by request amount
-        tasks = db.execute("SELECT article, doi, id FROM summary WHERE done = CAST(0 AS BIT) AND bookmarked = 0 ORDER BY requests DESC")
+        tasks = db.execute("SELECT article, doi, summary.id, request_date, first, last, users.id AS user_id FROM summary JOIN users ON users.id=request_user WHERE done = CAST(0 AS BIT) AND bookmarked = 0 ORDER BY requests DESC")
 
         length = len(tasks)
         return render_template("tasks.html", tasks=tasks, length=length)
@@ -599,6 +613,7 @@ def edit(summary_id):
 
 # Allows user to request an article to be summarized
 @app.route("/request", methods=["GET", "POST"])
+@login_required
 def requesting():
     if request.method == "GET":
         return render_template("request.html")
@@ -606,6 +621,8 @@ def requesting():
         article = request.form.get("article")
         doi = request.form.get("doi")
         link = request.form.get("link")
+        request_date = date.today()
+        request_user = session["user_id"]
         try:
             citation = get_apa(doi)
         except:
@@ -621,8 +638,8 @@ def requesting():
             db.execute("UPDATE summary SET requests=:requests WHERE doi=:doi", doi=doi, requests=requests)
         else:
             # if it isn't in the database, it adds it as a new task
-            db.execute("INSERT INTO summary (requests, article, doi, done, link, citation, likes, approved) VALUES (1, :article, :doi, CAST(0 AS BIT), :link, :citation, 0, 0);",
-                       article=article, doi=doi, link=link, citation=citation)
+            db.execute("INSERT INTO summary (requests, article, doi, done, link, citation, likes, approved, request_date, request_user) VALUES (1, :article, :doi, CAST(0 AS BIT), :link, :citation, 0, 0, :request_date, :request_user);",
+                       article=article, doi=doi, link=link, citation=citation, request_date=request_date, request_user=request_user)
         return redirect("/")
 
 # homepage with a search bar
@@ -630,8 +647,9 @@ def requesting():
 def index():
     if request.method == "GET":
         leaderboard = db.execute("SELECT first, last, id, points FROM users WHERE points > 0 ORDER BY points DESC LIMIT 5")
+        random_article = db.execute("SELECT id FROM summary WHERE done=CAST(1 AS BIT) AND approved=1 ORDER BY RANDOM() LIMIT 1")[0]['id']
         lead_length = len(leaderboard)
-        return render_template("index.html", leaderboard=leaderboard, lead_length=lead_length)
+        return render_template("index.html", leaderboard=leaderboard, lead_length=lead_length, random_article=random_article)
     else:
         # search bar
         search = request.form.get("search").lower()
@@ -692,6 +710,95 @@ def login():
         return render_template("login.html")
 
 
+#GOOGLE_CLIENT_ID = os.environ.get("GOOGLE_CLIENT_ID", None)
+#GOOGLE_CLIENT_SECRET = os.environ.get("GOOGLE_CLIENT_SECRET", None)
+@app.route("/google-login")
+def googlogin():
+    # Find out what URL to hit for Google login
+    google_provider_cfg = get_google_provider_cfg()
+    authorization_endpoint = google_provider_cfg["authorization_endpoint"]
+    redirect_uri=request.base_url + "/callback"
+    redirect_uri=redirect_uri.replace('http', 'https')
+    # Use library to construct the request for login and provide
+    # scopes that let you retrieve user's profile from Google
+    request_uri = client.prepare_request_uri(
+        authorization_endpoint,
+        redirect_uri,
+        scope=["openid", "email", "profile"],
+    )
+    return redirect(request_uri)
+
+
+
+@app.route("/google-login/callback")
+def callback():
+    # Get authorization code Google sent back to you
+    code = request.args.get("code")
+    # Find out what URL to hit to get tokens that allow you to ask for
+    # things on behalf of a user
+    google_provider_cfg = get_google_provider_cfg()
+    token_endpoint = google_provider_cfg["token_endpoint"]
+    # Prepare and send request to get tokens! Yay tokens!
+    redi=request.base_url
+    redi=redi.replace('http', 'https')
+    auth=request.url
+    auth=auth.replace('http', 'https')
+    token_url, headers, body = client.prepare_token_request(
+        token_endpoint,
+        authorization_response=auth,
+        redirect_url=redi,
+        code=code,
+    )
+    token_response = requests.post(
+        token_url,
+        headers=headers,
+        data=body,
+        auth=(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET),
+    )
+    # Parse the tokens!
+    client.parse_request_body_response(json.dumps(token_response.json()))
+
+    # Now that we have tokens (yay) let's find and hit URL
+    # from Google that gives you user's profile information,
+    # including their Google Profile Image and Email
+    userinfo_endpoint = google_provider_cfg["userinfo_endpoint"]
+    uri, headers, body = client.add_token(userinfo_endpoint)
+    userinfo_response = requests.get(uri, headers=headers, data=body)
+
+    # We want to make sure their email is verified.
+    # The user authenticated with Google, authorized our
+    # app, and now we've verified their email through Google!
+    if userinfo_response.json().get("email_verified"):
+        users_email = userinfo_response.json()["email"]
+    else:
+        return "User email not available or not verified by Google.", 400
+
+    # Create a user in our db with the information provided
+    # by Google
+    # user = User(
+    #    id_=unique_id, name=users_name, email=users_email, profile_pic=picture
+    #)
+
+    # Doesn't exist? Add to database
+    #if not User.get(unique_id):
+    #    User.create(unique_id, users_name, users_email, picture)
+
+    # Begin user session by logging the user in
+    #login_user(user)
+    rows = db.execute("SELECT * FROM users WHERE email = :users_email",
+                      users_email=users_email)
+
+    # Ensure username exists and password is correct
+    if len(rows) != 1:
+        return render_template("apology.html", message="Sorry, we could not find an acccount associated with this email address")
+
+    # Check to see if user has confirmed their account
+    rows[0]['confirmed'] = 1
+    session["user_id"] = rows[0]["id"]
+    session["remember_me"] = True
+    # Redirect user to home page
+    return redirect("/")
+
 @app.route("/logout")
 def logout():
     """Log user out"""
@@ -732,7 +839,7 @@ def profile(user_id):
         info[0]['bio'] = "This user has no bio right now."
     if points == None:
         points = 0
-    return render_template("profile.html", info=info, articles=articles, length=length, progress=progress, admin=admin, points=points, user_id=user_id)
+    return render_template("profile.html", info=info, articles=articles, length=length, admin=admin, points=points, user_id=user_id)
 
 
 # public profile that other users view
@@ -850,6 +957,84 @@ def register():
             except Exception as e:
                 print(e)
             return redirect("/login")
+
+
+@app.route("/google-register")
+def googregister():
+    # Find out what URL to hit for Google login
+    google_provider_cfg = get_google_provider_cfg()
+    authorization_endpoint = google_provider_cfg["authorization_endpoint"]
+    redirect_uri=request.base_url + "/callback"
+    redirect_uri=redirect_uri.replace('http', 'https')
+    # Use library to construct the request for login and provide
+    # scopes that let you retrieve user's profile from Google
+    request_uri = client.prepare_request_uri(
+        authorization_endpoint,
+        redirect_uri,
+        scope=["openid", "email", "profile"],
+    )
+    return redirect(request_uri)
+
+@app.route("/google-register/callback")
+def registercallback():
+    # Get authorization code Google sent back to you
+    code = request.args.get("code")
+    # Find out what URL to hit to get tokens that allow you to ask for
+    # things on behalf of a user
+    google_provider_cfg = get_google_provider_cfg()
+    token_endpoint = google_provider_cfg["token_endpoint"]
+    # Prepare and send request to get tokens! Yay tokens!
+    redi=request.base_url
+    redi=redi.replace('http', 'https')
+    auth=request.url
+    auth=auth.replace('http', 'https')
+    token_url, headers, body = client.prepare_token_request(
+        token_endpoint,
+        authorization_response=auth,
+        redirect_url=redi,
+        code=code,
+    )
+    token_response = requests.post(
+        token_url,
+        headers=headers,
+        data=body,
+        auth=(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET),
+    )
+    # Parse the tokens!
+    client.parse_request_body_response(json.dumps(token_response.json()))
+
+    # Now that we have tokens (yay) let's find and hit URL
+    # from Google that gives you user's profile information,
+    # including their Google Profile Image and Email
+    userinfo_endpoint = google_provider_cfg["userinfo_endpoint"]
+    uri, headers, body = client.add_token(userinfo_endpoint)
+    userinfo_response = requests.get(uri, headers=headers, data=body)
+
+    # We want to make sure their email is verified.
+    # The user authenticated with Google, authorized our
+    # app, and now we've verified their email through Google!
+    if userinfo_response.json().get("email_verified"):
+        users_email = userinfo_response.json()["email"]
+        unique_id = userinfo_response.json()["sub"]
+        #picture = userinfo_response.json()["picture"]
+        first = userinfo_response.json()["given_name"]
+        last = userinfo_response.json()["family_name"]
+    else:
+        return "User email not available or not verified by Google.", 400
+
+    rows = db.execute("SELECT * FROM users WHERE email = :users_email", users_email=users_email)
+
+    if len(rows) == 1:
+        return render_template("apology.html", message="Sorry, there is already an account with this email address")
+
+    username = users_email[0:users_email.index("@")] + str(random.randint(10,99))
+    hashed = generate_password_hash(unique_id)
+    db.execute("INSERT INTO users (username, hash, email, first, last, newsletter) VALUES (:username, :hashed, :email, :first, :last, 1)", username=username, hashed=hashed, email=users_email, first=first, last=last)
+    rows = db.execute("SELECT * FROM users WHERE email = :users_email", users_email=users_email)
+    session["user_id"] = rows[0]["id"]
+    session["remember_me"] = True
+    return redirect("/")
+
 
 #change password
 @app.route('/reset', methods=['POST'])
