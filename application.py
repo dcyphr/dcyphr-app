@@ -84,7 +84,7 @@ def addmethod():
 # explore page with tag clusters
 @app.route("/explore")
 def explore():
-    tags = db.execute("SELECT title, text, tags.id, COUNT(tag_id) FROM tags LEFT JOIN tagitem ON tags.id=tag_id GROUP BY tags.id;")
+    tags = db.execute("SELECT title, text, tags.id, COUNT(tag_id) AS count FROM tags LEFT JOIN tagitem ON tags.id=tag_id GROUP BY tags.id, tags.title, tags.text;")
     length= len(tags)
     return render_template("explore.html", tags=tags, length=length)
 
