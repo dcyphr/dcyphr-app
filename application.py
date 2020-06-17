@@ -73,7 +73,7 @@ def get_google_provider_cfg():
     return requests.get(GOOGLE_DISCOVERY_URL).json()
 
 def classroom(room_id=None):
-    if room_id=None:
+    if room_id==None:
         return render_template("classroom_landing_html")
     else:
         return render_template("classroom.html", room_id=room_id)
