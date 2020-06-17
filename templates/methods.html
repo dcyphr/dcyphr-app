@@ -11,16 +11,30 @@ Methods
 <div class="container mt-5">
     <div class="text-left pl-3" style="font-size: 1.8em;">
         <div class="d-inline ml-4" style="border-left: 4px solid orange;"></div>
-        <div class="d-inline ml-2" style="color: #017bff">Methods</div>
+        <div class="d-inline ml-2" style="color: #017bff">Methods
+        {% if session_len != 0 %}
+        <button class="btn btn-outline-primary border10" data-target="#newmethod" data-toggle="collapse">+</button></div>
+        {% endif %}
         <p class="ml-4 mt-2" style="font-size: 0.6em; border-bottom: 1px solid black; padding: 10px">A collection of methods we have defined to make your experience better!</p>
+   </div>
+   <form action="/addmethod" method="POST" class="collapse text-left" id="newmethod">
+    <div class="form-group">
+        <input type="text" class="border20 form-control w-50" name="title" placeholder="Method name">
     </div>
+    <div class="form-group">
+        <textarea name="description" class="border20 p-3 w-50 form-control" cols="30" rows="10" placeholder="Method description"></textarea><br>
+    </div>
+    <div class="form-group">
+        <input class="btn btn-outline-primary w-50 border20" type="submit" value="Add Method">
+    </div>
+   </form>
 
 <ul style="text-align: left; list-style: none;">
     {% for i in range(length) %}
     <li class="p-2 my-2">
         <div>
             <div>
-                <a class="disabledButton" href="{{ methods[i]['id'] }}" style="color: #017bff; font-size: 1.4em; font-weight: 200;">{{ methods[i]["name"] }}</a>
+                <a class="disabledButton" href="{{ methods[i]['id'] }}" style="font-family: Lato; color: #017bff; font-size: 1.4em; ">{{ methods[i]["name"] }}</a>
             </div>
             <div class="p-2" style="font-size: 0.95em">
                 {{ preview[i]['substr'] }}...

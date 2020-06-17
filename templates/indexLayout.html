@@ -25,36 +25,6 @@
         <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" defer>
 
 
-        <!-- Start of Async Drift Code -->
-        <script defer>
-        "use strict";
-
-        function LoadDriftWidget() {
-          var t = window.driftt = window.drift = window.driftt || [];
-          if (!t.init) {
-            if (t.invoked) return void (window.console && console.error && console.error("Drift snippet included twice."));
-            t.invoked = !0, t.methods = [ "identify", "config", "track", "reset", "debug", "show", "ping", "page", "hide", "off", "on" ],
-            t.factory = function(e) {
-              return function() {
-                var n = Array.prototype.slice.call(arguments);
-                return n.unshift(e), t.push(n), t;
-              };
-            }, t.methods.forEach(function(e) {
-              t[e] = t.factory(e);
-            }), t.load = function(t) {
-              var e = 3e5, n = Math.ceil(new Date() / e) * e, o = document.createElement("script");
-              o.type = "text/javascript", o.async = !0, o.crossorigin = "anonymous", o.src = "https://js.driftt.com/include/" + n + "/" + t + ".js";
-              var i = document.getElementsByTagName("script")[0];
-              i.parentNode.insertBefore(o, i);
-            };
-          }
-        drift.SNIPPET_VERSION = '0.3.1';
-        drift.load('k23xikig2n5u')};
-
-        setTimeout(function(){
-             LoadDriftWidget();
-        }, 3000);
-        </script>
         <!-- End of Async Drift Code -->
 
         <!-- Global site tag (gtag.js) - Google Analytics -->
@@ -73,7 +43,37 @@
         	};
         </script>
         <script type="text/javascript" src="https://app.getbeamer.com/js/beamer-embed.js" defer="defer"></script>
+        <script>
+          document.addEventListener("DOMContentLoaded", function() {
+            var lazyloadImages = document.querySelectorAll("picture.lazy");
+            var lazyloadThrottleTimeout;
 
+            function lazyload () {
+              if(lazyloadThrottleTimeout) {
+                clearTimeout(lazyloadThrottleTimeout);
+              }
+
+              lazyloadThrottleTimeout = setTimeout(function() {
+                  var scrollTop = window.pageYOffset;
+                  lazyloadImages.forEach(function(img) {
+                      if(img.offsetTop < (window.innerHeight + scrollTop)) {
+                        img.src = img.dataset.src;
+                        img.classList.remove('lazy');
+                      }
+                  });
+                  if(lazyloadImages.length == 0) {
+                    document.removeEventListener("scroll", lazyload);
+                    window.removeEventListener("resize", lazyload);
+                    window.removeEventListener("orientationChange", lazyload);
+                  }
+              }, 20);
+            }
+
+            document.addEventListener("scroll", lazyload);
+            window.addEventListener("resize", lazyload);
+            window.addEventListener("orientationChange", lazyload);
+          });
+        </script>
 
         <title>dcyphr: {% block title %}{% endblock %}</title>
 
@@ -94,12 +94,6 @@
         <main class="">
             {% block main %}{% endblock %}
         </main>
-
-        <script>
-            $(document).ready(function() {
-                $("#summernote").summernote();
-            });
-        </script>
     </body>
     <br>
 <!-- Footer -->

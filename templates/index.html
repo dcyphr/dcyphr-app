@@ -4,7 +4,7 @@
 {% endblock %}
 
 {% block navbar %}
-<meta name="description" content="Decentralizing scientific literature. dcyphr makes it easy to read, request, and share lay summaries of scientific articles. We empower the public to access scientific results directly, save time for researchers and students, and broaden the scientific impact of researchers.">
+<meta name="description" content="Decentralizing scientific literature. dcyphr makes it easy to read, request, and share distillations of scientific articles. We empower the public to access scientific results directly, save time for researchers and students, and broaden the scientific impact of researchers.">
 <div id="preloader">
     <div id="status" class="text-center">
         <img style="margin-top: 20vh" src="{{ url_for('static', filename='dna.svg') }}" alt="Loading...">
@@ -121,7 +121,7 @@
         <script>
            window.onload = function(){
                 //hide the preloader
-                $("#preloader").fadeOut(500, function(){
+                $("#preloader").fadeOut(250, function(){
                     $("#preloader").remove();
                 });
             };
@@ -208,7 +208,7 @@
                 <p>
                     Join the movement and help make science more accessible.
                     <br>
-                    Upload summaries to expand your scientific impact.
+                    Upload distillations to expand your scientific impact.
                     <br>
                     Work with AI to quickly dcyphr articles.
                 </p>
@@ -264,7 +264,7 @@
                 </div>
                 {% endfor %}
                 <div class="text-left" style="bottom:2vh; left:2vh; position:absolute">
-                     <small class="text-muted">All-time top contributors. Points are earned through creating summaries, editing articles to improve accuracy, and others' engaging with your content.</small>
+                     <small class="text-muted">All-time top contributors. Points are earned through distilling research, editing articles to improve accuracy, and others' engaging with your content.</small>
                 </div>
             </div>
         </div>
@@ -279,11 +279,11 @@
                     REQUEST INSIGHTS
                 </div>
                 <p>
-                    Streamline your workflow with summaries you can trust.
+                    Streamline your workflow with articles you can trust.
                     <br>
                     Turbocharge your research by requesting results immediately.
                     <br>
-                    Get personalized summaries today.
+                    Get personalized distillations today.
                 </p>
                 <br>
                 <a href="/request" class="btn btn-lg bg-white btn-primary" style="color: #017bff">
