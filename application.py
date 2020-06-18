@@ -1,7 +1,6 @@
 import os
 import re
 import math
-# import smtplib
 import sendgrid
 import datetime
 
@@ -17,8 +16,6 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from datetime import date, datetime
 from bs4 import BeautifulSoup
 import jellyfish
-# from flask_email_verifier import EmailVerifier
-# from validate_email import validate_email
 from helpers import apology, login_required, lookup, usd, readability, remove_scripts, percent_remove
 from summry import summry, get_apa
 from itsdangerous import URLSafeTimedSerializer
@@ -26,7 +23,6 @@ from itsdangerous import URLSafeTimedSerializer
 import requests
 import random
 import json
-# from flask_mail import Mail, Message
 
 # Configure application
 app = Flask(__name__)
@@ -53,8 +49,7 @@ app.config["SESSION_TYPE"] = "filesystem"
 
 Session(app)
 
-# Configure CS50 Library to use SQLite database
-# db = SQL('postgres://hwicvwhg:4zzgStNJkiEy3hC3gtFHrdlyLFR_vQUN@rajje.db.elephantsql.com:5432/hwicvwhg?sslmode=require')
+
 # db = SQL("sqlite:///dcyphr.db")
 db = SQL(os.environ['DATABASE_URL'])
 
@@ -85,8 +80,9 @@ def addmethod():
 @app.route("/explore")
 def explore():
     tags = db.execute("SELECT title, text, tags.id, COUNT(tag_id) AS count FROM tags LEFT JOIN tagitem ON tags.id=tag_id GROUP BY tags.id, tags.title, tags.text;")
+    method_length = db.execute("SELECT COUNT(*) AS count FROM methods")[0]['count']
     length= len(tags)
-    return render_template("explore.html", tags=tags, length=length)
+    return render_template("explore.html", tags=tags, length=length, method_length=method_length)
 
 
 # allows users to browse summaries
@@ -97,8 +93,8 @@ def browse(page):
         page_length = 10
 
         summaries = db.execute(
-            "SELECT COUNT(*), summary.likes, article, first, last, users.id AS user, doi, summary.id, summary.summary FROM summary JOIN users ON summary.user_id = users.id WHERE summary.done = CAST(1 AS BIT) and summary.approved = 1 GROUP BY summary.id ORDER BY summary.likes DESC LIMIT :limit OFFSET :offset;", limit=page_length, offset=page_length*page)
-        length = summaries[0]['COUNT(*)']
+            "SELECT summary.likes, article, first, last, users.id AS user, doi, summary.id, summary.summary FROM summary JOIN users ON summary.user_id = users.id WHERE summary.done = CAST(1 AS BIT) and summary.approved = 1 ORDER BY summary.likes DESC LIMIT :limit OFFSET :offset;", limit=page_length, offset=page_length*page)
+        length = db.execute("SELECT COUNT(*) AS count FROM summary WHERE done=CAST(1 AS BIT) AND approved=1")[0]['count']
         if length == 0:
             p = "No summaries to show. Please contribute."
             return render_template("browse.html", summaries=summaries, length=length, p=p)
@@ -143,7 +139,6 @@ def history(summary_id):
     else:
         # handles deleting version
         try:
-            delete_button = request.form["delete"]
             delete=request.form.get("delete")
             db.execute("DELETE FROM history WHERE version=:version AND summary_id=:summary_id", version=delete, summary_id=summary_id)
             return redirect("/history/{}".format(summary_id))
@@ -218,7 +213,6 @@ def endorse(summary_id):
         return redirect("/read/{}".format(summary_id))
 @app.route("/likes/<int:summary_id>", methods=["POST"])
 def likes(summary_id):
-    dislike = request.form.get("dislike")
     like = request.form.get("like")
     today = date.today()
     today = today.strftime("%B %d, %Y")
@@ -699,7 +693,6 @@ def login():
             return render_template("apology.html", message="invalid username/password combination")
 
         # Check to see if user has confirmed their account
-        email = rows[0]['email']
         if rows[0]['confirmed'] == 0:
             session["user_id"] = rows[0]["id"]
             return redirect("/unconfirmed/{}".format(session['user_id']))
@@ -913,7 +906,6 @@ def register():
         return render_template("register.html")
     else:
         # gets form inputs
-        emailConfirmed = False
         first = request.form.get("first")
         last = request.form.get("last")
         username = request.form.get("username")
