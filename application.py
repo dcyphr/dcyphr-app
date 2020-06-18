@@ -499,7 +499,7 @@ def doi(summary_id):
 def tasks():
     if request.method == "GET":
         # Gets tasks that are not marked as done and orders it by request amount
-        tasks = db.execute("SELECT article, doi, summary.id, request_date, first, last, users.id AS user_id FROM summary JOIN users ON users.id=request_user WHERE done = CAST(0 AS BIT) AND bookmarked = 0 ORDER BY requests DESC")
+        tasks = db.execute("SELECT article, doi, summary.id, request_date, first, last, users.id AS user_id FROM summary LEFT JOIN users ON users.id=request_user WHERE done = CAST(0 AS BIT) AND bookmarked = 0 ORDER BY requests DESC")
 
         length = len(tasks)
         return render_template("tasks.html", tasks=tasks, length=length)
