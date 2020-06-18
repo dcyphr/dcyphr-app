@@ -93,7 +93,7 @@ def browse(page):
         page_length = 10
 
         summaries = db.execute(
-            "SELECT summary.likes, article, first, last, users.id AS user, doi, summary.id, summary.summary FROM summary JOIN users ON summary.user_id = users.id WHERE summary.done = CAST(1 AS BIT) and summary.approved = 1 ORDER BY summary.likes DESC LIMIT :limit OFFSET :offset;", limit=page_length, offset=page_length*page)
+            "SELECT summary_date, summary.likes, article, first, last, users.id AS user, doi, summary.id, summary.summary FROM summary JOIN users ON summary.user_id = users.id WHERE summary.done = CAST(1 AS BIT) and summary.approved = 1 ORDER BY summary.likes DESC LIMIT :limit OFFSET :offset;", limit=page_length, offset=page_length*page)
         length = db.execute("SELECT COUNT(*) AS count FROM summary WHERE done=CAST(1 AS BIT) AND approved=1")[0]['count']
         if length == 0:
             p = "No summaries to show. Please contribute."
@@ -307,7 +307,7 @@ def read(summary_id):
         # Gets information about article to display
 
         summary = db.execute(
-            "SELECT summary.id, summary.summary, link, article, citation, user_id, doi, first, last, bio, verified FROM summary JOIN users ON summary.user_id = users.id WHERE summary.id=:summary_id", summary_id=summary_id)
+            "SELECT summary_date, summary.id, summary.summary, link, article, citation, user_id, doi, first, last, bio, verified FROM summary JOIN users ON summary.user_id = users.id WHERE summary.id=:summary_id", summary_id=summary_id)
         comments = db.execute("SELECT * FROM comments JOIN users ON comments.user_id = users.id WHERE summary_id=:summary_id ORDER BY comment_id, comments.id", summary_id=summary_id)
 
         endorsements = db.execute("SELECT COUNT(*) AS count, user_id, verified, first, last, bio FROM endorsements JOIN users ON user_id=users.id WHERE summary_id=:summary_id GROUP BY user_id, verified, first, last, bio", summary_id=summary_id)
@@ -377,7 +377,7 @@ def tag(tag_id, page):
     if request.method == "GET":
         page_length = 10
 
-        titles = db.execute("SELECT article, summary.id AS summary_id, summary.likes, first, last, users.id, summary.summary FROM users JOIN summary ON summary.user_id=users.id JOIN tagitem on summary.id=tagitem.item_id WHERE tagitem.tag_id=:tag_id AND summary.approved=1 AND summary.done = CAST(1 AS BIT) ORDER BY summary.likes DESC LIMIT :limit OFFSET :offset;", limit=page_length, offset=page_length*page, tag_id=tag_id)
+        titles = db.execute("SELECT summary_date, article, summary.id AS summary_id, summary.likes, first, last, users.id, summary.summary FROM users JOIN summary ON summary.user_id=users.id JOIN tagitem on summary.id=tagitem.item_id WHERE tagitem.tag_id=:tag_id AND summary.approved=1 AND summary.done = CAST(1 AS BIT) ORDER BY summary.likes DESC LIMIT :limit OFFSET :offset;", limit=page_length, offset=page_length*page, tag_id=tag_id)
 
         plength = db.execute("SELECT COUNT(*) AS count FROM tagitem JOIN summary on summary.id=item_id WHERE summary.done = CAST(1 AS BIT) AND summary.approved = 1 AND tag_id=:tag_id", tag_id=tag_id)[0]['count']
 
