@@ -107,7 +107,7 @@
             </p>
 
             <p style="font-size: medium;">
-                dcyphr-d by <font style="color: #017bff"><a href="/public/{{ summary[0]['user_id'] }}">{{ summary[0]['first'] }} {{summary[0]['last']}}</a></font>
+                dcyphr-d by <font style="color: #017bff"><a href="/public/{{ summary[0]['user_id'] }}">{{ summary[0]['first'] }} {{summary[0]['last']}}</a></font> on {{ summary[0]['summary_date'] }}
                 {% if summary[0]['verified'] == 1 %}
                 <img src="https://img.icons8.com/nolan/25/verified-account.png" class="pb-2" title="Verified User"/>
                 {% endif %}
