@@ -718,7 +718,10 @@ def googlogin():
     google_provider_cfg = get_google_provider_cfg()
     authorization_endpoint = google_provider_cfg["authorization_endpoint"]
     redirect_uri=request.base_url + "/callback"
-    redirect_uri=redirect_uri.replace('http', 'https')
+    if 'https' in redirect_uri:
+        pass
+    else:
+        redirect_uri=redirect_uri.replace('http', 'https')
     # Use library to construct the request for login and provide
     # scopes that let you retrieve user's profile from Google
     print(authorization_endpoint)
