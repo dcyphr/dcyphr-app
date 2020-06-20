@@ -966,7 +966,10 @@ def googregister():
     google_provider_cfg = get_google_provider_cfg()
     authorization_endpoint = google_provider_cfg["authorization_endpoint"]
     redirect_uri=request.base_url + "/callback"
-    redirect_uri=redirect_uri.replace('http', 'https')
+    if 'https' in redirect_uri:
+        pass
+    else:
+        redirect_uri=redirect_uri.replace('http', 'https')
     # Use library to construct the request for login and provide
     # scopes that let you retrieve user's profile from Google
     request_uri = client.prepare_request_uri(
@@ -1089,7 +1092,7 @@ def unconfirmed(user_id):
             from_email=('team@dcyphr.org', 'dcyphr'),
             to_emails=user['email'],
             subject='Confirm Your dcyphr Account',
-                html_content='<h2 style="font-family: Georgia">Welcome to <span style="color: #017bff">dcyphr</span>, {0}!👋</h2><a href={1}>Please follow this link to confirm your account.</a><p>[{2}] End of message.</p>'.format(user['first'], confirm_url, date.today()))
+                html_content='<h2 style="font-family: Georgia">Welcome to <span style="color: #017bff">dcyphr</span>, {0}!</h2><a href={1}>Please follow this link to confirm your account.</a><p>[{2}] End of message.</p>'.format(user['first'], confirm_url, date.today()))
         try:
             sg = SendGridAPIClient('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')
             response = sg.send(message)
