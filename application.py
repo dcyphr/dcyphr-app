@@ -744,9 +744,11 @@ def callback():
     token_endpoint = google_provider_cfg["token_endpoint"]
     # Prepare and send request to get tokens! Yay tokens!
     redi=request.base_url
-    redi=redi.replace('http', 'https')
+    if 'https' not in redi:
+        redi=redi.replace('http', 'https')
     auth=request.url
-    auth=auth.replace('http', 'https')
+    if 'https' not in auth:
+        auth=auth.replace('http', 'https')
     token_url, headers, body = client.prepare_token_request(
         token_endpoint,
         authorization_response=auth,
