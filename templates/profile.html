@@ -42,8 +42,13 @@
                 <h4 class="mt-0 border-bottom" style="font-family:Georgia"><strong>Contributions</strong></h4>
                 {% for i in range(length) %}
                 <div class="w-100 py-1 border-bottom pl-2">
+                    {% if articles[i]["approved"] == 1 %}
                     <a class="disabledButton my-4" href="/read/{{ articles[i]['id'] }}" align="rights">{{ articles[i]["article"] }}</a><br>
+                    {% else %}
+                    <div class="disabledButton my-4" align="rights">{{ articles[i]["article"] }} <i>Pending...</i></div><br>
+                    {% endif %}
                 </div>
+                
                 {% endfor %}
             </div>
 
