@@ -1138,7 +1138,7 @@ def approvals(approval_id):
         # handles approval of a summary
         else:
             user_id = db.execute("SELECT user_id FROM summary WHERE id=:summary_id", summary_id=summary_id)[0]["user_id"]
-            points = db.execute("SELECT COALESCE(points, 0) FROM users WHERE id=:user_id", user_id=user_id)[0]['points']
+            points = db.execute("SELECT COALESCE(points, 0) FROM users WHERE id=:user_id", user_id=user_id)[0]['coalesce']
             points = points + 20
             db.execute("UPDATE users SET points=:points WHERE id=:user_id", points=points, user_id=user_id)
             db.execute("UPDATE summary SET summary = :summary, approved=1, bookmarked=0 WHERE id=:summary_id", summary=summary, summary_id=summary_id)
