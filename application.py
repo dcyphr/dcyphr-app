@@ -617,9 +617,11 @@ def requesting():
             requests = db.execute("SELECT requests FROM summary WHERE doi=:doi", doi=doi)[0]["requests"] + 1
             db.execute("UPDATE summary SET requests=:requests WHERE doi=:doi", doi=doi, requests=requests)
         else:
+            with open('templates/edit_guidelines.html', 'r') as f:
+                summary = f.read()
             # if it isn't in the database, it adds it as a new task
-            db.execute("INSERT INTO summary (requests, article, doi, done, link, citation, likes, approved, request_date, request_user) VALUES (1, :article, :doi, CAST(0 AS BIT), :link, :citation, 0, 0, :request_date, :request_user);",
-                       article=article, doi=doi, link=link, citation=citation, request_date=request_date, request_user=request_user)
+            db.execute("INSERT INTO summary (requests, article, doi, done, link, citation, likes, approved, request_date, request_user, summary) VALUES (1, :article, :doi, CAST(0 AS BIT), :link, :citation, 0, 0, :request_date, :request_user, :summary);",
+                       article=article, doi=doi, link=link, citation=citation, request_date=request_date, request_user=request_user, summary=summary)
         return redirect("/")
 
 # homepage with a search bar
