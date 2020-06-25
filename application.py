@@ -554,62 +554,43 @@ def ai(summary_id):
     return redirect(url_for('edit', summary_id=summary_id, z=True, output=output, **request.args))
 
 # Allows user to make edits to a task or summary
-@app.route("/edit/<int:summary_id>", methods=["GET", "POST"])
+@app.route("/edit/<int:summary_id>")
 @login_required
 def edit(summary_id):
-    # gets the existing summary or sets a None value to empty string
-    # summary = db.execute("SELECT summary FROM summary WHERE id=:summary_id", summary_id=summary_id)[0]["summary"]
-    # if summary == None:
-    #     summary = ""
-    # else:
-        # summary = remove_html_tags(summary_dirty)
-    if request.method == "GET":
-        # provides contributor with information about the article they are summarizing
-        article = db.execute("SELECT article, user_id, link, summary FROM summary WHERE id=:summary_id", summary_id=summary_id)
-        username = db.execute("SELECT username FROM users WHERE id=:user_id", user_id=article[0]["user_id"])
-        return render_template("edit.html", article=article, summary=percent_remove(str(article[0]['summary'])), username=username, output="", z=False, summary_id=summary_id)
+
+    # provides contributor with information about the article they are summarizing
+    article = db.execute("SELECT article, user_id, link, summary FROM summary WHERE id=:summary_id", summary_id=summary_id)
+    username = db.execute("SELECT username FROM users WHERE id=:user_id", user_id=article[0]["user_id"])
+    return render_template("edit.html", article=article, summary=percent_remove(str(article[0]['summary'])), username=username, output="", z=False, summary_id=summary_id)
+
+@app.route("/submission/<int:summary_id>", methods=["POST"])
+@login_required
+def submission(summary_id):
+
+    # inserts user summary from form into summary table
+    summary_new_html = remove_scripts(request.form.get("summary"))
+
+    # checks if user is primary author
+    if request.form['submit_button'] == 'save':
+        db.execute("UPDATE summary SET summary=:summary WHERE id=:summary_id", summary=summary_new_html, summary_id=summary_id)
+        return redirect("/edit/{}".format(summary_id))
+        
+    user = db.execute("SELECT user_id FROM summary WHERE id=:summary_id", summary_id=summary_id)[0]["user_id"]
+
+    if not user:
+        db.execute("UPDATE summary SET summary=:summary, done=CAST(1 AS BIT), user_id=:user_id WHERE id=:summary_id;",
+                user_id=session["user_id"], summary_id=summary_id, summary=summary_new_html)
     else:
-        # inserts user summary from form into summary table
+        db.execute("UPDATE summary SET summary=:summary, done=CAST(1 AS BIT) WHERE id=:summary_id;",
+                summary=summary_new_html, summary_id=summary_id)
 
-        summary_new_html = remove_scripts(request.form.get("summary"))
-        user = db.execute("SELECT user_id FROM summary WHERE id=:summary_id", summary_id=summary_id)[0]["user_id"]
+    db.execute("UPDATE users SET points=points+10 WHERE id=:user_id", user_id=session['user_id'])
 
-        # checks if user is primary author
-        if not user:
-            db.execute("UPDATE summary SET summary=:summary, done=CAST(1 AS BIT), user_id=:user_id WHERE id=:summary_id;",
-                   user_id=session["user_id"], summary_id=summary_id, summary=summary_new_html)
-        else:
-            db.execute("UPDATE summary SET summary=:summary, done=CAST(1 AS BIT) WHERE id=:summary_id;",
-                   summary=summary_new_html, summary_id=summary_id)
+    # handles versioning and saving version information
+    version = db.execute("SELECT COALESCE(MAX(version), -1) AS max_version FROM history WHERE summary_id=:summary_id", summary_id=summary_id)[0]['max_version'] + 1
+    db.execute("INSERT INTO history (version, date, user_id, text, summary_id) VALUES (:version, :date, :user_id, :text, :summary_id)", version=version, date=date.today(), user_id=session["user_id"], text=summary_new_html, summary_id=summary_id)
 
-        # create points bot
-        # difference = jellyfish.damerau_levenshtein_distance(summary, summary_new)
-        # if len(summary) > len(summary_new):
-        #     max_diff = len(summary)
-        # else:
-        #     max_diff = len(summary_new)
-        # if max_diff == 0:
-        #     diff_ratio = 0
-        # else:
-        #     diff_ratio = difference/max_diff
-        # if diff_ratio < 0.05:
-        #     pass
-        # else:
-        #     if readability(summary_new) - readability(summary) < 0:
-        db.execute("UPDATE users SET points=points+10 WHERE id=:user_id", user_id=session['user_id'])
-
-        # handles versioning and saving version information
-        version = db.execute("SELECT COALESCE(MAX(version), -1) AS max_version FROM history WHERE summary_id=:summary_id", summary_id=summary_id)[0]['max_version'] + 1
-        db.execute("INSERT INTO history (version, date, user_id, text, summary_id) VALUES (:version, :date, :user_id, :text, :summary_id)", version=version, date=date.today(), user_id=session["user_id"], text=summary_new_html, summary_id=summary_id)
-
-        # handles compare edits logic for the admin task
-        # existing = db.execute("SELECT id FROM compare WHERE summary_id=:summary_id", summary_id=summary_id)
-        # if len(existing) == 0:
-        #     db.execute("INSERT INTO compare (summary_id, old, new, user_id) VALUES (:summary_id, :old, :new, :user_id)", summary_id=summary_id, old=summary, new=summary_new_html, user_id=session["user_id"])
-        # else:
-        #     db.execute("UPDATE compare SET old=new, new=:new WHERE summary_id=:summary_id AND user_id=:user_id", summary_id=summary_id, new=summary_new_html, user_id=session["user_id"])
-        return redirect("/")
-
+    return redirect("/")
 # Allows user to request an article to be summarized
 @app.route("/request", methods=["GET", "POST"])
 @login_required
@@ -636,9 +617,11 @@ def requesting():
             requests = db.execute("SELECT requests FROM summary WHERE doi=:doi", doi=doi)[0]["requests"] + 1
             db.execute("UPDATE summary SET requests=:requests WHERE doi=:doi", doi=doi, requests=requests)
         else:
+            with open('templates/edit_guidelines.html', 'r') as f:
+                summary = f.read()
             # if it isn't in the database, it adds it as a new task
-            db.execute("INSERT INTO summary (requests, article, doi, done, link, citation, likes, approved, request_date, request_user) VALUES (1, :article, :doi, CAST(0 AS BIT), :link, :citation, 0, 0, :request_date, :request_user);",
-                       article=article, doi=doi, link=link, citation=citation, request_date=request_date, request_user=request_user)
+            db.execute("INSERT INTO summary (requests, article, doi, done, link, citation, likes, approved, request_date, request_user, summary) VALUES (1, :article, :doi, CAST(0 AS BIT), :link, :citation, 0, 0, :request_date, :request_user, :summary);",
+                       article=article, doi=doi, link=link, citation=citation, request_date=request_date, request_user=request_user, summary=summary)
         return redirect("/")
 
 # homepage with a search bar
@@ -833,7 +816,8 @@ def bio(user_id):
 def profile(user_id):
     # gets list of articles that the user has written
     articles = db.execute(
-        "SELECT article, id FROM summary WHERE user_id=:user_id AND done=CAST(1 AS BIT) AND approved = 1", user_id=user_id)
+        "SELECT article, id, approved FROM summary WHERE user_id=:user_id AND done=CAST(1 AS BIT) ORDER BY approved DESC", user_id=user_id)
+    
     # gets number of articles they have written
     length = len(articles)
     points = db.execute("SELECT points FROM users WHERE id=:user_id", user_id=session["user_id"])[0]['points']
@@ -852,7 +836,7 @@ def profile(user_id):
 @app.route("/public/<int:user_id>")
 def public(user_id):
     articles = db.execute(
-        "SELECT article, id FROM summary WHERE user_id=:user_id AND done = CAST(1 AS BIT) AND approved=1", user_id=user_id)
+        "SELECT article, approved, id FROM summary WHERE user_id=:user_id AND done = CAST(1 AS BIT) ORDER BY approved DESC", user_id=user_id)
     length = len(articles)
     info = db.execute("SELECT bio, username, points, first, last, admin, verified FROM users WHERE id=:user_id", user_id=user_id)
     if info[0]['points'] == None:

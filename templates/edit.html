@@ -33,8 +33,9 @@
                 click: function () {
                  // invoke insertText method with 'hello' on editor module.
                 var highlight = $('#summernote').summernote('code');
-                var html = highlight.replace(/adverb|passive|veryHardSentence|complex|hardSentence/, "");
+                var html = highlight.replace(/adverb|passive|veryHardSentence|complex|hardSentence/g, "");
                 $('#summernote').summernote('code', html);
+                
             }
             }  );
 
@@ -132,12 +133,14 @@
                     </button>
                 </div>
 
-                <form method="POST" >
+                <form method="POST" action="/submission/{{ summary_id }}">
                     <textarea id="summernote" name="summary">{{summary}}</textarea>
-                    <div class="container text-center">
-                        <button class="btn btn-default my-3" type="submit" style="color: white; background-color: DodgerBlue">Submit</button>
+                    <div>
+                        <div class="container text-center">
+                            <button class="btn btn-outline-secondary border20 my-3" type="submit" name="submit_button" value="save">Save</button>
+                            <button class="btn btn-outline-primary border20 my-3" type="submit" name="submit_button" value="finish">Finish</button>
+                        </div>
                     </div>
-
                 </form>
 
             </div>
