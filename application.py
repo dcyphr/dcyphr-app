@@ -16,7 +16,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from datetime import date, datetime
 from bs4 import BeautifulSoup
 import jellyfish
-from helpers import apology, login_required, lookup, usd, readability, remove_scripts, percent_remove
+from helpers import apology, login_required, readability, remove_scripts, percent_remove
 from summry import summry, get_apa
 from itsdangerous import URLSafeTimedSerializer
 
@@ -1121,6 +1121,7 @@ def approvals(approval_id):
         # handles disapproval of a summary
         if not approve:
             db.execute("UPDATE summary SET summary = '', user_id=NULL, done=CAST(0 AS BIT) WHERE id=:summary_id", summary_id=summary_id)
+            db.execute("DELETE FROM history WHERE summary_id=:summary_id", summary_id=summary_id)
         # handles approval of a summary
         else:
             user_id = db.execute("SELECT user_id FROM summary WHERE id=:summary_id", summary_id=summary_id)[0]["user_id"]

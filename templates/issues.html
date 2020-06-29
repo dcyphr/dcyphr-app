@@ -24,10 +24,16 @@
         </div>
 
         </div>
-        <div class="row" style="margin:50px">
-            <font style="color: #017bff"><a href="/edit/{{ summary_id }}"><i class="fa fa-edit fa-2x border-0"></i><br>Edit</a></font>&nbsp
-            <font style="color: #017bff; text-align: center"><a href="/history/{{ summary_id }}"><i class="fa fa-history fa-2x border-0"></i><br>History</a></font> &nbsp
-            <font style="color: #017bff; text-align: center"><a href="/read/{{ summary_id }}"><i class="fa fa-book fa-2x border-0"></i><br>Read</a></font>
+        <div class="row px-5">
+            <a href="/edit/{{ summary_id }}">
+                {% if y  == False %}
+                <button class="btn btn-outline-primary border20" disabled>
+                {% else %}
+                <button class="btn btn-outline-primary border20">
+                {% endif %}
+                    <i class="fa fa-pencil border-0"></i> Edit</button></a>&nbsp;            
+            <a href="/history/{{ summary_id }}"><button class="btn btn-outline-primary border20"><i class="fa fa-shield border-0"></i> Activity</button></a>&nbsp;
+            <a href="/read/{{ summary_id }}"><button class="btn btn-outline-primary border20"><i class="fa fa-book border-0"></i> Read</button></a>
         </div>
         {% if length == 0 %}
         No issues!
