@@ -68,7 +68,7 @@ def get_google_provider_cfg():
     return requests.get(GOOGLE_DISCOVERY_URL).json()
 
 
-# one-time form for write-a-thon
+# add description to glossary of terms
 @app.route("/addmethod", methods=["POST"])
 def addmethod():
     title = request.form.get("title")
@@ -81,8 +81,7 @@ def addmethod():
 def explore():
     tags = db.execute("SELECT title, text, tags.id, COUNT(tag_id) AS count FROM tags LEFT JOIN tagitem ON tags.id=tag_id GROUP BY tags.id, tags.title, tags.text;")
     method_length = db.execute("SELECT COUNT(*) AS count FROM methods")[0]['count']
-    length= len(tags)
-    return render_template("explore.html", tags=tags, length=length, method_length=method_length)
+    return render_template("explore.html", tags=tags, method_length=method_length)
 
 
 # allows users to browse summaries
@@ -92,8 +91,11 @@ def browse(page):
         # sets how many articles per page
         page_length = 10
 
+        # gets summary information for articles to show
         summaries = db.execute(
             "SELECT summary_date, summary.likes, article, first, last, users.id AS user, doi, summary.id, summary.summary FROM summary JOIN users ON summary.user_id = users.id WHERE summary.done = CAST(1 AS BIT) and summary.approved = 1 ORDER BY summary.likes DESC LIMIT :limit OFFSET :offset;", limit=page_length, offset=page_length*page)
+        
+        # edge case handling
         length = db.execute("SELECT COUNT(*) AS count FROM summary WHERE done=CAST(1 AS BIT) AND approved=1")[0]['count']
         if length == 0:
             p = "No summaries to show. Please contribute."
@@ -111,7 +113,6 @@ def browse(page):
         # gets tag information
         tags = db.execute("SELECT id, title FROM tags")
         tags_length = len(tags)
-        # takes care of case where there are no summaries
 
         # gets preview for summaries
         soup = []
