@@ -240,15 +240,23 @@ dl:nth-of-type(odd) {
     color: DodgerBlue;
 }
 
-.home_page {
-    min-height: 100vh;
-    max-width:100%;
-    margin: 0 auto;
+.form-control-underlined {
+    border-width: 0;
+    border-bottom-width: 1px;
+    border-radius: 0;
+    padding-left: 0;
+    margin-bottom: 0;
+  }
+  .form-control-underlined::placeholder {
+      color: white;
+  }
+.main{
+    overflow: hidden;
 }
-
 .home_page:nth-of-type(odd) {
     background: linear-gradient(#000d24, #0c4d9c);
     color: white;
+    min-height: 100vh;
 }
 
 .border20 {
@@ -262,7 +270,7 @@ dl:nth-of-type(odd) {
 }
 
 .index_info {
-    padding: 30% 13%;
+    padding: 30% 15%;
 }
 
 .index_info div {
