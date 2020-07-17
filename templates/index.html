@@ -10,7 +10,7 @@
         <img style="margin-top: 20vh" src="{{ url_for('static', filename='dna.svg') }}" alt="Loading...">
     </div>
 </div>
-<nav class="navbar navbar-expand-md navbar-dark" style="background-color: rgb(19,19,19) !important; font-family: Lato">
+<nav class="navbar navbar-expand-md navbar-dark" style="background-color: rgb(19,19,19) !important; font-family: Lato; font-weight:600;">
             <button aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler" data-target="#navbar" data-toggle="collapse" type="button">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -20,71 +20,13 @@
                             <a href="/" class="nav-link text-white">Home</a>
                         </li>
                         <li class="nav-item"><a class="nav-link text-white" href="/explore">Explore</a></li>
-                        <!--<li class="nav-item dropdown">-->
-                        <!--    <a class="nav-link text-white" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">-->
-                        <!--      Explore-->
-                        <!--    </a>-->
-                        <!--    <div class="dropdown-menu" aria-labelledby="navbarDropdown">-->
-                        <!--      <a class="dropdown-item" href="/explore" style="color: #000d25">Topics</a>-->
-                        <!--      <a class="dropdown-item" href="/method/0" style="color: #000d25">Methods</a>-->
-                        <!--      <a class="dropdown-item" href="/browse/0" style="color: #000d25">See all</a>-->
-                        <!--    </div>-->
-                        <!-- </li>-->
                         <li class="nav-item"><a class="nav-link text-white" href="/request">Request</a></li>
                         <li class="nav-item"><a class="nav-link text-white" href="/tasks">Contribute</a></li>
-                        <!-- <li class="nav-item dropdown">
-                            <a class="nav-link text-white" href="#" id="navbarDropdown1" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                              Contribute
-                            </a>
-                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                              <a class="dropdown-item" href="/tasks" style="color: #000d25">Tasks</a>
-                              <a class="dropdown-item" href="/suggestions/0" style="color: #000d25">QuickTasks</a>
-                            </div>
-                         </li> -->
-                        <!--<li class="nav-item dropdown">-->
-                        <!--    <a class="nav-link text-white" href="#" id="navbarDropdown1" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">-->
-                        <!--      Help-->
-                        <!--    </a>-->
-                        <!--    <div class="dropdown-menu" aria-labelledby="navbarDropdown">-->
-                        <!--      <a class="dropdown-item" href="/about" style="color: #000d25">About</a>-->
-                        <!--      <a class="dropdown-item" href="/contact" style="color: #000d25">Contact Us</a>-->
-                        <!--    </div>-->
-                        <!-- </li>-->
                         <li class="nav-item"><a class="nav-link text-white" href="/about">About</a></li>
-                         <!--<li class="nav-item px-4 dropdown">-->
-                         <!--  <div class="row">-->
-                         <!--     <a class="navbar-brand" href="/"><font color="#017bff">dcyphr</font></a>-->
-                         <!--  </div>-->
-
-                         <!-- <div class="dropdown-menu dropdown-menu-left" aria-labelledby="servicesDropdown">-->
-                         <!--  <a class="dropdown-item" href="#">What is dcyphr?</a>-->
-                         <!--  <a class="dropdown-item" href="#">How does dcyphr fit your workflow?</a>-->
-                         <!--  <div class="dropdown-divider"></div>-->
-                         <!--  <div class="d-md-flex align-items-start justify-content-start">-->
-                         <!--   <div>-->
-                         <!--    <div class="dropdown-header" style="color: #017bff">EXPLORE</div>-->
-                         <!--    <a class="dropdown-item" href="#">dcyphr articles</a>-->
-                         <!--    <a class="dropdown-item" href="#">lab methods</a>-->
-                         <!--    <a class="dropdown-item" href="#">request an article</a>-->
-                         <!--   </div>-->
-                         <!--   <div>-->
-                         <!--    <div class="dropdown-header" style="color: #017bff">CONTRIBUTE</div>-->
-                         <!--    <a class="dropdown-item" href="#">tasks</a>-->
-                         <!--    <a class="dropdown-item" href="#">quickTasks</a>-->
-                         <!--   </div>-->
-                         <!--   <div>-->
-                         <!--    <div class="dropdown-header" style="color: #017bff">HELP</div>-->
-                         <!--    <a class="dropdown-item" href="#">mission</a>-->
-                         <!--    <a class="dropdown-item" href="#">contact</a>-->
-                         <!--   </div>-->
-                         <!--  </div>-->
-                         <!-- </div>-->
-                         <!--</li>-->
-
 
                         <form action="/" method="POST">
                         <div class="nav-item ml-3 mb-1 input-group">
-                            <input class="form-control-underlined form-control" style="background-color: rgb(19,19,19)" type="text" name="search" placeholder="Search">
+                            <input class="form-control-underlined form-control text-white" style="background-color: rgb(19,19,19)" type="text" name="search" placeholder="Search">
                         </div>
                         </form>
 
@@ -133,7 +75,7 @@
 {% block main %}
 
 <div class="main">
-    <div class="row" style="background-color: rgb(19,19,19); min-height: 60vh;">
+    <div class="row" style="background-color: rgb(19,19,19); min-height: 60vh; position: relative;">
         <div class="col-3"></div>
         <div class="col-6">
             <div class="text-center" style="font-family: Lato;">
@@ -152,10 +94,18 @@
             </div>
         </div>
         <div class="col-3"></div>
+        <div class="custom-shape-divider-bottom-1595009839">
+            <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
+                <path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" opacity=".25" class="shape-fill"></path>
+                <path d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z" opacity=".5" class="shape-fill"></path>
+                <path d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z" class="shape-fill"></path>
+            </svg>
+        </div>
     </div>
 
-    <div class="home_page row" id="section2">
 
+    <div class="home_page row" id="section2" >
+        
          <div class="col-lg-6 col-lg-5 col-lg">
             <div class="index_info text-left" style="font-family: Lato; font-weight: 300">
                 <div class="mb-2" style="font-size: 3.0em">
@@ -177,20 +127,40 @@
             </div>
 
         </div>
-        <div class="col-lg m-0 p-0">
-            <div class="h-20">
-            </div>
-            <picture class="h-60 w-100" style="margin-top: 5vh;" id="pic">
+        <div class="col m-0 p-0">
+            <picture id="pic">
                 <source type="image/webp" srcset="{{ url_for('static', filename='research.webp') }}">
                 <img src="{{ url_for('static', filename='research.png') }}" alt="">
             </picture>
-
-            <div class="h-20">
+        </div>
+        <div class="row pb-4 pt-0 mt-0 mx-auto">
+            <div class="col"></div>
+            <div class="col my-auto">
+                <picture >
+                    <source type="image/webp" srcset="{{ url_for('static', filename='tsai.webp') }}"> 
+                    <img src="{{ url_for('static', filename='tsai.png') }}" alt="">
+               </picture>
             </div>
+            <div class="col"></div>
+            <div class="col my-auto">
+                <picture>
+                    <source type="image/webp" srcset="{{ url_for('static', filename='ow.webp') }}">
+                    <img src="{{ url_for('static', filename='ow.png') }}" alt="">
+               </picture>
+            </div>
+            <div class="col"></div>
+            <div class="col my-auto">
+                <picture>
+                    <source type="image/webp" srcset="{{ url_for('static', filename='cvt.webp') }}">
+                    <img src="{{ url_for('static', filename='cvt.png') }}" alt="">
+               </picture>
+            </div>
+            <div class="col"></div>
         </div>
     </div>
+    
 
-    <div class="home_page row" id="section3">
+    <div class="home_page row" id="section3" style="position: relative;">
          <div class="col-lg-7 col-12">
             <div class="index_info text-left" style="font-family: Lato; font-weight: 300">
                 <div class="mb-2" style="font-size: 3.0em">
@@ -210,14 +180,14 @@
             </div>
         </div>
 
-        <div class="col" style="color: black; font-family: Lato, font-weight:300">
+        <div class="col" style="color: black; font-family: Lato; font-weight: 300">
 
             <div class="h-25">
 
             </div>
 
             <div class="p-3 mx-5 border border-white bg-white" style="min-height: 50%; border-radius:20px; box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.71); position: relative">
-                <div class="text-left text-muted" style="font-size:30px; margin-left:20px; font-family: Arial">Leaderboard</div>
+                <div class="text-left text-muted" style="font-size:30px; margin-left:20px; font-family: Georgia">Leaderboard</div>
 
                 <div class="row m-3 ">
                     <div class="col-3">
@@ -258,6 +228,11 @@
                      <small class="text-muted">All-time top contributors. Points are earned through distilling research, editing articles to improve accuracy, and others' engaging with your content.</small>
                 </div>
             </div>
+        </div>
+        <div class="custom-shape-divider-bottom-1595011423">
+            <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
+                <path d="M1200 120L0 16.48 0 0 1200 0 1200 120z" class="shape-fill"></path>
+            </svg>
         </div>
     </div>
 

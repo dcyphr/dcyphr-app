@@ -212,6 +212,7 @@ def endorse(summary_id):
     if request.method == "POST":
         db.execute("INSERT INTO endorsements (user_id, summary_id) VALUES (:user_id, :summary_id)", user_id=session['user_id'], summary_id=summary_id)
         return redirect("/read/{}".format(summary_id))
+
 @app.route("/likes/<int:summary_id>", methods=["POST"])
 def likes(summary_id):
     like = request.form.get("like")
@@ -239,7 +240,6 @@ def likes(summary_id):
         likes = db.execute("SELECT SUM(vote) AS sum FROM likes WHERE summary_id=:summary_id", summary_id=summary_id)[0]["sum"]
         db.execute("UPDATE summary SET likes=:likes WHERE id=:summary_id",likes=likes,summary_id=summary_id)
     return redirect("/read/{}".format(summary_id))
-
 
 @app.route("/delete/<int:summary_id>", methods=["POST"])
 def delete(summary_id):
