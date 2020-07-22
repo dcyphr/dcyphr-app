@@ -336,7 +336,7 @@ dl:nth-of-type(odd) {
     color: gray;
 }
 .tagx:hover{
-    color: white;
+    color: darkred;
     text-decoration: none;
 }
 
