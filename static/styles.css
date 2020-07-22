@@ -218,17 +218,6 @@ dl:nth-of-type(odd) {
     background: #f2f2f2;
 }
 
-/*#searchbar {*/
-/*    background: white;*/
-/*    background: -webkit-linear-gradient(to bottom, #a3e9ff, #FFFFFF);*/
-/*    background: linear-gradient(to bottom, #a3e9ff, #FFFFFF);*/
-/*}*/
-
-/*#teammembers {background: #8e9eab;  /* fallback for old browsers
-    background: -webkit-linear-gradient(to bottom, #ffffff, #8e9eab);  /* Chrome 10-25, Safari 5.1-6
-    background: linear-gradient(to bottom, #ffffff, #8e9eab); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+
-
-/*}*/
 #mce-EMAIL::placeholder{
     color: white;
 }
@@ -447,6 +436,20 @@ dl:nth-of-type(odd) {
 
 
 @media screen and (max-width: 481px){
+#landing{
+    font-size: 3vh !important;
+}
+.landing_row{
+    padding: 5vh;
+    padding-bottom: 20vh;
+}
+#for_people{
+    font-size: 4vh !important;
+}
+.landing_box{
+    margin-top: 5vh;
+    margin-bottom: 5vh;
+}
 .searchResults{
     margin-top: 0vh !important;
 }
