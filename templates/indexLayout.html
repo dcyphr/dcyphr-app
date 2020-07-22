@@ -10,7 +10,7 @@
 
         <!-- documentation at http://getbootstrap.com/docs/4.1/, alternative themes at https://bootswatch.com/ -->
         <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet" defer>
-        <link href='https://fonts.googleapis.com/css?family=Lato:300' rel='stylesheet' defer>
+        <link href='https://fonts.googleapis.com/css?family=Lato:300,400,700' rel='stylesheet' defer>
 
         <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
 
@@ -37,12 +37,7 @@
             gtag('config', 'UA-162663603-1');
         </script>
 
-        <script defer>
-        	var beamer_config = {
-        		product_id : 'FACxsuQA21706' //DO NOT CHANGE: This is your product code on Beamer
-        	};
-        </script>
-        <script type="text/javascript" src="https://app.getbeamer.com/js/beamer-embed.js" defer="defer"></script>
+        
         <script>
           document.addEventListener("DOMContentLoaded", function() {
             var lazyloadImages = document.querySelectorAll("picture.lazy");
@@ -103,15 +98,30 @@
   <div class="container">
 
     <!-- Grid row-->
-    <div class="row">
+    <div class="row pt-3">
 
       <!-- Grid column -->
 
         <div class="col-md-6 mt-md-0 mt-3" id="footer-content">
-
         <!-- Content -->
-        <h4 class="text-lowercase">dcyphr</h5>
-        <p>See a bug? Send a message to team@dcyphr.org</p>
+        <h4 class="text-lowercase" style="font-family: Lato; font-weight:700;">dcyphr</h5>
+          <div class="row" style="font-family: Lato; font-weight:300;">
+
+            <div class="col">
+              <p><a href="/">home</a></p>
+              <p><a href="/explore">explore</a></p>
+              <p><a href="/browse/0">all articles</a></p>
+            </div>
+            <div class="col">
+              <p><a href="/request">request</a></p>
+              <p><a href="/tasks">contribute</a></p>
+            </div>
+            <div class="col">
+              <p><a href="/about">about</a></p>
+              <p><a href="mailto:team@dcyphr.org">contact</a></p>
+            </div>
+          </div>
+        <p style="font-family: Lato; font-weight:400;">See a bug? Send a message to team@dcyphr.org</p>
         </div>
 
       <div class="col-6 mt-md-4 float-right">
