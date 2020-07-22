@@ -11,14 +11,13 @@
     </div>
 </div>
 <nav class="navbar navbar-expand-md navbar-dark" style="background-color: rgb(19,19,19) !important; font-family: Lato; font-weight:400;">
+    <a class="navbar-brand" href="/" ><img src="{{ url_for('static', filename='dcyphr_logo.png') }}" alt="" width="60" height="58"></a>
             <button aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler" data-target="#navbar" data-toggle="collapse" type="button">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbar">
                     <ul class="navbar-nav mr-auto mt-2">
-                        <li class="nav-item">
-                            <a href="/" class="nav-link text-white">Home</a>
-                        </li>
+                        
                         <li class="nav-item"><a class="nav-link text-white" href="/explore">Explore</a></li>
                         <li class="nav-item"><a class="nav-link text-white" href="/request">Request</a></li>
                         <li class="nav-item"><a class="nav-link text-white" href="/tasks">Contribute</a></li>
@@ -129,30 +128,32 @@
                 <img src="{{ url_for('static', filename='research.png') }}" alt="">
             </picture>
         </div>
-        <div class="col-md"></div>
-        <div class="row pb-4 pt-0 mt-0 mx-auto">
-            <div class="col"></div>
-            <div class="col my-auto">
-                <picture >
-                    <source type="image/webp" srcset="{{ url_for('static', filename='tsai.webp') }}"> 
-                    <img src="{{ url_for('static', filename='tsai.png') }}" alt="">
-               </picture>
-            </div>
-            <div class="col"></div>
-            <div class="col my-auto">
-                <picture>
-                    <source type="image/webp" srcset="{{ url_for('static', filename='ow.webp') }}">
-                    <img src="{{ url_for('static', filename='ow.png') }}" alt="">
-               </picture>
-            </div>
-            <div class="col"></div>
-            <div class="col my-auto">
-                <picture>
-                    <source type="image/webp" srcset="{{ url_for('static', filename='cvt.webp') }}">
-                    <img src="{{ url_for('static', filename='cvt.png') }}" alt="">
-               </picture>
-            </div>
-            <div class="col"></div>
+        <div class="row mt-0">
+            <div class="col-md"></div>
+            <div class="row pb-4 pt-0 mt-0 mx-auto">
+                <div class="col"></div>
+                <div class="col my-auto">
+                    <picture >
+                        <source type="image/webp" srcset="{{ url_for('static', filename='tsai.webp') }}"> 
+                        <img src="{{ url_for('static', filename='tsai.png') }}" alt="">
+                </picture>
+                </div>
+                <div class="col"></div>
+                <div class="col my-auto">
+                    <picture>
+                        <source type="image/webp" srcset="{{ url_for('static', filename='ow.webp') }}">
+                        <img src="{{ url_for('static', filename='ow.png') }}" alt="">
+                </picture>
+                </div>
+                <div class="col"></div>
+                <div class="col my-auto">
+                    <picture>
+                        <source type="image/webp" srcset="{{ url_for('static', filename='cvt.webp') }}">
+                        <img src="{{ url_for('static', filename='cvt.png') }}" alt="">
+                </picture>
+                </div>
+                <div class="col"></div>
+        </div>
         </div>
     </div>
     
@@ -161,15 +162,15 @@
             <div style="font-family: Lato; font-size: 3.0em; font-weight:300;" class="pt-5 pb-3" id="for_people">dcyphr is for people</div>
             <div style="font-family: Lato; font-weight: 300; font-size: 1.3em;" class="col-lg-5 mx-auto">
                 <p><a href="https://staff.aub.edu.lb/~lmeho/meho-physics-world.pdf" target="_blank">50%</a> of published research goes unread.
-                <a href="https://thejournal.com/articles/2016/11/17/many-high-school-graduates-want-to-pursue-stem-careers-but-are-unprepared-for-stem-college-courses.aspx">74%</a> of college first-years are not prepared to enter research fields.
-                <a href="https://www.pnas.org/content/116/16/7662">84%</a> of Americans think there is a problem with scientific communication.</p>
+                <a href="https://thejournal.com/articles/2016/11/17/many-high-school-graduates-want-to-pursue-stem-careers-but-are-unprepared-for-stem-college-courses.aspx" target="_blank">74%</a> of high school graduates are not prepared to take undergraduate STEM classes.
+                <a href="https://www.pnas.org/content/116/16/7662" target="_blank">84%</a> of Americans think there is a problem with scientific communication.</p>
             </div>
         </div>
         <div class="row pt-5 mt-5" style="font-family: Lato;">
             <div class="col-sm"></div>
             <div class="col-sm text-left">
                 <p style="font-weight:700; font-size: 3vh"><i class="fa fa-lg fa-institution"></i> &nbsp; For researchers &nbsp;</p>
-                <p>We make browsing literature easy and enjoiyable. Contribute distillations to make your research more accessible and impactful.</p>
+                <p>We make browsing literature easy and enjoyable. Contribute distillations to make your research more accessible and impactful.</p>
             </div>
             <div class="col-sm text-left">
                 <p style="font-weight:700; font-size: 3vh"><i class="fa fa-lg fa-graduation-cap"></i> &nbsp; For students</p>
@@ -264,7 +265,7 @@
             <form action="https://dcyphr.us8.list-manage.com/subscribe/post?u=1c38534c3ddafced299e23a1c&amp;id=52012213fb" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank" novalidate>
                 <div id="mc_embed_signup_scroll">
                 <p style="font-family: Lato; font-size:3vh; color:white;" class="py-4">Get bite-sized science in your inbox each week!</p>
-                <input type="email" value="" name="EMAIL" class="border20 form-control w-50" style="background-color: rgb(94,113,228)" id="mce-EMAIL" placeholder="isaac.newton@earth.org" required>
+                <input type="email" value="" name="EMAIL" class="border20 form-control w-50" style="background-color: rgb(94,113,228); color:white;" id="mce-EMAIL" placeholder="isaac.newton@earth.org" required>
                 <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
                 <div style="position: absolute; left: -5000px;" aria-hidden="true"><input type="text" name="b_1c38534c3ddafced299e23a1c_52012213fb" tabindex="-1" value=""></div>
                 <div class="clear"><input type="submit" value="Subscribe" name="subscribe" id="mc-embedded-subscribe" class="btn btn-outline-light border20"></div>
