@@ -5,6 +5,68 @@
 {% endblock %}
 
 {% block main %}
+<script type="text/javascript">
+    $(function() {
+        $('#upvote').bind('click', function() {
+            $(this).prop("disabled", true);
+            $('#downvote').removeAttr('disabled');
+            $.getJSON($SCRIPT_ROOT + '/_likes/{{ summary_id }}', function(data) {
+                $("#likes").text(data);
+            });
+            return false;
+        });
+        $('#downvote').bind('click', function() {
+            $(this).prop("disabled", true);
+            $('#upvote').removeAttr('disabled');
+            $.getJSON($SCRIPT_ROOT + '/_dislikes/{{ summary_id }}', function(data) {
+                $("#likes").text(data);
+            });
+            return false;
+        });
+        $('#endorse').bind('click', function() {
+            $.getJSON($SCRIPT_ROOT + '/_endorse/{{ summary_id }}', function(data) {
+                $(this).prop("disabled", true);
+                if(data != null){
+                    var num = +$('#endorser_count').text() + 1;
+                    $('#endorser_count').text(num);
+                    $('#first').text(data['first']);
+                    $('#last').text(data['last']);
+                    $('#bio').text(data['bio'].slice(0, 120).concat('...'));
+                    $('#new_endorser').removeAttr('hidden');
+                    $('#hidden_button').removeAttr('hidden');
+                }
+                else {
+                    return false;
+                }
+            });
+            return false;
+        });
+        $('#add_tag').bind('click', function() {
+            $.getJSON($SCRIPT_ROOT + '/_add/{{ summary_id }}', {
+                tag: $('#tag_name').val()
+            }, function(data) {
+                var newURL = `/tag/${data['tag_id']}/0`;
+                $('#new_tag_title').attr('href', newURL);
+                $('#new_tag').attr('name', `delete_tag_${data['tag_id']}`)
+                $('#new_tag').removeAttr("hidden");
+                $('#new_tag_title').text(data['tag_name']);
+                $('#tag_group').hide();
+                $('#delete_tag_new').attr('name', data['tag_id'])
+                return false;
+            });
+        });
+        $('.tagx').bind('click', function() {
+            var tag_id = $(this).attr('name')
+            $.getJSON($SCRIPT_ROOT + '/_delete/{{ summary_id }}', {
+                tag_id: tag_id
+            }, function(data) {
+                $(`a[name="${tag_id}"`).hide();
+                $(`#delete_tag_button_${tag_id}`).hide();
+                $(`div[name="delete_tag_${tag_id}"`).hide();
+            });
+        });
+    });
+</script>
 
 <div class="container-fluid mb-5" id="read" style="padding-left:20vh; padding-right:20vh">
     <div class="row jumbotron m-xs-1 rounded bg-white text-left">
@@ -13,8 +75,9 @@
             <p class="" style="color: #017bff; font-family: Lato" id="title">
                 <a href="{{ summary[0]['link'] }}" target="_blank">{{ summary[0]['article'] }}</a>
                 {% if endorsements | length == 0 %}
+                <button class="btn btn-outline-primary border20" data-target="#endorsers" data-toggle="collapse" id="hidden_button" hidden><div id="endorser_count" class='d-inline'>0</div><i class="fa fa-check"></i></button>
                 {% else %}
-                <button class="btn btn-outline-primary border20" data-target="#endorsers" data-toggle="collapse">{{ endorsements[0]['count'] }}<i class="fa fa-check"></i></button>
+                <button class="btn btn-outline-primary border20" data-target="#endorsers" data-toggle="collapse"><div id="endorser_count" class="d-inline">{{ endorsements | length }}</div><i class="fa fa-check"></i></button>
                 {% endif %}
             </p>
             {% if endorsements | length == 0 %}
@@ -25,17 +88,16 @@
 
                     <div class="row px-3 pl-0 border-bottom text-left" style="font-family: Lato;">
                         <div class="col-12" style="font-size: 16px">
-                            placeholder
-                            <img src="https://img.icons8.com/nolan/18/verified-account.png" class="pb-2"/>
+                            <div id="first" class="d-inline">placeholder</div><div id="last" class='d-inline'></div>
                             <div class="text-muted" style="font-size: 12px; display: inline"> &nbsp
 
-                            placeholder...</div>
+                            <div id="bio" class='d-inline'></div></div>
 
                         </div>
 
 
-                </div>
-
+                    </div>
+            </div>
             {% else %}
             <div id="endorsers" class="collapse my-3">
                 <div class="row px-3 pl-4 bg-light border-bottom" style="font-family: Georgia; color:black">
@@ -49,53 +111,67 @@
                             {% if endorsements[i]['verified'] == 1 %}
                             <img src="https://img.icons8.com/nolan/18/verified-account.png" class="pb-2"/>
                             {% endif %}
-                            <div class="text-muted" style="font-size: 12px; display: inline"> &nbsp
+                            <div class="text-muted" style="font-size: 12px; display: inline"> &nbsp;
                             {% if endorsements[i]['bio'] == None %}
-                            </div>
                             {% else %}
-                            {{ endorsements[i]['bio'][:120] }}...</div>
+                            {{ endorsements[i]['bio'][:120] }}...
                             {% endif %}
+                            </div>
                         </div>
-
+                    </div>
 
                 {% endfor %}
+                <div class="row px-3 pl-0 border-bottom text-left" style="font-family: Lato;" id="new_endorser" hidden>
+                    <div class="col-12" style="font-size: 16px">
+                        <div id="first" class="d-inline"></div><div id="last" class='d-inline'></div>
+                        <div class="text-muted" style="font-size: 12px; display: inline"> &nbsp
+
+                        <div id="bio" class='d-inline'></div></div>
+
+                    </div>
+
                 </div>
-                {% endif %}
             </div>
+                {% endif %}
+        
             <p style="font-size: medium">
 
-                <form method="POST" action="/delete/{{summary_id}}"style="display: inline-block">
-                {% for i in range(tag_length) %}
+
+                <div class='d-inline'>
+                    {% for i in range(tag_length) %}
+                    <div class='btn btn-outline-secondary border20' name="delete_tag_{{tags[i]['id']}}">
+                        <a href="/tag/{{tags[i]['id']}}/0" name="{{tags[i]['id']}}" id="delete_tag_button_{{tags[i]['id']}}">{{ tags[i]['title'] }}</a>
+                        {% if z == "true" %}
+                        <button name="{{tags[i]['id']}}" class="btn btn-link btn-sm m-0 pr-0 py-0 tagx">x</button>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                    <div class='btn btn-outline-secondary border20' id="new_tag" name="#" hidden>
+                        <a href="#" id="new_tag_title" class='d-inline'></a>
+                        <button id="delete_tag_new" class="btn btn-link btn-sm m-0 pt-0 pr-0 tagx">x</button>
+                    </div>
+                </div>
+                
 
                 {% if z == "true" %}
-                <a href="/tag/{{tags[i]['id']}}/0" class="btn btn-outline-secondary border20 pb-0">{{ tags[i]['title'] }}
-                <button type="submit" name="delete" value="{{tags[i]['id']}}" class="btn btn-link btn-sm m-0 pt-0 pr-0 tagx">x</button>
-                {% else %}
-                <a href="/tag/{{tags[i]['id']}}/0" class="btn btn-outline-secondary border20">{{ tags[i]['title'] }}
-                {% endif %}
-                </a>
-                {% endfor %}
-                </form>
-                {% if z == "true" %}
-                <button data-toggle="collapse" data-target="#add_tag" class="btn btn-outline-primary btn-sm" style="display: inline-block">+</button>
+                <button data-toggle="collapse" data-target="#tag_group" class="btn btn-outline-primary btn-sm">+</button>
 
-                <form method="POST" action="/add/{{summary_id}}"id="add_tag" class="collapse">
+                <div id="tag_group" class="collapse">
                     <div class="input-group">
                         <div class="col-xs-2">
-                    <input type="text" name="tag" class="tag form-control" style="" placeholder="add tag" list="datalist1">
-                    <datalist id="datalist1">
-                        {% for i in range(all_tags_len) %}
-                        <option value="{{ all_tags[i]['title'] }}">
-                        </option>
-                        {% endfor %}
-                    </datalist>
-                    </div>
+                            <input type="text" name="tag" class="tag form-control" id="tag_name" placeholder="add tag" list="datalist1">
+                            <datalist id="datalist1">
+                                {% for i in range(all_tags_len) %}
+                                <option value="{{ all_tags[i]['title'] }}">
+                                </option>
+                                {% endfor %}
+                            </datalist>
+                        </div>
                     <div class="input-group-append">
-                    <button type='submit' class="btn btn-outline-primary btn-sm">Add</button>
+                    <button type='submit' id="add_tag" class="btn btn-outline-primary btn-sm">Add</button>
                     </div>
                     </div>
-
-                </form>
+                </div>
 
                 {% endif %}
             </p>
@@ -113,13 +189,13 @@
                 {% endif %}
             </p>
 
-                <form action="/endorse/{{ summary[0]['id'] }}" method="POST" style="display:inline">
+                <!-- <form action="/endorse/{{ summary[0]['id'] }}" method="POST" style="display:inline"> -->
                     {% if y == False %}
                     <button class="btn btn-outline-primary border20" type="submit" disabled><i class="fa fa-thumbs-up border-0"></i> Endorse</button>
                     {% else %}
-                    <button class="btn btn-outline-primary border20" type="submit"><i class="fa fa-thumbs-up border-0"></i> Endorse</button>
+                    <button class="btn btn-outline-primary border20" type="submit" id="endorse"><i class="fa fa-thumbs-up border-0"></i> Endorse</button>
                     {% endif %}
-                </form>
+                <!-- </form> -->
 
                 <a href="/edit/{{ summary_id }}">
                     {% if y  == False %}
@@ -142,35 +218,34 @@
         </div>
         </div>
 
-
         <div class="col-md-3 col-xs-6 text-center text-secondary" style="font-size: 1.9em; padding-top: 10px">
-            <form method="POST" action="/likes/{{ summary_id }}">
+            <!-- <form method="POST" action="/likes/{{ summary_id }}"> -->
                 {% if x == "true" %}
-                <div><button class="btn btn-default bg-white pb-3" type="submit" name="like" value="like" disabled>
+                <div><button class="btn btn-default bg-white pb-3" type="submit" name="like" value="like" id="upvote" disabled>
                     <i class="fa fa-chevron-up border-0 fa-lg" style="color: #017bff;"></i></button></div>
-                <span style="">{{ likes }}</span>
-                <div><button class="btn btn-default bg-white pt-3" type="submit" name="dislike" value="dislike" disabled>
+                <span id="likes">{{ likes }}</span>
+                <div><button class="btn btn-default bg-white pt-3" type="submit" name="dislike" value="dislike" id="downvote" disabled>
                     <i class="fa fa-chevron-down border-0 fa-lg" style="color: #017bff;"></i></button></div>
                 {% elif x == "enable-like" %}
-                <div><button class="btn btn-default bg-white pb-3" type="submit" name="like" value="like">
+                <div><button class="btn btn-default bg-white pb-3" type="submit" name="like" value="like" id="upvote">
                     <i class="fa fa-chevron-up border-0 fa-lg" style="color: #017bff;"></i></button></div>
-                <span style="">{{ likes }}</span>
-                <div><button class="btn btn-default bg-white pt-3" type="submit" name="dislike" value="dislike" disabled>
+                <span id="likes">{{ likes }}</span>
+                <div><button class="btn btn-default bg-white pt-3" type="submit" name="dislike" value="dislike" id="downvote"disabled>
                     <i class="fa fa-chevron-down border-0 fa-lg" style="color: #017bff;"></i></button></div>
                 {% elif x == "enable-dislike" %}
-                <div><button class="btn btn-default bg-white pb-3" type="submit" name="like" value="like" disabled>
+                <div><button class="btn btn-default bg-white pb-3" type="submit" name="like" value="like" id="upvote" disabled>
                     <i class="fa fa-chevron-up border-0 fa-lg" style="color: #017bff;"></i></button></div>
-                <span style="">{{ likes }}</span>
-                <div><button class="btn btn-default bg-white pt-3" type="submit" name="dislike" value="dislike">
+                <span id="likes">{{ likes }}</span>
+                <div><button class="btn btn-default bg-white pt-3" type="submit" name="dislike" value="dislike" id="downvote">
                     <i class="fa fa-chevron-down border-0 fa-lg" style="color: #017bff;"></i></button></div>
                 {% else %}
-                <div><button class="btn btn-default bg-white" type="submit" name="like" value="like">
+                <div><button class="btn btn-default bg-white" type="submit" name="like" value="like" id="upvote">
                     <i class="fa fa-chevron-up border-0 fa-lg" style="color: #017bff;"></i></button></div>
-                <span style="">{{ likes }}</span>
-                <div><button class="btn btn-default bg-white" type="submit" name="dislike" value="dislike">
+                <span id="likes">{{ likes }}</span>
+                <div><button class="btn btn-default bg-white" type="submit" name="dislike" value="dislike" id="downvote">
                     <i class="fa fa-chevron-down border-0 fa-lg" style="color: #017bff;"></i></button></div>
                 {% endif %}
-            </form>
+            <!-- </form> -->
 
             <div class="my-3">
                 <form method="POST" action="/flag/{{ summary_id }}">
