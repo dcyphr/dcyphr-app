@@ -70,13 +70,14 @@
 
     <body>
 
-        <nav class="navbar navbar-expand-md navbar-light border" style="font-family: Lato; font-weight:400;">
+        <nav class="navbar navbar-expand-md navbar-light border" style="font-family: Lato; font-weight:400 !important;">
+          <a class="navbar-brand" href="/"><img src="{{ url_for('static', filename='dcyphr_logo_blue.png') }}" alt="" width="60" height="58"></a>
+
             <button aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler" data-target="#navbar" data-toggle="collapse" type="button">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbar">
                     <ul class="navbar-nav mr-auto mt-2">
-                        <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
                         <li class="nav-item"><a class="nav-link" href="/explore">Explore</a></li>
                         <li class="nav-item"><a class="nav-link" href="/request">Request</a></li>
                         <li class="nav-item"><a class="nav-link" href="/tasks">Contribute</a></li>

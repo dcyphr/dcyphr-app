@@ -11,14 +11,13 @@
     </div>
 </div>
 <nav class="navbar navbar-expand-md navbar-dark" style="background-color: rgb(19,19,19) !important; font-family: Lato; font-weight:400;">
+    <a class="navbar-brand" href="/" ><img src="{{ url_for('static', filename='dcyphr_logo.png') }}" alt="" width="60" height="58"></a>
             <button aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler" data-target="#navbar" data-toggle="collapse" type="button">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbar">
                     <ul class="navbar-nav mr-auto mt-2">
-                        <li class="nav-item">
-                            <a href="/" class="nav-link text-white">Home</a>
-                        </li>
+                        
                         <li class="nav-item"><a class="nav-link text-white" href="/explore">Explore</a></li>
                         <li class="nav-item"><a class="nav-link text-white" href="/request">Request</a></li>
                         <li class="nav-item"><a class="nav-link text-white" href="/tasks">Contribute</a></li>
@@ -264,7 +263,7 @@
             <form action="https://dcyphr.us8.list-manage.com/subscribe/post?u=1c38534c3ddafced299e23a1c&amp;id=52012213fb" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank" novalidate>
                 <div id="mc_embed_signup_scroll">
                 <p style="font-family: Lato; font-size:3vh; color:white;" class="py-4">Get bite-sized science in your inbox each week!</p>
-                <input type="email" value="" name="EMAIL" class="border20 form-control w-50" style="background-color: rgb(94,113,228)" id="mce-EMAIL" placeholder="isaac.newton@earth.org" required>
+                <input type="email" value="" name="EMAIL" class="border20 form-control w-50" style="background-color: rgb(94,113,228); color:white;" id="mce-EMAIL" placeholder="isaac.newton@earth.org" required>
                 <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
                 <div style="position: absolute; left: -5000px;" aria-hidden="true"><input type="text" name="b_1c38534c3ddafced299e23a1c_52012213fb" tabindex="-1" value=""></div>
                 <div class="clear"><input type="submit" value="Subscribe" name="subscribe" id="mc-embedded-subscribe" class="btn btn-outline-light border20"></div>

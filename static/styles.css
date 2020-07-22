@@ -436,6 +436,9 @@ dl:nth-of-type(odd) {
 
 
 @media screen and (max-width: 481px){
+.navbar-brand{
+    display: none;
+}
 #landing{
     font-size: 3vh !important;
 }
