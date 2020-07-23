@@ -436,8 +436,15 @@ dl:nth-of-type(odd) {
 
 
 @media screen and (max-width: 481px){
-.navbar-brand{
-    display: none;
+.navbar-brand img{
+    margin-top: 0 !important;
+}
+.landing_box{
+    width: 75% !important;
+}
+input#mce-EMAIL{
+    width: 75% !important;
+    margin-bottom: 1vh;
 }
 #landing{
     font-size: 3vh !important;
