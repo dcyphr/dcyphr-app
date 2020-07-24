@@ -11,18 +11,30 @@
 <br>
 <br>
 <h2 style="font-family: Georgia;">Log in</h2>
-<div class="p-0 mx-0 w-100">
+<div>
     <div class="row">
-        <div class="col-sm">
-            <div class="card mx-auto border20" style="width: 30rem;">
+        <div class="col">
+            <div class="card mx-auto border20" style="max-width: 30rem;">
                 <form action="/login" method="POST" style="margin:20px; text-align: left;">
                     <div class="form-group">
+                        {% if incorrect %}
                         <label for="username" class="font-weight text-muted" style="font-size:12px">Username</label>
-                        <input type="text" id="username" class="form-control border20" style="width:100%;" name="username">
+                        <input type="text" id="username" class="form-control border20 is-invalid" style="width:100%;" name="username" required>
+                        {% else %}
+                        <label for="username" class="font-weight text-muted" style="font-size:12px">Username</label>
+                        <input type="text" id="username" class="form-control border20 is-invlaid" style="width:100%;" name="username" required>
+                        {% endif %}
                     </div>
                     <div class="form-group">
+                        {% if incorrect %}
                         <label for="password" class="font-weight text-muted" style="font-size:12px">Password</label>
-                        <input type="password" id="password" class="form-control border20" style="width:100%" name="password">
+                        <input type="password" id="password" class="form-control border20 is-invalid" style="width:100%" name="password" required>
+                        <small style="color: red">Wrong username/password combination!</small>
+                        {% else %}
+                        <label for="password" class="font-weight text-muted" style="font-size:12px">Password</label>
+                        <input type="password" id="password" class="form-control border20" style="width:100%" name="password" required>
+                        {% endif %}
+                        
                     </div>
                     <input type="submit" class="btn btn-outline-primary btn-block border20" value="Log In">
                     <!-- <div class="or-seperator"><i>or</i></div> -->

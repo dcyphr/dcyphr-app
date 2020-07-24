@@ -6,8 +6,8 @@
 
 {% block main %}
 
-<div class="container mt-5">
-    <div class="text-left pl-3" style="font-size: 1.8em; ">
+<div class="container mt-5 lato">
+    <div class="text-left pl-3" style="font-size: 1.8em;">
         <div class="d-inline ml-4" style="border-left: 4px solid orange;"></div>
         <div class="d-inline ml-2" style="color: #017bff">{{ tags[0]['title'] }}</div>
         <p class="ml-4 mt-2" style="font-size: 0.6em; border-bottom: 1px solid black; padding: 10px">{{ tags[0]['text'] }}
@@ -49,14 +49,14 @@
     {% for i in range(page_length) %}
     <li class="p-3" style="">
                 <div class="row border-bottom border-dark pb-3">
-                    <div class="col-1 text-center" id="likes" style="color: grey; font-size: 1.25em; width: 6%; margin: auto 0">
+                    <div class="col-1 text-center" id="browse_likes" style="color: grey; font-size: 1.25em; width: 6%; margin: auto 0">
 
                         {{ titles[i]['likes'] }}
                         <p>likes</p>
                     </div>
                     <div class="col">
                         <div>
-                            <a class="disabledButton" href="/read/{{ titles[i]['summary_id'] }}" style="color: #017bff; font-size: 1.4em; font-weight: 200;">{{ titles[i]["article"] }}</a>
+                            <a class="disabledButton" href="/read/{{ titles[i]['summary_id'] }}" style="color: #017bff; font-size: 1.4em;">{{ titles[i]["article"] }}</a>
                         </div>
                         <div class="pl-1" style="font-size: 0.8em">
                             dcyphr-d by <a class="disabledButton" href="/public/{{ titles[i]['id'] }}" style="color: Red">{{ titles[i]["first"] }} {{ titles[i]["last"] }}</a> on {{ titles[i]['summary_date'] }}

@@ -425,6 +425,9 @@ dl:nth-of-type(odd) {
 #content-wrap {
   padding-bottom: 2.5rem;    /* Footer height */
 }
+.lato {
+    font-family: Lato;
+}
 
 @media screen and (max-width: 1025px){
 #read{
@@ -439,6 +442,7 @@ dl:nth-of-type(odd) {
 .navbar-brand img{
     margin-top: 0 !important;
 }
+
 .landing_box{
     width: 75% !important;
 }
@@ -448,6 +452,7 @@ input#mce-EMAIL{
 }
 #landing{
     font-size: 3vh !important;
+    padding-top: 0 !important;
 }
 .landing_row{
     padding: 5vh;
@@ -463,8 +468,8 @@ input#mce-EMAIL{
 .searchResults{
     margin-top: 0vh !important;
 }
-#likes {
-    padding-right: 30px;
+#browse_likes {
+    display: none;
 }
 #title {
     font-size: 1.5em;

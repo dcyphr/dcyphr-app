@@ -572,7 +572,7 @@ def edit(summary_id):
     username = db.execute("SELECT username FROM users WHERE id=:user_id", user_id=article[0]["user_id"])
     return render_template("edit.html", article=article, summary=percent_remove(str(article[0]['summary'])), username=username, output="", z=False, summary_id=summary_id)
 
-@app.route("/submission/<int:summary_id>", methods=["POST"])
+@app.route("/_submission/<int:summary_id>", methods=["POST"])
 @login_required
 def submission(summary_id):
 
@@ -605,7 +605,7 @@ def submission(summary_id):
 @login_required
 def requesting():
     if request.method == "GET":
-        return render_template("request.html")
+        return render_template("request.html", message="")
     else:
         article = request.form.get("article")
         doi = request.form.get("doi")
@@ -620,8 +620,7 @@ def requesting():
         if len(db.execute("SELECT doi FROM summary WHERE doi=:doi", doi=doi)) > 0:
             test = db.execute("SELECT article FROM summary WHERE doi=:doi", doi=doi)
             # checks if your PMID/DOI has the correct title if it is already in database
-            if article != test[0]["article"]:
-                return render_template("apology.html", message="Error, PMID already exists in database: incorrect PMID or title")
+
             # if already in database, it increases the number of requests by 1
             requests = db.execute("SELECT requests FROM summary WHERE doi=:doi", doi=doi)[0]["requests"] + 1
             db.execute("UPDATE summary SET requests=:requests WHERE doi=:doi", doi=doi, requests=requests)
@@ -631,7 +630,7 @@ def requesting():
             # if it isn't in the database, it adds it as a new task
             db.execute("INSERT INTO summary (requests, article, doi, done, link, citation, likes, approved, request_date, request_user, summary) VALUES (1, :article, :doi, CAST(0 AS BIT), :link, :citation, 0, 0, :request_date, :request_user, :summary);",
                        article=article, doi=doi, link=link, citation=citation, request_date=request_date, request_user=request_user, summary=summary)
-        return redirect("/")
+        return render_template("request.html", message="Awesome! Your request has been made. &#127881;")
 
 # homepage with a search bar
 @app.route("/", methods=["GET", "POST"])
@@ -660,20 +659,13 @@ def index():
 @app.route("/login", methods=["GET", "POST"])
 def login():
     """Log user in"""
-
     # Forget any user_id
     session.clear()
 
     # User reached route via POST (as by submitting a form via POST)
     if request.method == "POST":
 
-        # Ensure username was submitted
-        if not request.form.get("username"):
-            return render_template("apology.html", message="must provide username")
-
-        # Ensure password was submitted
-        elif not request.form.get("password"):
-            return render_template("apology.html", message="must provide password")
+        
 
         # Query database for username
         username = request.form.get("username")
@@ -682,7 +674,7 @@ def login():
 
         # Ensure username exists and password is correct
         if len(rows) != 1 or not check_password_hash(rows[0]["hash"], request.form.get("password")):
-            return render_template("apology.html", message="invalid username/password combination")
+            return render_template("login.html", incorrect=True)
 
         # Check to see if user has confirmed their account
         if rows[0]['confirmed'] == 0:
@@ -692,12 +684,29 @@ def login():
             # Remember which user has logged in
             session["user_id"] = rows[0]["id"]
             session["remember_me"] = True
-            # Redirect user to home page
-            return redirect("/")
+            welcome = rows[0]['welcome']
+            if welcome == 2:
+                # Redirect user to home page
+                return redirect(url_for(".profile", user_id=session['user_id'], message=True))
+            else:
+                return redirect(url_for(".welcome", welcome=welcome, user_id=session['user_id'], first=rows[0]['first']))
 
     # User reached route via GET (as by clicking a link or via redirect)
     else:
         return render_template("login.html")
+
+@app.route("/welcome/<int:user_id>")
+@login_required
+def welcome(user_id):
+
+    return render_template("welcome.html", first=request.args['first'], user_id=user_id)
+
+@app.route("/_welcome/<int:user_id>", methods=["POST"])
+@login_required
+def _welcome(user_id):
+    bio = "{0} in {1} from {2} in {3}. {4} {5}".format(request.form['degree'], request.form['subject'], request.form['school'], request.form['year'], request.form['xp'], request.form['fact'])
+    db.execute("UPDATE users SET bio=:bio, welcome=:welcome WHERE id=:user_id", welcome=1, bio=bio, user_id=user_id)
+    return {}
 
 
 #GOOGLE_CLIENT_ID = os.environ.get("GOOGLE_CLIENT_ID", None)
@@ -823,6 +832,10 @@ def bio(user_id):
 @app.route("/profile/<int:user_id>", methods=["GET", "POST"])
 @login_required
 def profile(user_id):
+    try:
+        message=request.args['message']
+    except:
+        message=False
     # gets list of articles that the user has written
     articles = db.execute(
         "SELECT article, id, approved FROM summary WHERE user_id=:user_id AND done=CAST(1 AS BIT) ORDER BY approved DESC", user_id=user_id)
@@ -838,7 +851,7 @@ def profile(user_id):
         info[0]['bio'] = "This user has no bio right now."
     if points == None:
         points = 0
-    return render_template("profile.html", info=info, articles=articles, length=length, admin=admin, points=points, user_id=user_id)
+    return render_template("profile.html", info=info, articles=articles, length=length, admin=admin, points=points, user_id=user_id, message=message)
 
 
 # public profile that other users view
@@ -1071,10 +1084,10 @@ def confirm_email(token):
         flash('The confirmation link is invalid or has expired.', 'danger')
     status = db.execute("SELECT confirmed FROM users WHERE email=:email", email=email)
     if status[0]['confirmed'] == 1:
-        status = 'Account already confirmed. Please login <a href="/login" style="color: #017bff">here</a>.'
+        status = 'Account already confirmed. <a href="/login" style="color: #017bff">Let\'s go!</a>.'
     else:
         db.execute("UPDATE users SET confirmed = 1 WHERE email=:email", email=email)
-        status = 'You have confirmed your account. Thanks!'
+        status = 'You have confirmed your account. Thanks! You are ready to get started. <a href="/login" style="color: #017bff">Let\'s go!</a>.'
     return render_template("confirm.html", status=status)
 
 @app.route("/unconfirmed/<int:user_id>", methods=["GET", "POST"])
@@ -1134,10 +1147,23 @@ def approvals(approval_id):
         # handles approval of a summary
         else:
             user_id = db.execute("SELECT user_id FROM summary WHERE id=:summary_id", summary_id=summary_id)[0]["user_id"]
-            points = db.execute("SELECT COALESCE(points, 0) FROM users WHERE id=:user_id", user_id=user_id)[0]['coalesce']
-            points = points + 20
+            user_info = db.execute("SELECT COALESCE(points, 0), first, last, email FROM users WHERE id=:user_id", user_id=user_id)[0]
+            points = user_info['coalesce'] + 20
             db.execute("UPDATE users SET points=:points WHERE id=:user_id", points=points, user_id=user_id)
             db.execute("UPDATE summary SET summary = :summary, approved=1, bookmarked=0 WHERE id=:summary_id", summary=summary, summary_id=summary_id)
+            message = Mail(
+            from_email=('team@dcyphr.org', 'dcyphr'),
+            to_emails=user_info['email'],
+            subject='Hi {0}! Your dcyphr distillation was approved and published!'.format(user_info['first']),
+                html_content="<p>Congrats! Your dcyphr distillation was approved by our team and published on our website. Here's the link for you to share it with your friends: <a href='https://www.dcyphr.org/read/{0}'>https://www.dcyphr.org/read/{0}</a></p><p>[{1}] End of message.</p>".format(summary_id, date.today()))
+            try:
+                sg = SendGridAPIClient('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')
+                response = sg.send(message)
+                print(response.status_code)
+                print(response.body)
+                print(response.headers)
+            except Exception as e:
+                print(e)
         articles = db.execute("SELECT id, article FROM summary WHERE approved = 0 AND done = CAST(1 AS BIT)")
         length = len(articles)
         return render_template("approval_home.html", articles=articles, length=length)
