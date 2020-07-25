@@ -854,7 +854,7 @@ def profile(user_id):
         info[0]['bio'] = "This user has no bio right now."
     if points == None:
         points = 0
-    return render_template("profile.html", info=info, articles=articles, length=length, admin=admin, points=points, user_id=user_id, token=token)
+    return render_template("profile.html", info=info, articles=articles, message=message, length=length, admin=admin, points=points, user_id=user_id, token=token)
 
 
 
