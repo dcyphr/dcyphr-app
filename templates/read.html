@@ -298,7 +298,7 @@
 
 
     <div class="p-0 bg-light border border-dark" id="content-box" >
-        <h1 class="" style="color: #017bff; text-weight: 500; font-family: Georgia" id="title">Contents</h1>
+        <h1 class="" style="color: #017bff; font-family: Georgia" id="title">Contents</h1>
         <ul class="ml-3 text-left" style="list-style: none;">
             {% for i in range(title_length) %}
             <li><a class="contentButton" href="#{{ titles[i] }}" style="font-family: Lato">{{ i + 1 }}.{{ titles[i] }}</a></li>
@@ -335,7 +335,7 @@
                 <div class="sticky-top form-group row">
                     <label for="comment" class="col-xs-2 col-form-label"><b>Leave a comment:</b> </label>
                     <div class="col">
-                        <input type="text" name="comment" class="form-control text-wrap w-100" id="comment" placeholder="Write here...">
+                        <input type="text" name="comment" class="form-control text-wrap w-100" id="comment" placeholder="Write here..." required>
                     </div>
                     <div>
                         {% if y == "true" %}
@@ -371,7 +371,7 @@
                     <form method="POST" action="/comments/{{ summary_id }}" class="collapse" id="reply{{ comment['comment_id'] }}{{ comment['reply'] }}">
                         <div class="sticky-top form-group row">
                             <div class="col">
-                                <input type="text" name="reply" class="form-control text-wrap w-100" id="reply" placeholder="Reply here...">
+                                <input type="text" name="reply" class="form-control text-wrap w-100" id="reply" placeholder="Reply here..." required>
                             </div>
                             <div>
                             {% if y == "true" %}
@@ -438,7 +438,7 @@
                         <div class="sticky-top form-group row">
 
                             <div class="col">
-                                <input type="text" name="reply" class="form-control text-wrap w-100" id="reply" placeholder="Reply here...">
+                                <input type="text" name="reply" class="form-control text-wrap w-100" id="reply" placeholder="Reply here..." required>
                             </div>
                             <div>
                             {% if y == "true" %}

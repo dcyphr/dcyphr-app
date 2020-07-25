@@ -1,0 +1,113 @@
+{% extends "layout.html" %}
+{% block title %}
+Welcome
+{% endblock %}
+
+{% block main %}
+<div class="main lato">
+    <div class="container py-5" id="first_step">
+        <h3 color="#017bff">Welcome to dcyphr, {{ first }}!</h3>
+        <p class="text-muted mx-auto" style="max-width: 30rem;">Let's get you set up. Tell us a little bit more about yourself. <br>If you are still in school, use that info.</p>
+        <div class="border border20 mx-auto" style="max-width: 30rem;">
+            <div class="form-group" style="margin:20px;">
+                <div class="input-group">
+                    <input type="text" class="form-control border20" placeholder="What school did you go to?*" id="school" required>
+                </div>
+            </div>
+            <div class="form-group" style="margin:20px;">
+                <div class="input-group">
+                    <input type="text" class="form-control border20" placeholder="What did you major in?*" id="subject" required>
+                </div>
+            </div>
+            <div class="form-group" style="margin:20px;">
+                <div class="input-group">
+                    <input type="text" class="form-control border20" placeholder="What degree did you get?*" id="degree" required>
+                </div>
+            </div>
+            <div class="form-group" style="margin:20px;">
+                <div class="input-group">
+                    <input type="text" class="form-control border20" placeholder="What year did you finish?*" id="year" required>
+                </div>
+            </div>
+            <div class="form-group" style="margin:20px;">
+                <div class="input-group">
+                    <input type="text" class="form-control border20" placeholder="Briefly describe your research experience.*" id="xp" required>
+                </div>
+            </div>
+            <div class="form-group" style="margin:20px;">
+                <div class="input-group">
+                    <input type="text" class="form-control border20" placeholder="Tell us anything interesting about yourself!" id="fact">
+                </div>
+            </div>
+        </div>
+        <button class="btn btn-lg btn-link" id="welcome1">Continue &rsaquo;</button>
+    </div>
+    <div class="container py-5" id="second_step" hidden>
+        <h3 color="#017bff">Let's get you familiar with dcyphr!</h3>
+        <p class="text-muted mx-auto" style="max-width: 30rem;">The first video introduces dcyphr's mission. The second video shows how to use the website. The last video demonstrates the best distillation practices. Don't be afraid to double speed them!</p>
+        <div id="video_wrapper"></div>
+        <button class="btn btn-lg btn-link" id="welcome2">Skip for now &rsaquo;</button>
+        <button class="btn btn-lg btn-link" id="welcome3"><a href="/profile/{{ user_id }}?message=True">Mark as done &rsaquo;</a></button>
+    </div>
+    <div class="modal fade" tabindex="-1" role="dialog" id="third_step">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" style="color:#017bff">Are you sure you want to skip?</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            </div>
+            <div class="modal-body">
+              <p>The onboarding series is crucial for new member orientation. If you skip them you will eventually need to watch them. Do you want to skip?</p>
+            </div>
+            <div class="modal-footer">
+              <a class="btn btn-outline-primary" href="/profile/{{ user_id }}?message=True">Yes, I'll watch later.</a>
+              <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">No, I'll watch now.</button>
+            </div>
+          </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(function (){
+        let searchParams = new URLSearchParams(window.location.search);
+        if (searchParams.has('welcome')){
+            let param = searchParams.get('welcome')
+            if (param == 1){
+                $('#first_step').hide();
+                $('#video_wrapper').html('<iframe width="560" height="315" src="https://www.youtube.com/embed/videoseries?list=PL2dMjhi0vs1tbLfLMJMtWynCpwaatspVk" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>')
+                $('#second_step').removeAttr('hidden');
+            }
+        }
+        $('#welcome1').bind('click', function(){
+            var school = $('#school').val();
+            var subject = $('#subject').val();
+            var degree = $('#degree').val();
+            var year = $('#year').val();
+            var xp = $('#xp').val();
+            var fact = $('#fact').val();
+            $.post($SCRIPT_ROOT + '/_welcome/{{ user_id }}', {
+                step: 1,
+                school: school,
+                degree: degree,
+                subject: subject,
+                year: year,
+                xp: xp,
+                fact: fact
+            })
+            $('#first_step').hide();
+            $('#video_wrapper').html('<iframe width="560" height="315" src="https://www.youtube.com/embed/videoseries?list=PL2dMjhi0vs1tbLfLMJMtWynCpwaatspVk" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>')
+            $('#second_step').removeAttr('hidden');
+        });
+        $('#welcome2').bind('click', function(){
+            $('#third_step').modal('toggle');
+        });
+        $('#welcome3').bind('click', function(){
+            $.post($SCRIPT_ROOT + '/_welcome/{{ user_id }}', {
+                step: 2
+            });
+        });
+    });
+</script>
+{% endblock %}

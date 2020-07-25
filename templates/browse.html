@@ -26,7 +26,7 @@
 
 {% block main %}
 
-<div class="container mt-5">
+<div class="container mt-5 lato">
     <div class="text-left pl-3" style="font-size: 1.8em; ">
         <div class="d-inline ml-4" style="border-left: 4px solid orange;"></div>
         <div class="d-inline ml-2" style="color: #017bff">Browse</div>
@@ -62,16 +62,16 @@
         <ul style="text-align: left; list-style: none;" id="id01">
             {{ p }}
             {% for i in range(page_length) %}
-            <li class="p-3" style="">
+            <li class="p-3">
                 <div class="row border-bottom border-dark pb-3">
-                    <div class="col-1 text-center" id="likes" style="color: grey; font-size: 1.25em; width: 6%; margin: auto 0">
+                    <div class="col-1 text-center" id="browse_likes" style="color: grey; font-size: 1.25em; width: 6%; margin: auto 0">
 
                         {{ summaries[i]['likes'] }}
                         <p>likes</p>
                     </div>
                     <div class="col">
                         <div>
-                            <a class="disabledButton" href="/read/{{ summaries[i]['id'] }}" style="color: #017bff; font-size: 1.4em; font-weight: 200;">{{ summaries[i]["article"] }}</a>
+                            <a class="disabledButton" href="/read/{{ summaries[i]['id'] }}" style="color: #017bff; font-size: 1.4em;">{{ summaries[i]["article"] }}</a>
                         </div>
                         <div class="pl-1" style="font-size: 0.8em">
                             dcyphr-d by <a class="disabledButton" href="/public/{{ summaries[i]['user'] }}" style="color: Red">{{ summaries[i]["first"] }} {{ summaries[i]["last"] }}</a> on {{ summaries[i]['summary_date'] }}

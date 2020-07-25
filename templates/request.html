@@ -13,30 +13,33 @@
         <p class="ml-4 mt-2" style="font-size: 0.6em; border-bottom: 1px solid black; padding: 10px">Fill out the form to request a summary to be made!</p>
     </div>
 <br>
-
 <div class="row">
+    {% if message != "" %}
+    <div class="alert alert-success mx-auto" role="alert" style="min-width: 30rem">
+        {{ message | safe }}
+    </div>
+    {% endif %}
+</div>
+<div class="row">
+    
     <div class="col-sm">
         <div class="card mx-auto" style="width: 30rem; border-radius:20px">
             <form action="/request" method="POST" class="form-group" style="margin:20px; text-align:left;">
 
                 <div class="form-group">
-                    <label for="article" class="font-weight text-muted" style="font-size:12px">Title of article</label>
+                    <label for="article" class="font-weight text-muted" style="font-size:12px">Title of article*</label>
                     <input type="text" id="article" class="form-control w-100" style="border-radius:20px" name="article" required>
                 </div>
                 <div class="form-group">
                     <div>
-                        <label for="doi" class="font-weight text-muted" style="font-size:12px">DOI</label>
-                        <a href="#event1"><i class="fa fa-question-circle border-0" style="color: #017bff"></i></a>
-                        <div class="tip">
-                            <p>Find DOI on the page either near abstract or ctrl + f search for it.</p>
-                            <p>If it appears like this "DOI: 10.1038/s41586-020-2286-9" you should input everything that follows "DOI: "</p>
-                            <p>If it appears like this "https://doi.org/10.1038/s41586-020-2286-9" you should input everything that follows "https://doi.org/"</p>
-                        </div>
+                        <label for="doi" class="font-weight text-muted" style="font-size:12px">DOI*</label>
+                        <a tabindex="0" role="button" data-toggle="popover" data-trigger="focus" title="What's a DOI?" data-content="Find DOI on the page either near abstract or ctrl + f search for it. <br /><br />If it appears like this 'DOI:10.1038/s41586-020-2286-9' you should input everything that follows 'DOI:' <br /><br />If it appears like this 'https://doi.org/10.1038/s41586-020-2286-9' you should input everything that follows 'https://doi.org/'"><i class="fa fa-question-circle border-0" style="color: #017bff"></i></a>
+                        
                     </div>
                     <input type="text" id="doi"class="form-control w-100" name="doi" style="border-radius:20px" required>
                 </div>
                 <div class="form-group">
-                    <label for="link" class="font-weight text-muted" style="font-size:12px">Link to article</label>
+                    <label for="link" class="font-weight text-muted" style="font-size:12px">Link to article*</label>
                     <input type="text" id="link" class="form-control w-100" name="link" style="border-radius:20px" required>
                 </div>
 
@@ -49,4 +52,14 @@
 
 
 </div>
+<script>
+    $(function () {
+        $('[data-toggle="popover"]').popover({
+            html:true
+        })
+    });
+    $('.popover-dismiss').popover({
+        trigger: 'focus'
+    });
+</script>
 {% endblock %}

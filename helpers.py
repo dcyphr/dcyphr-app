@@ -10,6 +10,7 @@ from bs4 import BeautifulSoup
 
 def apology(message, code=400):
     """Render message as an apology to user."""
+    
     def escape(s):
         """
         Escape special characters.

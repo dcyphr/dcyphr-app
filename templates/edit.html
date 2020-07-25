@@ -2,7 +2,33 @@
 
 
 {% block summernote %}
-<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.15/dist/summernote-bs4.min.css" rel="stylesheet" defer>
+<script src="https://cdn.tiny.cloud/1/0alr4b654wmjwk41jr9eeu0xprprdf4mv7veduzfoc3c9rjw/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+<script>
+    tinymce.init({
+      selector: '#mytextarea',
+      menubar: '',
+      inline: true,
+      plugins: 'code, link, autosave',
+      default_link_target: "_blank",
+      link_quicklink: true,
+      toolbar: 'undo redo | styleselect removeformat | bold italic underline | alignleft aligncenter alignright alignjustify | outdent indent | link | code'
+    });
+</script>
+<script type="text/javascript">
+$(function (){
+    $("#save").bind('click', function(){
+        var summary = $("#mytextarea").html();
+        $.post($SCRIPT_ROOT + '/_submission/{{ summary_id }}', {summary: summary, submit_button: 'save'});
+        $('#draft').removeAttr('hidden');
+    });
+    $("#finish").bind('click', function(){
+        var summary = $("#mytextarea").html();
+        $.post($SCRIPT_ROOT + '/_submission/{{ summary_id }}', {summary: summary, submit_button: 'finish'});
+        $('#finishModal').modal('toggle')
+    });
+});
+</script>
+<!-- <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.15/dist/summernote-bs4.min.css" rel="stylesheet" defer>
 <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.15/dist/summernote-bs4.min.js" defer></script>
 <script>
         var HelloButton = function (context) {
@@ -68,7 +94,7 @@
 <script>
     $(document).ready(function() {
         $("#summernote").summernote();
-    });
+    }); -->
 </script>
 {% endblock %}
 
@@ -80,77 +106,51 @@
 {% block main %}
 
 
-<script type="text/javascript" src="{{ url_for('static', filename='hemingway.js') }}"></script>
+<!-- <script type="text/javascript" src="{{ url_for('static', filename='hemingway.js') }}"></script> -->
 
-<div class="p-0 mx-0 w-100" style="">
-    <div class="mx-5 text-left" style="">
+<div class="container">
+    <div class="text-left">
         <div class="row jumbotron m-xs-1 rounded bg-white text-left">
 
             <div class="col-md-10 col-xs-6">
                 <p class="display-4" style="color: #017bff; font-size:2.5em; font-family:Lato">
-                    {{ article[0]["article"] }}
-                </p>
-
-
-                <p style="font-size: medium;">
-                    Link to Original Article: <font color="#017bff"><a href="{{ article[0]['link'] }}" target="_blank">{{ article[0]["article"] }}</a></font>
+                    <a href="{{ article[0]['link'] }}" target="_blank">{{ article[0]["article"] }}</a>
                 </p>
             </div>
 
-
+            
+        </div>
+        <div class="alert alert-success alert-dismissible fixed-top" id="draft" role="alert" hidden>
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+            Draft saved! &#10084;
         </div>
     </div>
 
+    <div class="modal fade" tabindex="-1" role="dialog" id="finishModal">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" style="color:#017bff">Awesome! You submitted your distillation! &#127881;</h5>
+            </div>
+            <div class="modal-body">
+              <p>Our researchers are reviewing your article! Once it is approved, we will update you so you can share your hard work. In the meantime, consider contributing another article or relax and enjoy reading some of our distillations.</p>
+            </div>
+            <div class="modal-footer">
+              <a class="btn btn-outline-primary" href="/tasks">I'm on a roll!</a>
+              <a class="btn btn-outline-secondary" href="/">I'll pass.</a>
+            </div>
+          </div>
+        </div>
+      </div>
 
-    <div class="mx-5 text-left" style="">
+
+    <div class="mx-5 text-left">
         <div class="row">
-
-            <div id="format" class="col col-lg-2">
-                <div style="text-align: center">
-                    <p class="font-weight-bold">Readability</p>
-                    <div id="level" style="color: green">
-                        Use our readability tool!
-                    </div>
-                </div>
-                <div id="adverb" class="adverb counter"># of adverbs</div>
-                <div id="passive" class="passive counter"># of passive voice</div>
-                <div id="complex" class="complex counter"># of complex sentences</div>
-                <div id="hardSentence" class="hardSentence counter"># of hard sentences</div>
-                <div id="veryHardSentence" class="veryHardSentence counter"># of very hard sentences</div>
-
-            </div>
-            <div class="col">
-
-                <div class="mr-auto d-inline text-center w-25">
-                    <button class="btn btn-default bg-white" onclick="format()" style="color: DodgerBlue;">Test Readability</button>
-                    <button class="btn btn-default bg-white" style="color: DodgerBlue;" data-toggle="collapse" data-target="#format">Toggle Readability</button>
-                </div>
-
-                <div class="ml-auto d-inline float-right text-center">
-                    <button class="btn btn-default bg-white" data-toggle="collapse" data-target="#guidelines" style="color: DodgerBlue;">
-                        <span class="d-none d-lg-flex">Toggle Guidelines</span>
-                        <span class="d-flex d-lg-none">Below</span>
-                    </button>
-                </div>
-
-                <form method="POST" action="/submission/{{ summary_id }}">
-                    <textarea id="summernote" name="summary">{{summary}}</textarea>
-                    <div>
-                        <div class="container text-center">
-                            <button class="btn btn-outline-secondary border20 my-3" type="submit" name="submit_button" value="save">Save</button>
-                            <button class="btn btn-outline-primary border20 my-3" type="submit" name="submit_button" value="finish">Finish</button>
-                        </div>
-                    </div>
-                </form>
-
-            </div>
-
-
-            <div class="col-12 col-lg-4 collapse show" id="guidelines">
-                <h2 style="color: DodgerBlue">Guidelines</h2>
-                <ol class="p-2" style="font-size: 0.9em;">
+            <div class="col-12 col-lg-4 collapse lato" id="guidelines">
+                <h2 style="color: #017bff; font-weight: 300;" class="lato">Some helpful tips</h2>
+                <ol class="p-2 collapse" style="font-size: 0.9em;" id="guidelines">
                     <li class="mb-3">
-                        <p class="mb-1">Minimize normalization. Don't use words that are not nouns as nouns.</p>
+                        <p class="mb-1">Minimize nominalization. Don't use words that are not nouns as nouns.</p>
                         <p class="mb-1 pl-2">Nominalized: The commencement of the ceremony will begin at noon.</p>
                         <p class="mb-1 pl-2">Better: The ceremony will commence at noon.</p>
                     </li>
@@ -178,55 +178,72 @@
                     <li  class="mb-3">
                         <p class="mb-1">State only the ideas of the original text.</p>
                     </li>
-                </ul>
+                    <li  class="mb-3">
+                        <p class="mb-1"><b>Shortcut:</b> &#8984;Cmd + K opens up link menu.</p>
+                    </li>
+                </ol>
+                <!-- <div class="text-left lato">
 
-
-            </div>
-
-        </div>
-    <div class="mx-auto">
-        <button class="btn btn-default" data-target="#tool" data-toggle="collapse" style="color: #017bff">Use our AI tool!</button>
-    </div>
-
-    {% if request.args.get('z') or z %}
-    <div id="tool" class="show">
-    {% else %}
-    <div id="tool" class="collapse">
-    {% endif %}
-
-
-    <div class="row">
-        <div class="col-6">
-            <div class="card mx-auto">
-                <form method="POST" action="/ai/{{ summary_id }}"style="margin:20px; text-align: left;">
-                    <div class="form-group">
-                        <label for="text" class="font-weight-bold text-muted" style="font-size:12px">Input section</label>
-                        <textarea name="text" id="text" class="w-100 form-control" id="input"></textarea>
+                
+                    
+                        <button class="btn btn-link" data-toggle="collapse" data-target="#format" style="text-decoration: none;"><h2 class="lato" style="color: #017bff; font-weight:300;">Readability</h2></button>
+                        <button class="btn btn-default bg-white" onclick="format()" style="color: #017bff">Test Readability</button>
+                        
+                    <div id="format" class="collapse">
+                        <div id="level" style="color: green">
+                        </div>
+                        <div id="adverb" class="adverb counter"># of adverbs</div>
+                        <div id="passive" class="passive counter"># of passive voice</div>
+                        <div id="complex" class="complex counter"># of complex sentences</div>
+                        <div id="hardSentence" class="hardSentence counter"># of hard sentences</div>
+                        <div id="veryHardSentence" class="veryHardSentence counter"># of very hard sentences</div>
                     </div>
+                </div> -->
 
-                    <input type="submit" class="btn btn-outline-primary border20 btn-block" value="Continue">
-                </form>
+
             </div>
-        </div>
-        <div class="col-6">
-            <div class="card mx-auto">
-                <div class="col-sm-12">
-                    <p class="font-weight-bold text-muted" style="font-size:12px; padding-top: 20px" id="output">Output</p>
-                <div class="col" style="text-align: left; padding: 20px; padding-top: 0px">
-                    <div class="border-left border-primary bg-light" style="padding:20px">
-                    <p>{{ request.args.get('output') }}</p>
+
+            
+            <div class="col">
+                <div class="row">
+                    <div class="mr-auto d-inline float-left text-center">
+                        <button class="btn btn-default bg-white" data-toggle="collapse" data-target="#guidelines" style="color:#017bff">
+                            <p >&#8249; Reveal tips &#9997;</p>
+                        </button>
                     </div>
                 </div>
+
+                
+                
+
+                <!-- <form method="POST" action="/submission/{{ summary_id }}"></form> -->
+                    <div id="mytextarea" name="summary">{{summary|safe}}</div>
+                    <div>
+                        <div class="container text-center">
+                            <button class="btn btn-outline-secondary border20 my-3" type="submit" name="submit_button" id="save" value="save">Save</button>
+                            <button class="btn btn-outline-primary border20 my-3" type="submit" name="submit_button" id="finish" value="finish">Finish</button>
+                        </div>
+                    </div>
+                <!-- </form> -->
+
+            </div>
+
+            
+            
+
         </div>
-    </div>
+    
+
+    
+
+
+    
 </div>
 </div>
-</div>
-</div>
-<script defer>
+<!-- <script defer>
     $(document).ready(function() {
         $("#summernote").summernote();
     });
-</script>
+</script> -->
 {% endblock %}
 

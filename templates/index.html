@@ -7,11 +7,11 @@
 <meta name="description" content="dcyphr is revolutionizing the process of reading academic papers through a crowdsourced solution informed by artificial intelligence.">
 <div id="preloader">
     <div id="status" class="text-center">
-        <img style="margin-top: 20vh" src="{{ url_for('static', filename='dna.svg') }}" alt="Loading...">
+        <img style="margin-top: 20vh" src="{{ url_for('static', filename='logos/dna.svg') }}" alt="Loading...">
     </div>
 </div>
 <nav class="navbar navbar-expand-md navbar-dark" style="background-color: rgb(19,19,19) !important; font-family: Lato; font-weight:400;">
-    <a class="navbar-brand" href="/" ><img src="{{ url_for('static', filename='dcyphr_logo.png') }}" alt="" width="60" height="58"></a>
+    <a class="navbar-brand" href="/" ><img src="{{ url_for('static', filename='logos/dcyphr_logo.png') }}" alt="" width="60" height="58"></a>
             <button aria-controls="navbarIndex" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler" data-target="#navbarIndex" data-toggle="collapse" type="button">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -25,7 +25,7 @@
 
                         <form action="/" method="POST">
                         <div class="nav-item ml-3 mb-1 input-group">
-                            <input class="form-control-underlined form-control text-white" style="background-color: rgb(19,19,19)" type="text" name="search" placeholder="Search">
+                            <input class="form-control-underlined form-control text-white" style="background-color: rgb(19,19,19)" type="text" name="search" id="search" placeholder="Search">
                         </div>
                         </form>
 
@@ -45,21 +45,7 @@
                 {% endif %}
             </div>
         </nav>
-        <script defer>
-            $(document).ready(function(){
-              $(".scroll").on('click', function(event) {
-                if (this.hash !== "") {
-                  event.preventDefault();
-                  var hash = this.hash;
-                  $('html, body').animate({
-                    scrollTop: $(hash).offset().top
-                  }, 800, function(){
-                    window.location.hash = hash;
-                  });
-                }
-              });
-            });
-        </script>
+        
         <script>
            window.onload = function(){
                 //hide the preloader
@@ -124,8 +110,8 @@
         </div>
         <div class="col-md-5 my-auto pt-0">
             <picture id="pic" class="my-auto">
-                <source type="image/webp" srcset="{{ url_for('static', filename='research.webp') }}">
-                <img src="{{ url_for('static', filename='research.png') }}" alt="">
+                <source type="image/webp" srcset="{{ url_for('static', filename='landing/research.webp') }}">
+                <img src="{{ url_for('static', filename='landing/research.png') }}" alt="">
             </picture>
         </div>
         <div class="row mt-0">
@@ -134,22 +120,22 @@
                 <div class="col"></div>
                 <div class="col my-auto">
                     <picture >
-                        <source type="image/webp" srcset="{{ url_for('static', filename='tsai.webp') }}"> 
-                        <img src="{{ url_for('static', filename='tsai.png') }}" alt="">
+                        <source type="image/webp" srcset="{{ url_for('static', filename='landing/tsai.webp') }}"> 
+                        <img src="{{ url_for('static', filename='landing/tsai.png') }}" alt="">
                 </picture>
                 </div>
                 <div class="col"></div>
                 <div class="col my-auto">
                     <picture>
-                        <source type="image/webp" srcset="{{ url_for('static', filename='ow.webp') }}">
-                        <img src="{{ url_for('static', filename='ow.png') }}" alt="">
+                        <source type="image/webp" srcset="{{ url_for('static', filename='landing/ow.webp') }}">
+                        <img src="{{ url_for('static', filename='landing/ow.png') }}" alt="">
                 </picture>
                 </div>
                 <div class="col"></div>
                 <div class="col my-auto">
                     <picture>
-                        <source type="image/webp" srcset="{{ url_for('static', filename='cvt.webp') }}">
-                        <img src="{{ url_for('static', filename='cvt.png') }}" alt="">
+                        <source type="image/webp" srcset="{{ url_for('static', filename='landing/cvt.webp') }}">
+                        <img src="{{ url_for('static', filename='landing/cvt.png') }}" alt="">
                 </picture>
                 </div>
                 <div class="col"></div>
