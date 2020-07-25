@@ -8,7 +8,10 @@
       selector: '#mytextarea',
       menubar: '',
       inline: true,
-
+      plugins: 'code, link, autosave',
+      default_link_target: "_blank",
+      link_quicklink: true,
+      toolbar: 'undo redo | styleselect removeformat | bold italic underline | alignleft aligncenter alignright alignjustify | outdent indent | link | code'
     });
 </script>
 <script type="text/javascript">
@@ -174,6 +177,9 @@ $(function (){
                     </li>
                     <li  class="mb-3">
                         <p class="mb-1">State only the ideas of the original text.</p>
+                    </li>
+                    <li  class="mb-3">
+                        <p class="mb-1"><b>Shortcut:</b> &#8984;Cmd + K opens up link menu.</p>
                     </li>
                 </ol>
                 <!-- <div class="text-left lato">

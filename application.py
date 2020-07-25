@@ -1134,23 +1134,39 @@ def contact():
 @login_required
 def approvals(approval_id):
     if request.method == "GET":
-        articles = db.execute("SELECT summary, article, link FROM summary WHERE id=:approval_id", approval_id=approval_id)
+        articles = db.execute("SELECT summary, article, link, user_id FROM summary WHERE id=:approval_id", approval_id=approval_id)
         return render_template("approvals.html", articles=articles)
     else:
         summary = request.form.get("summary")
         approve = request.form.get("approve")
-        summary_id = db.execute("SELECT id FROM summary WHERE id=:approval_id", approval_id=approval_id)[0]['id']
+        summary_id = db.execute("SELECT id, user_id, article FROM summary WHERE id=:approval_id", approval_id=approval_id)[0]
         # handles disapproval of a summary
         if not approve:
-            db.execute("UPDATE summary SET summary = '', user_id=NULL, done=CAST(0 AS BIT) WHERE id=:summary_id", summary_id=summary_id)
-            db.execute("DELETE FROM history WHERE summary_id=:summary_id", summary_id=summary_id)
+            user_info = db.execute("SELECT email, first FROM users WHERE id=:user_id", user_id=summary_id['user_id'])[0]
+            with open('templates/edit_guidelines.html', 'r') as f:
+                summary = f.read()
+            db.execute("UPDATE summary SET summary=:summary, user_id=NULL, done=CAST(0 AS BIT) WHERE id=:summary_id", summary_id=summary_id['id'], summary=summary)
+            db.execute("DELETE FROM history WHERE summary_id=:summary_id", summary_id=summary_id['id'])
+            message = Mail(
+            from_email=('team@dcyphr.org', 'dcyphr'),
+            to_emails=user_info['email'],
+            subject='Hi {0}! Unfortunately, your dcyphr distillation was not approved.'.format(user_info['first']),
+                html_content="<p>I'm sorry to inform you that your dcyphr distillation for {0} was not accepted. This usually is due to errors that are too significant to be edited by our moderators. Some reasons include but are not limited to: plagiarism, inaccuracy, and profanity. Thank you for your time and energy. We hope you will still continue to make distillations for dcyphr. If you would like to know more, simply reply to this email.<p>[{1}] End of message.</p>".format(summary_id['article'], date.today()))
+            try:
+                sg = SendGridAPIClient('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')
+                response = sg.send(message)
+                print(response.status_code)
+                print(response.body)
+                print(response.headers)
+            except Exception as e:
+                print(e)
         # handles approval of a summary
         else:
-            user_id = db.execute("SELECT user_id FROM summary WHERE id=:summary_id", summary_id=summary_id)[0]["user_id"]
+            user_id = summary_id['user_id']
             user_info = db.execute("SELECT COALESCE(points, 0), first, last, email FROM users WHERE id=:user_id", user_id=user_id)[0]
             points = user_info['coalesce'] + 20
             db.execute("UPDATE users SET points=:points WHERE id=:user_id", points=points, user_id=user_id)
-            db.execute("UPDATE summary SET summary = :summary, approved=1, bookmarked=0 WHERE id=:summary_id", summary=summary, summary_id=summary_id)
+            db.execute("UPDATE summary SET summary = :summary, approved=1, bookmarked=0 WHERE id=:summary_id", summary=summary, summary_id=summary_id['id'])
             message = Mail(
             from_email=('team@dcyphr.org', 'dcyphr'),
             to_emails=user_info['email'],

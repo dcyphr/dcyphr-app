@@ -9,7 +9,7 @@
     <div class="container mt-5" style="min-height: 100vh">
         {% if message %}
         <div class="alert alert-info" role="alert">
-            Hey there &#128075;! Would you like to <a href="/tasks">contribute</a> or <a href="/request">request</a>?
+            Hey {{info[0]['first']}} &#128075;! Would you like to <a href="/tasks">contribute</a> or <a href="/request">request</a>?
         </div>
         {% endif %}
         <div class="row h-25">
