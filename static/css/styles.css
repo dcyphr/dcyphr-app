@@ -443,6 +443,10 @@ dl:nth-of-type(odd) {
     margin-top:0 !important;
     margin-bottom: 0 !important;
 }
+.explore_card{
+    padding-left: 3rem;
+    padding-right: 3rem;
+}
 .navbar-brand img{
     margin-top: 0 !important;
 }
