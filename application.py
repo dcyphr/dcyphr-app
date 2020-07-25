@@ -25,7 +25,7 @@ import random
 import json
 
 # Configure application
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static')
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 
 from token1 import generate_confirmation_token, confirm_token
@@ -847,12 +847,15 @@ def profile(user_id):
 
     # gets their username
     info = db.execute("SELECT bio, username, first, last, verified, email FROM users WHERE id=:user_id", user_id=session["user_id"])
+    token = generate_confirmation_token(info[0]['email'])
+
     admin = db.execute("SELECT admin FROM users WHERE id=:user_id", user_id=session["user_id"])[0]['admin']
     if info[0]['bio'] == None:
         info[0]['bio'] = "This user has no bio right now."
     if points == None:
         points = 0
-    return render_template("profile.html", info=info, articles=articles, length=length, admin=admin, points=points, user_id=user_id, message=message, token=generate_confirmation_token(info[0]['email']))
+    return render_template("profile.html", info=info, articles=articles, message=message, length=length, admin=admin, points=points, user_id=user_id, token=token)
+
 
 
 # public profile that other users view
@@ -1221,4 +1224,7 @@ def errorhandler(e):
 for code in default_exceptions:
     app.errorhandler(code)(errorhandler)
 
-
+@app.route('/robots.txt')
+@app.route('/sitemap.xml')
+def static_from_root():
+    return send_from_directory(app.static_folder, request.path[1:])

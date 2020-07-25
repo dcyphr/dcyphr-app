@@ -1,0 +1,77 @@
+User-agent: *
+Disallow: /delete/
+
+User-agent: *
+Disallow: /addmethod/
+
+User-agent: *
+Disallow: /history/
+
+User-agent: *
+Disallow: /delete/
+
+User-agent: *
+Disallow: /issues/
+
+User-agent: *
+Disallow: /endorse/
+
+User-agent: *
+Disallow: /likes/
+
+User-agent: *
+Disallow: /add/
+
+User-agent: *
+Disallow: /flag/
+
+User-agent: *
+Disallow: /comments/
+
+User-agent: *
+Disallow: /tag/
+
+User-agent: *
+Disallow: /edit/
+
+User-agent: *
+Disallow: /adminsuggestions/
+
+User-agent: *
+Disallow: /suggestions/
+
+User-agent: *
+Disallow: /apa/
+
+User-agent: *
+Disallow: /doi/
+
+User-agent: *
+Disallow: /ai/
+
+User-agent: *
+Disallow: /submission/
+
+User-agent: *
+Disallow: /google-login/
+
+User-agent: *
+Disallow: /logout/
+
+User-agent: *
+Disallow: /methodupdate/
+
+User-agent: *
+Disallow: /password/
+
+User-agent: *
+Disallow: /google-register/
+
+User-agent: *
+Disallow: /reset/
+
+User-agent: *
+Disallow: /confirm/
+
+User-agent: *
+Disallow: /unconfirmed/
