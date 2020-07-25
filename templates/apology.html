@@ -5,14 +5,17 @@
 {% endblock %}
 
 {% block main %}
-    <div class="container p-0 mx-auto">
+    <div class="container p-0 mx-auto lato">
         <div class="jumbotron rounded bg-white pb-0 mb-0">
-        {% if not message %}
-        <h1 style="color: #017bff; font-family:Lato">Oops! Please refresh the page.</h1>
-        {% else %}
-        <h1 style="color: #017bff; font-family:Lato">{{ message }}</h1>
-        {% endif %}
+            {% if top == 500 %}
+            <h3>That's our fault. Try refreshing.</h3>
+            <p>If this persists, please <a href="mailto:team@dcyphr.org">contact team@dcyphr.org</a></p>
+            <img class="img-fluid mt-0 pt-0" style="max-height: 70vh"src="{{ url_for('static', filename='errors/500.png') }}" alt="">
+            {% elif top == 404 %}
+            <h3>Nothing to find here... <a href="/">Return to safety!</a></h3>
+            <img class="img-fluid mt-0 pt-0" style="max-height: 70vh"src="{{ url_for('static', filename='errors/404.png') }}" alt="">
+            {% else %}
+            {% endif %}
         </div>
-        <img class="img-fluid mt-0 pt-0" style="max-height: 70vh"src="{{ url_for('static', filename='error.png') }}" alt="">
     </div>
 {% endblock %}

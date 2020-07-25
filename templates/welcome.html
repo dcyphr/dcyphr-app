@@ -47,6 +47,7 @@ Welcome
         <p class="text-muted mx-auto" style="max-width: 30rem;">The first video introduces dcyphr's mission. The second video shows how to use the website. The last video demonstrates the best distillation practices. Don't be afraid to double speed them!</p>
         <div id="video_wrapper"></div>
         <button class="btn btn-lg btn-link" id="welcome2">Skip for now &rsaquo;</button>
+        <button class="btn btn-lg btn-link" id="welcome3"><a href="/profile/{{ user_id }}?message=True">Mark as done &rsaquo;</a></button>
     </div>
     <div class="modal fade" tabindex="-1" role="dialog" id="third_step">
         <div class="modal-dialog" role="document">
@@ -87,6 +88,7 @@ Welcome
             var xp = $('#xp').val();
             var fact = $('#fact').val();
             $.post($SCRIPT_ROOT + '/_welcome/{{ user_id }}', {
+                step: 1,
                 school: school,
                 degree: degree,
                 subject: subject,
@@ -100,6 +102,11 @@ Welcome
         });
         $('#welcome2').bind('click', function(){
             $('#third_step').modal('toggle');
+        });
+        $('#welcome3').bind('click', function(){
+            $.post($SCRIPT_ROOT + '/_welcome/{{ user_id }}', {
+                step: 2
+            });
         });
     });
 </script>

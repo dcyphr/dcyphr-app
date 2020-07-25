@@ -289,8 +289,6 @@ def flag(summary_id):
 def comments(summary_id):
     comment = request.form.get('comment')
     reply = request.form.get('reply')
-    if comment == None and reply == None:
-        return render_template("apology.html", message="Error, please input text for your post")
     today = date.today()
     today = today.strftime("%B %d, %Y")
     # Comment
@@ -698,15 +696,18 @@ def login():
 @app.route("/welcome/<int:user_id>")
 @login_required
 def welcome(user_id):
-
     return render_template("welcome.html", first=request.args['first'], user_id=user_id)
 
 @app.route("/_welcome/<int:user_id>", methods=["POST"])
 @login_required
 def _welcome(user_id):
-    bio = "{0} in {1} from {2} in {3}. {4} {5}".format(request.form['degree'], request.form['subject'], request.form['school'], request.form['year'], request.form['xp'], request.form['fact'])
-    db.execute("UPDATE users SET bio=:bio, welcome=:welcome WHERE id=:user_id", welcome=1, bio=bio, user_id=user_id)
-    return {}
+    if request.form['step'] == 1:
+        bio = "{0} in {1} from {2} in {3}. {4} {5}".format(request.form['degree'], request.form['subject'], request.form['school'], request.form['year'], request.form['xp'], request.form['fact'])
+        db.execute("UPDATE users SET bio=:bio, welcome=:welcome WHERE id=:user_id", welcome=1, bio=bio, user_id=user_id)
+        return {}
+    else:
+        db.execute("UPDATE users SET welcome=:welcome WHERE id=:user_id", welcome=2, user_id=user_id)
+        return {}
 
 
 #GOOGLE_CLIENT_ID = os.environ.get("GOOGLE_CLIENT_ID", None)
@@ -845,13 +846,13 @@ def profile(user_id):
     points = db.execute("SELECT points FROM users WHERE id=:user_id", user_id=session["user_id"])[0]['points']
 
     # gets their username
-    info = db.execute("SELECT bio, username, first, last, verified FROM users WHERE id=:user_id", user_id=session["user_id"])
+    info = db.execute("SELECT bio, username, first, last, verified, email FROM users WHERE id=:user_id", user_id=session["user_id"])
     admin = db.execute("SELECT admin FROM users WHERE id=:user_id", user_id=session["user_id"])[0]['admin']
     if info[0]['bio'] == None:
         info[0]['bio'] = "This user has no bio right now."
     if points == None:
         points = 0
-    return render_template("profile.html", info=info, articles=articles, length=length, admin=admin, points=points, user_id=user_id, message=message)
+    return render_template("profile.html", info=info, articles=articles, length=length, admin=admin, points=points, user_id=user_id, message=message, token=generate_confirmation_token(info[0]['email']))
 
 
 # public profile that other users view
@@ -903,11 +904,13 @@ def password(password_token):
         password = request.form.get("password")
         confirm = request.form.get("confirmation")
         if password != confirm:
-            return render_template("apology.html", message="Your passwords do not match")
+            flash(u"Oops! Those don't match.", 'error')
+            return redirect("/password/{}".format(password_token))
         else:
             hashed = generate_password_hash(password)
             db.execute("UPDATE users SET hash = :hashed WHERE email=:email", hashed=hashed, email=email)
-        return render_template("login.html")
+        flash(u"Success! Password updated.")
+        return redirect('/login')
 
 
 # allows user registration
@@ -923,24 +926,22 @@ def register():
         email = request.form.get("email")
         newsletter = request.form.get("newsletter")
 
-        if not email:
-            return render_template("apology.html", message="You must enter an email")
-        if not username:
-            return render_template("apology.html", message="You must enter a username")
         if len(db.execute("SELECT id FROM users WHERE email = :email", email=email)) > 0:
-            return render_template("apology.html", message="That email is already registered")
+            flash(u"That email is already registered.", "danger")
+            return redirect('/register')
         # checks that it is a valid email
         if not re.match(r"^[A-Za-z0-9\.\+_-]+@", email):
-            return render_template("apology.html", message="Not a valid email address")
+            flash(u"Are you sure that's a real email?", "danger")
+            return redirect('/register')
         # checks if username is taken
         if len(db.execute("SELECT id FROM users WHERE username = :username", username=username)) > 0:
-            return render_template("apology.html", message="That username is taken")
+            flash(u"Sorry, that username is taken.", "danger")
+            return redirect('/register')
         password = request.form.get("password")
         confirm = request.form.get("confirm")
-        if not password:
-            return render_template("apology.html", message="You must enter a password")
         if password != confirm:
-            return render_template("apology.html", message="Your passwords do not match")
+            flash(u"Oops. Those passwords don't match.", "danger")
+            return redirect('/register')
         else:
 
             hashed = generate_password_hash(password)
@@ -1118,16 +1119,6 @@ def unconfirmed(user_id):
 @app.route("/results")
 def results():
     return render_template("results.html")
-
-# shows the contact page
-@app.route("/contact", methods=["GET", "POST"])
-def contact():
-    if request.method == "GET":
-        return render_template("contact.html")
-    else:
-        email = request.form.get("email")
-        feedback = request.form.get("feedback")
-        db.execute("INSERT INTO feedback (email, feedback) VALUES (:email, :feedback)", email=email, feedback=feedback)
 
 # admin approves new summaries that are made before they show up on browse
 @app.route("/approvals/<int:approval_id>", methods=["GET", "POST"])

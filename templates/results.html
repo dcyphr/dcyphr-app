@@ -13,8 +13,8 @@
     </div>
 {% if length == 0 %}
 <picture>
-    <source type="image/webp" srcset="{{ url_for('static', filename='noresults.webp') }}">
-    <img  class="searchResults" src="nosearchresults.png" alt="">
+    <source type="image/webp" srcset="{{ url_for('static', filename='errors/noresults.webp') }}">
+    <img  class="searchResults" src="errors/nosearchresults.png" alt="">
 </picture>
 {% else %}
 <ul style="text-align: left; list-style: none">
