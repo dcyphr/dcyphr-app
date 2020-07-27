@@ -13,27 +13,14 @@
             <div class="col-lg-4 col-md-6 text-left mx-auto mb-5 explore_card" style="min-height: 45vh;">
                 <a href="/tag/{{ tags[i]['id'] }}/0" style="text-decoration:none;">
                     <div class="h-100 p-0 pb-5 mx-auto border20" style="width:100%; box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.25); font-family: Lato; position: relative;">
-                        {% if tags[i]['title'] == 'Biochemistry' %}
-                        <img class="w-100 b20t" style="object-fit: cover !important; height: 50% !important;" src="{{ url_for('static', filename='pages/biochemistry.jpg') }}" alt="Biochemistry">
-                        {% elif tags[i]['title'] == 'Neuroscience' %}
-                        <img class="w-100 b20t" style="object-fit: cover !important; height:50% !important" src="{{ url_for('static', filename='pages/neuroscience.jpg') }}" alt="Neuroscience">
-                        {% elif tags[i]['title'] == 'COVID-19' %}
-                        <img class="w-100 b20t" style="object-fit: cover !important; height:50% !important" src="{{ url_for('static', filename='pages/covid.jpg') }}" alt="COVID-19">
-                        {% elif tags[i]['title'] == 'Evolutionary Biology and Ecology' %}
-                        <img class="w-100 b20t" style="object-fit: cover !important; height:50% !important" src="{{ url_for('static', filename='pages/evolution.jpg') }}" alt="Evolutionary Biology">
-                        {% elif tags[i]['title'] == 'Cell Biology' %}
-                        <img class="w-100 b20t" style="object-fit: cover !important; height:50% !important" src="{{ url_for('static', filename='pages/stem.jpg') }}" alt="Cell Biology">
-                        {% elif tags[i]['title'] == 'Genetics and Developmental Biology' %}
-                        <img class="w-100 b20t" style="object-fit: cover !important; height:50% !important" src="{{ url_for('static', filename='pages/genetics.jpg') }}" alt="Genetics">
-                        {% elif tags[i]['title'] == 'Social Sciences' %}
-                        <img class="w-100 b20t" style="object-fit: cover !important; height:50% !important" src="{{ url_for('static', filename='pages/social.jpg') }}" alt="Social Sciences">
-                        
+                        {% if tags[i]['link'] != None %}
+                        <img class="w-100 b20t" style="object-fit: cover !important; height:50% !important" src="{{tags[i]['link']}}" alt="Section Picture">
                         {% else %}
                         <div class="w-100 b20t" style="background: rgba(1, 123, 255, 0.38); height:50%"></div>
                         
                         {% endif %}
                         <div>
-                            <div class="px-4 pt-2" style="max-height:15vh; min-height:15vh;">
+                            <div class="px-4 pt-3" style="max-height:15vh; min-height:15vh;">
                                 <h3 class="card-title my-1" style="font-family:Lato; font-size:1.5em;">{{ tags[i]['title'] }}</h3>
 
                                 <div style="max-height: 10vh; overflow-y:auto">
@@ -55,9 +42,9 @@
             <div class="col-lg-4 col-md-6 text-left mx-auto mb-5 explore_card" style="min-height: 45vh;">
                 <a href="/method/0" style="text-decoration:none;">
                     <div class="h-100 p-0 pb-5 mx-auto border20" style="width:100%; box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.25); font-family: Lato; position: relative;">
-                        <img class="w-100 b20t" style="object-fit: cover !important; height: 50% !important;" src="{{ url_for('static', filename='pages/glossary.jpg') }}" alt="Glossary">
+                        <img class="w-100 b20t" style="object-fit: cover !important; height: 50% !important;" src="https://dcyphr-topic-images.s3.amazonaws.com/glossary.jpg" alt="Glossary">
                         <div>
-                            <div class="px-4 pt-2" style="max-height:15vh; min-height:15vh;">
+                            <div class="px-4 pt-3" style="max-height:15vh; min-height:15vh;">
                                 <h3 class="card-title my-1" style="font-family:Lato; font-size:1.5em;">Glossary</h3>
 
                                 <div style="max-height: 10vh; overflow-y:auto">
