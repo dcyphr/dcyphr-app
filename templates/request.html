@@ -42,8 +42,14 @@
                     <label for="link" class="font-weight text-muted" style="font-size:12px">Link to article*</label>
                     <input type="text" id="link" class="form-control w-100" name="link" style="border-radius:20px" required>
                 </div>
-
+                {% if user == 0 %}
+                <button class="btn btn-outline-primary btn-block" style="border-radius:20px" type="submit" disabled>Request</button>
+                <div class="w-100 text-center">
+                    <small class="text-danger">You must be logged in to request an article distillation!</small>
+                </div>
+                {% else %}
                 <button class="btn btn-outline-primary btn-block" style="border-radius:20px" type="submit">Request</button>
+                {% endif %}
             </form>
         </div>
     </div>

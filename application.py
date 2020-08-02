@@ -600,10 +600,9 @@ def submission(summary_id):
     return redirect("/")
 # Allows user to request an article to be summarized
 @app.route("/request", methods=["GET", "POST"])
-@login_required
 def requesting():
     if request.method == "GET":
-        return render_template("request.html", message="")
+        return render_template("request.html", message="", user=len(session))
     else:
         article = request.form.get("article")
         doi = request.form.get("doi")
@@ -1164,7 +1163,7 @@ def approvals(approval_id):
             from_email=('team@dcyphr.org', 'dcyphr'),
             to_emails=user_info['email'],
             subject='Hi {0}! Your dcyphr distillation was approved and published!'.format(user_info['first']),
-                html_content="<p>Congrats! Your dcyphr distillation was approved by our team and published on our website. Here's the link for you to share it with your friends: <a href='https://www.dcyphr.org/read/{0}'>https://www.dcyphr.org/read/{0}</a></p><p>[{1}] End of message.</p>".format(summary_id['id'], date.today()))
+                html_content="<p>Congrats! Your dcyphr distillation was approved by our team and published on our website. Here's the link for you to share it with your friends: <a clicktracking='off' href='https://www.dcyphr.org/read/{0}'>https://www.dcyphr.org/read/{0}</a></p><p>[{1}] End of message.</p>".format(summary_id['id'], date.today()))
             try:
                 sg = SendGridAPIClient('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')
                 response = sg.send(message)

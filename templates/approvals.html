@@ -1,71 +1,16 @@
 {% extends "layout.html" %}
 
 {% block summernote %}
-<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.15/dist/summernote-bs4.min.css" rel="stylesheet" defer>
-<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.15/dist/summernote-bs4.min.js" defer></script>
+<script src="https://cdn.tiny.cloud/1/0alr4b654wmjwk41jr9eeu0xprprdf4mv7veduzfoc3c9rjw/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
 <script>
-        var HelloButton = function (context) {
-            var ui = $.summernote.ui;
-
-            // create button
-            var button = ui.button({
-                contents: '<i class="fa fa-wikipedia-w border-0"/></i>',
-                tooltip: 'Link to any Wiki page',
-                click: function () {
-                 // invoke insertText method with 'hello' on editor module.
-                var highlight = window.getSelection();
-                var html = "<a href='https://en.wikipedia.org/wiki/" + highlight + "' target='_blank'>" + highlight + "</a>";
-                context.invoke('editor.pasteHTML', html);
-            }
-            }  );
-
-            return button.render();   // return button as jquery object
-        };
-
-        var removeHighlights = function(context){
-            var ui = $.summernote.ui;
-
-            // create button
-            var button = ui.button({
-                contents: '<i class="fa fa-eraser border-0"/></i>',
-                tooltip: 'Remove readability suggestions',
-                click: function () {
-                 // invoke insertText method with 'hello' on editor module.
-                var highlight = $('#summernote').summernote('code');
-                var html = highlight.replace(/adverb|passive|veryHardSentence|complex|hardSentence/, "");
-                $('#summernote').summernote('code', html);
-            }
-            }  );
-
-            return button.render();
-        }
-
-
-
-
-
-    $(document).ready(function() {
-        $('#summernote').summernote({
-        toolbar: [
-        ['style', ['style']],
-        ['font', ['bold', 'underline', 'clear']],
-        ['fontname', ['fontname']],
-        ['color', ['color']],
-        ['para', ['ul', 'ol', 'paragraph']],
-        ['table', ['table']],
-        ['insert', ['link', 'picture', 'video']],
-        ['view', ['fullscreen', 'codeview', 'help']], ['mybutton', ['wiki', 'comment']]
-        ],
-        buttons: {
-            wiki: HelloButton,
-            comment: removeHighlights
-        }
-        });
-    });
-</script>
-<script>
-    $(document).ready(function() {
-        $("#summernote").summernote();
+    tinymce.init({
+      selector: '#mytextarea',
+      menubar: '',
+      height: 480,
+      plugins: 'code, link, autosave',
+      default_link_target: "_blank",
+      link_quicklink: true,
+      toolbar: 'undo redo | styleselect removeformat | bold italic underline | alignleft aligncenter alignright alignjustify | outdent indent | link | code'
     });
 </script>
 {% endblock %}
@@ -78,26 +23,23 @@
 {% block main %}
 
 <div class="container mt-5">
-    <div class="text-left pl-3" style="font-size: 1.8em; ">
-        <div class="d-inline ml-4" style="border-left: 4px solid orange;"></div>
-        <div class="d-inline ml-2" style="color: #017bff">Approving <a href="{{ articles[0]['link'] }}" target="_blank">{{articles[0]['article'] }}</a></div>
-        <p class="ml-4 mt-2" style="font-size: 0.6em; border-bottom: 1px solid black; padding: 10px"></p>
-    </div>
-
-
-<br>
-
-
-<form method="POST" >
-    <textarea rows="10" cols="50" name="summary" id="summernote" id="summary">{{ articles[0]['summary'] | safe }}</textarea>
-    <br>
-    <input type="radio" name="approve">
-    <label for="approve">Approve</label>
-    <input type="radio" name="disapprove">
-    <label for="approve">Disapprove</label>
-        <div class="container text-center">
-            <button class="btn btn-default my-3" type="submit" style="color: white; background-color: DodgerBlue">Submit</button>
+    <div class="col-8 mx-auto">
+        <div class="text-left mb-5">
+            <h2><a href="{{ articles[0]['link'] }}" class="blue" target="_blank">{{articles[0]['article'] }}</a></h2>
         </div>
-</form>
+
+
+        <form method="POST" >
+            <textarea rows="10" cols="50" name="summary" id="mytextarea" id="summary">{{ articles[0]['summary'] | safe }}</textarea>
+            <br>
+            <input type="radio" name="approve">
+            <label for="approve">Approve</label>
+            <input type="radio" name="disapprove">
+            <label for="approve">Disapprove</label>
+                <div class="container text-center">
+                    <button class="btn btn-default my-3" type="submit" style="color: white; background-color: DodgerBlue">Submit</button>
+                </div>
+        </form>
+    </div>
 </div>
 {% endblock %}

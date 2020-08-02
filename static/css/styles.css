@@ -408,6 +408,9 @@ dl:nth-of-type(odd) {
     justify-content: center;
     width: 103%;
 }
+.blue {
+    color: #017bff;
+}
 #profile-stuff1{
     width: 100%;
     padding: 1%;

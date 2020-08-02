@@ -5,40 +5,47 @@ Methods
 {% endblock %}
 
 {% block main %}
+<script src="https://cdn.tiny.cloud/1/0alr4b654wmjwk41jr9eeu0xprprdf4mv7veduzfoc3c9rjw/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+<script>
+    tinymce.init({
+      selector: '#mytextarea',
+      menubar: '',
+      plugins: 'code, link',
+      default_link_target: "_blank",
+      link_quicklink: true,
+      toolbar: 'undo redo | styleselect removeformat | bold italic underline | alignleft aligncenter alignright alignjustify | outdent indent | link | code'
+    });
+</script>
 
 
-
-<div class="container mt-5">
+<div class="container mt-5 lato">
     <div class="text-left pl-3" style="font-size: 1.8em;">
         <div class="d-inline ml-4" style="border-left: 4px solid orange;"></div>
-        <div class="d-inline ml-2" style="color: #017bff">Glossary
+        <div class="d-inline ml-2"><span class="blue">Glossary</span>
         {% if session_len != 0 %}
         <button class="btn btn-outline-primary border10" data-target="#newmethod" data-toggle="collapse">+</button></div>
         {% endif %}
-        <p class="ml-4 mt-2" style="font-size: 0.6em; border-bottom: 1px solid black; padding: 10px">A collection of terms we have defined to make your experience better!</p>
+        <p class="ml-4 mt-2" style="font-size: 0.6em; border-bottom: 1px solid black; padding: 10px">A collection of terms we have dcyphr-d! Try  <b>&#x2318;cmd + f</b> what you are looking for.</p>
    </div>
-   <form action="/addmethod" method="POST" class="collapse text-left" id="newmethod">
+   <form action="/addmethod" method="POST" class="collapse mx-auto" id="newmethod">
     <div class="form-group">
-        <input type="text" class="border20 form-control w-50" name="title" placeholder="Method name">
+        <input type="text" style="border-radius: 0;" class="form-control" name="title" placeholder="Method name">
     </div>
     <div class="form-group">
-        <textarea name="description" class="border20 p-3 w-50 form-control" cols="30" rows="10" placeholder="Method description"></textarea><br>
+        <textarea name="description" class="p-3 form-control" id="mytextarea" placeholder="Method description"></textarea><br>
     </div>
     <div class="form-group">
-        <input class="btn btn-outline-primary w-50 border20" type="submit" value="Add Method">
+        <input class="btn btn-outline-primary" style="border-radius: 0;" type="submit" value="Add Method">
     </div>
    </form>
 
 <ul style="text-align: left; list-style: none;">
     {% for i in range(length) %}
-    <li class="p-2 my-2">
+    <li>
         <div>
-            <div>
-                <a class="disabledButton" href="{{ methods[i]['id'] }}" style="font-family: Lato; color: #017bff; font-size: 1.4em; ">{{ methods[i]["name"] }}</a>
-            </div>
-            <div class="p-2" style="font-size: 0.75em; font-family: Lato;">
-                {{ preview[i]['substr'] }}...
-            </div>
+            <small>
+                <a href="{{ methods[i]['id'] }}" class="blue">{{ methods[i]["name"] }}</a>
+            </small>
         </div>
     </li>
     {% endfor %}

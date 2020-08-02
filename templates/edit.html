@@ -8,7 +8,7 @@
       selector: '#mytextarea',
       menubar: '',
       inline: true,
-      plugins: 'code, link, autosave',
+      plugins: 'code, link',
       default_link_target: "_blank",
       link_quicklink: true,
       toolbar: 'undo redo | styleselect removeformat | bold italic underline | alignleft aligncenter alignright alignjustify | outdent indent | link | code'
@@ -109,22 +109,6 @@ $(function (){
 <!-- <script type="text/javascript" src="{{ url_for('static', filename='hemingway.js') }}"></script> -->
 
 <div class="container">
-    <div class="text-left">
-        <div class="row jumbotron m-xs-1 rounded bg-white text-left">
-
-            <div class="col-md-10 col-xs-6">
-                <p class="display-4" style="color: #017bff; font-size:2.5em; font-family:Lato">
-                    <a href="{{ article[0]['link'] }}" target="_blank">{{ article[0]["article"] }}</a>
-                </p>
-            </div>
-
-            
-        </div>
-        <div class="alert alert-success alert-dismissible fixed-top" id="draft" role="alert" hidden>
-            <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
-            Draft saved! &#10084;
-        </div>
-    </div>
 
     <div class="modal fade" tabindex="-1" role="dialog" id="finishModal">
         <div class="modal-dialog" role="document">
@@ -141,109 +125,111 @@ $(function (){
             </div>
           </div>
         </div>
-      </div>
+    </div>
+    <div class="alert alert-success alert-dismissible fixed-top" id="draft" role="alert" hidden>
+        <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+        Draft saved! &#10084;
+    </div>
+    <div class="col-md-10 mx-auto">
+        <div class="text-left">
+                
+            <h2 class="blue lato py-5" style="font-weight: 300;">
+                <a href="{{ article[0]['link'] }}" target="_blank">{{ article[0]["article"] }}</a>
+            </h2>
+        </div>
 
 
-    <div class="mx-5 text-left">
-        <div class="row">
-            <div class="col-12 col-lg-4 collapse lato" id="guidelines">
-                <h2 style="color: #017bff; font-weight: 300;" class="lato">Some helpful tips</h2>
-                <ol class="p-2 collapse" style="font-size: 0.9em;" id="guidelines">
-                    <li class="mb-3">
-                        <p class="mb-1">Minimize nominalization. Don't use words that are not nouns as nouns.</p>
-                        <p class="mb-1 pl-2">Nominalized: The commencement of the ceremony will begin at noon.</p>
-                        <p class="mb-1 pl-2">Better: The ceremony will commence at noon.</p>
-                    </li>
-                    <li class="mb-3">
-                        <p class="mb-1">Keep subjects near verbs near objects.</p>
-                    </li>
-                    <li class="mb-3">
-                        <p class="mb-1">Use simple word substitutions. (Under 3 Syllables)</p>
-                    </li>
-                    <li class="mb-3">
-                        <p class="mb-1">Restrict sentences to one idea per sentence.</p>
-                    </li>
-                    <li class="mb-3">
-                        <p class="mb-1">Make dependent clauses that appear in a middle of a sentence a separate sentence.</p>
-                        <p class="mb-1 pl-2"><strong>Example:</strong> The ball, which was blue, rolled down the hill.</p>
-                        <p class="mb-1 pl-2"><em>Better:</em> The ball was blue. It rolled down the hill.</p>
-                        <p class="mb-1 pl-2"><em>Best:</em> The blue ball rolled down the hill.</p>
-                    </li>
-                    <li class="mb-3">
-                        <p class="mb-1">Qualify all the pronouns you use.</p>
-                    </li>
-                    <li  class="mb-3">
-                        <p class="mb-1">Introduce paragraphs with main idea sentence.</p>
-                    </li>
-                    <li  class="mb-3">
-                        <p class="mb-1">State only the ideas of the original text.</p>
-                    </li>
-                    <li  class="mb-3">
-                        <p class="mb-1"><b>Shortcut:</b> &#8984;Cmd + K opens up link menu.</p>
-                    </li>
-                </ol>
-                <!-- <div class="text-left lato">
+        <div class="text-left">
+            <div class="row">
+                <div class="col-12 col-lg-4 collapse lato" id="guidelines">
+                    <h2 style="color: #017bff; font-weight: 300;" class="lato">Some helpful tips</h2>
+                    <ol class="p-2 collapse" style="font-size: 0.9em;" id="guidelines">
+                        <li class="mb-3">
+                            <p class="mb-1">Minimize nominalization. Don't use words that are not nouns as nouns.</p>
+                            <p class="mb-1 pl-2">Nominalized: The commencement of the ceremony will begin at noon.</p>
+                            <p class="mb-1 pl-2">Better: The ceremony will commence at noon.</p>
+                        </li>
+                        <li class="mb-3">
+                            <p class="mb-1">Keep subjects near verbs near objects.</p>
+                        </li>
+                        <li class="mb-3">
+                            <p class="mb-1">Use simple word substitutions. (Under 3 Syllables)</p>
+                        </li>
+                        <li class="mb-3">
+                            <p class="mb-1">Restrict sentences to one idea per sentence.</p>
+                        </li>
+                        <li class="mb-3">
+                            <p class="mb-1">Make dependent clauses that appear in a middle of a sentence a separate sentence.</p>
+                            <p class="mb-1 pl-2"><strong>Example:</strong> The ball, which was blue, rolled down the hill.</p>
+                            <p class="mb-1 pl-2"><em>Better:</em> The ball was blue. It rolled down the hill.</p>
+                            <p class="mb-1 pl-2"><em>Best:</em> The blue ball rolled down the hill.</p>
+                        </li>
+                        <li class="mb-3">
+                            <p class="mb-1">Qualify all the pronouns you use.</p>
+                        </li>
+                        <li  class="mb-3">
+                            <p class="mb-1">Introduce paragraphs with main idea sentence.</p>
+                        </li>
+                        <li  class="mb-3">
+                            <p class="mb-1">State only the ideas of the original text.</p>
+                        </li>
+                        <li  class="mb-3">
+                            <p class="mb-1"><b>Shortcut:</b> &#8984;Cmd + K opens up link menu.</p>
+                        </li>
+                    </ol>
+                    <!-- <div class="text-left lato">
+
+                    
+                        
+                            <button class="btn btn-link" data-toggle="collapse" data-target="#format" style="text-decoration: none;"><h2 class="lato" style="color: #017bff; font-weight:300;">Readability</h2></button>
+                            <button class="btn btn-default bg-white" onclick="format()" style="color: #017bff">Test Readability</button>
+                            
+                        <div id="format" class="collapse">
+                            <div id="level" style="color: green">
+                            </div>
+                            <div id="adverb" class="adverb counter"># of adverbs</div>
+                            <div id="passive" class="passive counter"># of passive voice</div>
+                            <div id="complex" class="complex counter"># of complex sentences</div>
+                            <div id="hardSentence" class="hardSentence counter"># of hard sentences</div>
+                            <div id="veryHardSentence" class="veryHardSentence counter"># of very hard sentences</div>
+                        </div>
+                    </div> -->
+
+
+                </div>
 
                 
-                    
-                        <button class="btn btn-link" data-toggle="collapse" data-target="#format" style="text-decoration: none;"><h2 class="lato" style="color: #017bff; font-weight:300;">Readability</h2></button>
-                        <button class="btn btn-default bg-white" onclick="format()" style="color: #017bff">Test Readability</button>
-                        
-                    <div id="format" class="collapse">
-                        <div id="level" style="color: green">
+                <div class="col">
+                    <div class="row">
+                        <div class="mr-auto d-inline float-left text-center">
+                            <button class="btn btn-default bg-white" data-toggle="collapse" data-target="#guidelines" style="color:#017bff">
+                                <p >&#8249; Reveal tips &#9997;</p>
+                            </button>
                         </div>
-                        <div id="adverb" class="adverb counter"># of adverbs</div>
-                        <div id="passive" class="passive counter"># of passive voice</div>
-                        <div id="complex" class="complex counter"># of complex sentences</div>
-                        <div id="hardSentence" class="hardSentence counter"># of hard sentences</div>
-                        <div id="veryHardSentence" class="veryHardSentence counter"># of very hard sentences</div>
                     </div>
-                </div> -->
 
+                    
+                    
 
-            </div>
+                    <!-- <form method="POST" action="/submission/{{ summary_id }}"></form> -->
+                        <div id="mytextarea" name="summary">{{summary|safe}}</div>
+                        <div>
+                            <div class="container text-center">
+                                <button class="btn btn-outline-secondary border20 my-3" type="submit" name="submit_button" id="save" value="save">Save</button>
+                                <button class="btn btn-outline-primary border20 my-3" type="submit" name="submit_button" id="finish" value="finish">Finish</button>
+                            </div>
+                        </div>
+                    <!-- </form> -->
 
-            
-            <div class="col">
-                <div class="row">
-                    <div class="mr-auto d-inline float-left text-center">
-                        <button class="btn btn-default bg-white" data-toggle="collapse" data-target="#guidelines" style="color:#017bff">
-                            <p >&#8249; Reveal tips &#9997;</p>
-                        </button>
-                    </div>
                 </div>
 
                 
                 
 
-                <!-- <form method="POST" action="/submission/{{ summary_id }}"></form> -->
-                    <div id="mytextarea" name="summary">{{summary|safe}}</div>
-                    <div>
-                        <div class="container text-center">
-                            <button class="btn btn-outline-secondary border20 my-3" type="submit" name="submit_button" id="save" value="save">Save</button>
-                            <button class="btn btn-outline-primary border20 my-3" type="submit" name="submit_button" id="finish" value="finish">Finish</button>
-                        </div>
-                    </div>
-                <!-- </form> -->
-
             </div>
-
-            
-            
-
         </div>
-    
-
-    
-
-
-    
+    </div>    
 </div>
 </div>
-<!-- <script defer>
-    $(document).ready(function() {
-        $("#summernote").summernote();
-    });
-</script> -->
 {% endblock %}
 
