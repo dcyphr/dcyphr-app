@@ -439,6 +439,10 @@ dl:nth-of-type(odd) {
 
 
 @media screen and (max-width: 481px){
+.index_div_1{
+    padding-left: 10%;
+    padding-right: 10%;
+}
 .b20t{
     margin-top:0 !important;
     margin-bottom: 0 !important;
