@@ -618,13 +618,13 @@ def requesting():
         if len(db.execute("SELECT doi FROM summary WHERE doi=:doi", doi=doi)) > 0:
 
             # if already in database, it increases the number of requests by 1
-            requests = db.execute("SELECT requests FROM summary WHERE doi=:doi", doi=doi)[0]["requests"] + 1
-            db.execute("UPDATE summary SET requests=:requests WHERE doi=:doi", doi=doi, requests=requests)
+            
+            db.execute("UPDATE summary SET requests=requests+1 WHERE doi=:doi", doi=doi)
         else:
             with open('templates/edit_guidelines.html', 'r') as f:
                 summary = f.read()
             # if it isn't in the database, it adds it as a new task
-            db.execute("INSERT INTO summary (requests, article, doi, done, link, citation, likes, approved, request_date, request_user, summary) VALUES (1, :article, :doi, CAST(0 AS BIT), :link, :citation, 0, 0, :request_date, :request_user, :summary);",
+            db.execute("INSERT INTO summary (requests, article, doi, done, link, citation, likes, approved, request_date, request_user, summary, tsv) VALUES (1, :article, :doi, CAST(0 AS BIT), :link, :citation, 0, 0, :request_date, :request_user, :summary, to_tsvector(:article));",
                        article=article, doi=doi, link=link, citation=citation, request_date=request_date, request_user=request_user, summary=summary)
         return render_template("request.html", message="Awesome! Your request has been made. &#127881;")
 
@@ -634,7 +634,7 @@ def search():
     search = request.form.get("search").lower()
     # gets info on things that have the searched thing in it
     results = db.execute(""" 
-    SELECT DISTINCT summary.id AS summary_id, summary_date, ts_headline(summary.summary, to_tsquery('english', :search), 'MaxFragments=5, MaxWords=20, MinWords=5') AS summary, first, last, article, users.id FROM summary JOIN users ON user_id=users.id WHERE to_tsvector(article) @@ to_tsquery(:search) OR to_tsvector(users.first) @@ to_tsquery(:search) OR to_tsvector(users.last) @@ to_tsquery(:search);
+    SELECT summary.id AS summary_id, summary_date, ts_headline(summary.summary, to_tsquery('english', :search), 'MaxFragments=5, MaxWords=20, MinWords=5') AS summary, first, last, article, users.id FROM summary JOIN users ON user_id=users.id WHERE summary.tsv @@ to_tsquery(:search) OR users.tsv_name @@ to_tsquery(:search);
     """, search=search)
     length = len(results)
 
@@ -696,8 +696,12 @@ def welcome(user_id):
 @app.route("/_welcome/<int:user_id>", methods=["POST"])
 @login_required
 def _welcome(user_id):
-    if request.form['step'] == 1:
-        bio = "{0} in {1} from {2} in {3}. {4} {5}".format(request.form['degree'], request.form['subject'], request.form['school'], request.form['year'], request.form['xp'], request.form['fact'])
+    if request.form['step'] == '1':
+        if not request.form['fact']:
+            fact = ''
+        else:
+            fact = request.form['fact']
+        bio = "{0} in {1} from {2} in {3}. {4} {5}".format(request.form['degree'], request.form['subject'], request.form['school'], request.form['year'], request.form['xp'], fact)
         db.execute("UPDATE users SET bio=:bio, welcome=:welcome WHERE id=:user_id", welcome=1, bio=bio, user_id=user_id)
         return {}
     else:
@@ -944,12 +948,12 @@ def register():
 
             hashed = generate_password_hash(password)
             if newsletter:
-                db.execute("INSERT INTO users (username, hash, email, first, last, newsletter) VALUES (:username, :hashed, :email, :first, :last, 1)", username=username, hashed=hashed, email=email, first=first, last=last)
+                db.execute("INSERT INTO users (username, hash, email, first, last, newsletter, tsv_name) VALUES (:username, :hashed, :email, :first, :last, 1, to_tsvector(CONCAT(:first, ' ', :last, ' ', :username)))", username=username, hashed=hashed, email=email, first=first, last=last)
             else:
-                db.execute("INSERT INTO users (username, hash, email, first, last, newsletter) VALUES (:username, :hashed, :email, :first, :last, 0)", username=username, hashed=hashed, email=email, first=first, last=last)
+                db.execute("INSERT INTO users (username, hash, email, first, last, newsletter, tsv_name) VALUES (:username, :hashed, :email, :first, :last, 0, to_tsvector(CONCAT(:first, ' ', :last, ' ', :username)))", username=username, hashed=hashed, email=email, first=first, last=last)
 #send confirmation email
             token = generate_confirmation_token(email)
-            user = db.execute("SELECT first FROM users WHERE username=:username", username=username)
+            
             confirm_url = url_for('confirm_email', token=token, _external=True)
             with open('templates/register_email.html', 'r') as f:
                 html_string = f.read()
@@ -957,7 +961,7 @@ def register():
                 from_email='team@dcyphr.org',
                 to_emails=email,
                 subject='Confirm your dcyphr account',
-                html_content=html_string.format(user[0]['first'], confirm_url))
+                html_content=html_string.format(first, confirm_url))
                 # html_content='<h2 style="font-family: Georgia">Welcome to <span style="color: #017bff">dcyphr</span>, {0}!<p>Please follow this link to confirm that this is your email.</p><a href={1}><button class="btn btn-primary border20">Confirm account</button></a>'.format(user[0]['first'], confirm_url))
             try:
                 sg = SendGridAPIClient('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')
