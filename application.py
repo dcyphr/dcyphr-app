@@ -81,7 +81,6 @@ def addmethod():
 def explore():
     tags = db.execute("SELECT title, text, tags.link, tags.id, COUNT(tag_id) AS count FROM tags LEFT JOIN tagitem ON tags.id=tag_id GROUP BY tags.id, tags.title, tags.text, tags.link;")
     method_length = db.execute("SELECT COUNT(*) AS count FROM methods")[0]['count']
-    print(tags[0])
     return render_template("explore.html", tags=tags, method_length=method_length)
 
 
@@ -617,8 +616,6 @@ def requesting():
             citation = "Not available. Please add it."
         # checks if PMID/DOI is already in the requested list
         if len(db.execute("SELECT doi FROM summary WHERE doi=:doi", doi=doi)) > 0:
-            test = db.execute("SELECT article FROM summary WHERE doi=:doi", doi=doi)
-            # checks if your PMID/DOI has the correct title if it is already in database
 
             # if already in database, it increases the number of requests by 1
             requests = db.execute("SELECT requests FROM summary WHERE doi=:doi", doi=doi)[0]["requests"] + 1
@@ -631,28 +628,25 @@ def requesting():
                        article=article, doi=doi, link=link, citation=citation, request_date=request_date, request_user=request_user, summary=summary)
         return render_template("request.html", message="Awesome! Your request has been made. &#127881;")
 
-# homepage with a search bar
-@app.route("/", methods=["GET", "POST"])
-def index():
-    if request.method == "GET":
-        leaderboard = db.execute("SELECT first, last, id, points FROM users WHERE points > 0 ORDER BY points DESC LIMIT 5")
-        random_article = db.execute("SELECT id FROM summary WHERE done=CAST(1 AS BIT) AND approved=1 ORDER BY RANDOM() LIMIT 1")[0]['id']
-        lead_length = len(leaderboard)
-        return render_template("index.html", leaderboard=leaderboard, lead_length=lead_length, random_article=random_article)
-    else:
-        # search bar
-        search = request.form.get("search").lower()
-        # gets info on things that have the searched thing in it
-        results = db.execute("SELECT DISTINCT summary.id AS summary_id, summary.summary, username, article, users.id FROM summary JOIN tagitem ON summary.id=tagitem.item_id JOIN tags ON tagitem.tag_id=tags.id JOIN users ON summary.user_id = users.id WHERE (LOWER(article) LIKE :search OR summary.doi LIKE :search OR username LIKE :search OR LOWER(summary.summary) LIKE :search OR LOWER(summary.citation) LIKE :search OR LOWER(tags.title) LIKE :search) AND summary.done = CAST(1 AS BIT) AND summary.approved = 1", search="%" + search + "%")
-        soup = []
-        links = []
-        for i in range(len(results)):
-            soup.append(percent_remove(str(BeautifulSoup(results[i]["summary"], features="html5lib").get_text()[0:500])))
-            links.append("read/{0}".format(results[i]["summary_id"]))
-        # creates list of links/routes to display to user so they can click on the result and it takes them to the correct read subroute
-        length = len(results)
+@app.route("/search", methods=["POST"])
+def search():
+    # search bar
+    search = request.form.get("search").lower()
+    # gets info on things that have the searched thing in it
+    results = db.execute(""" 
+    SELECT DISTINCT summary.id AS summary_id, summary_date, ts_headline(summary.summary, to_tsquery('english', :search), 'MaxFragments=5, MaxWords=20, MinWords=5') AS summary, first, last, article, users.id FROM summary JOIN users ON user_id=users.id WHERE to_tsvector(article) @@ to_tsquery(:search) OR to_tsvector(users.first) @@ to_tsquery(:search) OR to_tsvector(users.last) @@ to_tsquery(:search);
+    """, search=search)
+    length = len(results)
 
-        return render_template("results.html", results=results, links=links, length=length, search=search, preview=soup)
+    return render_template("results.html", results=results, length=length, search=search)
+
+# homepage with a search bar
+@app.route("/")
+def index():
+    leaderboard = db.execute("SELECT first, last, id, points FROM users WHERE points > 0 ORDER BY points DESC LIMIT 5")
+    random_article = db.execute("SELECT id FROM summary WHERE done=CAST(1 AS BIT) AND approved=1 ORDER BY RANDOM() LIMIT 1")[0]['id']
+    lead_length = len(leaderboard)
+    return render_template("index.html", leaderboard=leaderboard, lead_length=lead_length, random_article=random_article)
 
 #LOGIN_HERE
 @app.route("/login", methods=["GET", "POST"])
