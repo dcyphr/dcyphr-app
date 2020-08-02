@@ -5,6 +5,7 @@
 {% endblock %}
 
 {% block main %}
+<script src="{{ url_for('static', filename='js/lazysizes.min.js') }}" async=""></script>
 <div class="main">
     <div class="container">
         <h1 class="my-5 text-left" style="font-family:Lato; font-weight:400">Explore <br> &nbsp<small style="color: #017bff; font-size: 1.75vh"><a href="/browse/0">View all</small></h1>
@@ -14,7 +15,9 @@
                 <a href="/tag/{{ tags[i]['id'] }}/0" style="text-decoration:none;">
                     <div class="h-100 p-0 pb-5 mx-auto border20" style="width:100%; box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.25); font-family: Lato; position: relative;">
                         {% if tags[i]['link'] != None %}
-                        <img class="w-100 b20t" style="object-fit: cover !important; height:50% !important" src="{{tags[i]['link']}}" alt="Section Picture">
+                           
+                        <img class="w-100 b20t lazyload" style="object-fit: cover !important; height:50% !important" data-src="{{tags[i]['link']}}" alt="Section Picture">
+                            
                         {% else %}
                         <div class="w-100 b20t" style="background: rgba(1, 123, 255, 0.38); height:50%"></div>
                         

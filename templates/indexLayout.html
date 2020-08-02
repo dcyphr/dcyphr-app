@@ -38,38 +38,10 @@
         </script>
 
         
-        <script>
-          document.addEventListener("DOMContentLoaded", function() {
-            var lazyloadImages = document.querySelectorAll("picture.lazy");
-            var lazyloadThrottleTimeout;
+        <script src="{{ url_for('static', filename='js/lazysizes.min.js') }}" async=""></script>
 
-            function lazyload () {
-              if(lazyloadThrottleTimeout) {
-                clearTimeout(lazyloadThrottleTimeout);
-              }
-
-              lazyloadThrottleTimeout = setTimeout(function() {
-                  var scrollTop = window.pageYOffset;
-                  lazyloadImages.forEach(function(img) {
-                      if(img.offsetTop < (window.innerHeight + scrollTop)) {
-                        img.src = img.dataset.src;
-                        img.classList.remove('lazy');
-                      }
-                  });
-                  if(lazyloadImages.length == 0) {
-                    document.removeEventListener("scroll", lazyload);
-                    window.removeEventListener("resize", lazyload);
-                    window.removeEventListener("orientationChange", lazyload);
-                  }
-              }, 20);
-            }
-
-            document.addEventListener("scroll", lazyload);
-            window.addEventListener("resize", lazyload);
-            window.addEventListener("orientationChange", lazyload);
-          });
-        </script>
-
+        <script src="https://www.googleoptimize.com/optimize.js?id=OPT-MM62FVC" defer></script>
+        
         <title>dcyphr | {% block title %}{% endblock %}</title>
 
     </head>

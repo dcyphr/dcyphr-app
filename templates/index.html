@@ -23,7 +23,7 @@
                         <li class="nav-item"><a class="nav-link text-white" href="/tasks">Contribute</a></li>
                         <li class="nav-item"><a class="nav-link text-white" href="/about">About</a></li>
 
-                        <form action="/" method="POST">
+                        <form action="/search" method="POST">
                         <div class="nav-item ml-3 mb-1 input-group">
                             <input class="form-control-underlined form-control text-white" style="background-color: rgb(19,19,19)" type="text" name="search" id="search" placeholder="Search">
                         </div>
@@ -92,12 +92,12 @@
     <div class="home_page row" id="section2" >
         <div class="col-md"></div>
          <div class="col-md-6">
-            <div class="index_info text-left" style="font-family: Lato; font-weight: 300">
+            <div class="text-left index_div_1" style="font-family: Lato; font-weight: 300; padding-top: 15%; padding-bottom: 15%;">
                 <div class="mb-2" style="font-size: 3.0em">
                     Maximize productivity
                 </div>
-                <p>
-                    Researchers like yourself spend at least 11 hours reading articles each week. <span style="color: #017bff">dcyphr</span> uses psycholinguistics and cutting-edge AI to save you time and resources.
+                <p style="font-family: Lato; font-weight: 300; font-size: 1.3em;">
+                    Researchers like yourself spend at least 11 hours reading articles each week. <span style="color: #017bff">dcyphr</span> uses psycholinguistics and cutting-edge AI to generate research distillations that save you time and resources. <a href="/regsiter" style="color:#017bff">Register for free</a> to start requesting and contributing research distillations!
                 </p>
                 <ul class="list-group">
                     <li class="list-group-item border-0"><span class="fa fa-rocket" style="color: #017bff"></span> &nbsp; Up to 83% time reduction</li>
@@ -115,27 +115,26 @@
             </picture>
         </div>
         <div class="row mt-0">
-            <div class="col-md"></div>
             <div class="row pb-4 pt-0 mt-0 mx-auto">
                 <div class="col"></div>
                 <div class="col my-auto">
-                    <picture >
-                        <source type="image/webp" srcset="{{ url_for('static', filename='landing/tsai.webp') }}"> 
-                        <img src="{{ url_for('static', filename='landing/tsai.png') }}" alt="">
+                    <picture>
+                        <source type="image/webp" data-srcset="{{ url_for('static', filename='landing/tsai.webp') }}"> 
+                        <img class="lazyload" data-src="{{ url_for('static', filename='landing/tsai.png') }}" alt="">
+                    </picture>
+                </div>
+                <div class="col"></div>
+                <div class="col my-auto">
+                    <picture>
+                        <source type="image/webp" data-srcset="{{ url_for('static', filename='landing/ow.webp') }}">
+                        <img class="lazyload" data-src="{{ url_for('static', filename='landing/ow.png') }}" alt="">
                 </picture>
                 </div>
                 <div class="col"></div>
                 <div class="col my-auto">
                     <picture>
-                        <source type="image/webp" srcset="{{ url_for('static', filename='landing/ow.webp') }}">
-                        <img src="{{ url_for('static', filename='landing/ow.png') }}" alt="">
-                </picture>
-                </div>
-                <div class="col"></div>
-                <div class="col my-auto">
-                    <picture>
-                        <source type="image/webp" srcset="{{ url_for('static', filename='landing/cvt.webp') }}">
-                        <img src="{{ url_for('static', filename='landing/cvt.png') }}" alt="">
+                        <source type="image/webp" data-srcset="{{ url_for('static', filename='landing/cvt.webp') }}">
+                        <img class="lazyload" data-src="{{ url_for('static', filename='landing/cvt.png') }}" alt="">
                 </picture>
                 </div>
                 <div class="col"></div>

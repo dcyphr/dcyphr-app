@@ -408,6 +408,9 @@ dl:nth-of-type(odd) {
     justify-content: center;
     width: 103%;
 }
+.blue {
+    color: #017bff;
+}
 #profile-stuff1{
     width: 100%;
     padding: 1%;
@@ -439,6 +442,10 @@ dl:nth-of-type(odd) {
 
 
 @media screen and (max-width: 481px){
+.index_div_1{
+    padding-left: 10%;
+    padding-right: 10%;
+}
 .b20t{
     margin-top:0 !important;
     margin-bottom: 0 !important;

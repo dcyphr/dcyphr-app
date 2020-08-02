@@ -23,6 +23,7 @@
         <script>
           $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
         </script>
+        <script src="https://www.googleoptimize.com/optimize.js?id=OPT-MM62FVC" defer></script>
 
         <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" defer>
 
@@ -84,7 +85,7 @@
                         <li class="nav-item"><a class="nav-link" href="/tasks" >Contribute</a></li>
                         <li class="nav-item"><a class="nav-link" href="/about" >About</a></li>
                       
-                        <form action="/" method="POST">
+                        <form action="/search" method="POST">
                         <div class="nav-item ml-3 mb-1 input-group">
                             <input class="form-control form-control-underlined text-black dark" type="text" name="search" id="search" placeholder="Search" >
                         </div>

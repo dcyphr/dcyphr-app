@@ -68,8 +68,9 @@
     });
 </script>
 
-<div class="container-fluid mb-5" id="read" style="padding-left:20vh; padding-right:20vh">
-    <div class="row jumbotron m-xs-1 rounded bg-white text-left">
+<div class="container-fluid mb-5" id="read">
+    <div class="col-sm-8 mx-auto">
+    <div class="row py-5 rounded bg-white text-left">
 
         <div class="col-md-9 col-xs-6">
             <p class="" style="color: #017bff; font-family: Lato" id="title">
@@ -296,26 +297,27 @@
     </div>
 
 
-
-    <div class="p-0 bg-light border border-dark" id="content-box" >
-        <h1 class="" style="color: #017bff; font-family: Georgia" id="title">Contents</h1>
-        <ul class="ml-3 text-left" style="list-style: none;">
-            {% for i in range(title_length) %}
-            <li><a class="contentButton" href="#{{ titles[i] }}" style="font-family: Lato">{{ i + 1 }}.{{ titles[i] }}</a></li>
-            {% endfor %}
-        </ul>
-    </div>
-
-    <div class="text-left border-bottom">
-
-        <div id="summary" class="p-3 my-3">
-            <p class="pl-4 text-weight-light" style="line-height: 40px; font-size: 20px;">
-                {{summary_actual | safe}}
-            </p>
-
+    
+        <div class="p-0 bg-light border border-dark" id="content-box" >
+            <h1 class="" style="color: #017bff; font-family: Georgia" id="title">Contents</h1>
+            <ul class="ml-3 text-left" style="list-style: none;">
+                {% for i in range(title_length) %}
+                <li><a class="contentButton" href="#{{ titles[i] }}" style="font-family: Lato">{{ i + 1 }}.{{ titles[i] }}</a></li>
+                {% endfor %}
+            </ul>
         </div>
 
+        <div class="text-left border-bottom">
 
+            <div id="summary" class="p-3 my-3">
+                <p class="pl-4 text-weight-light" style="line-height: 40px; font-size: 20px;">
+                    {{summary_actual | safe}}
+                </p>
+
+            </div>
+
+
+        </div>
     </div>
     <!--<div style="position: relative">-->
     <!--<div onmouseout="document.getElementById('div1').style.display = 'none';" onmouseover="document.getElementById('div1').style.display = 'block';" class="bg-warning" style="position: absolute">-->

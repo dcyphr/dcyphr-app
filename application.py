@@ -81,7 +81,6 @@ def addmethod():
 def explore():
     tags = db.execute("SELECT title, text, tags.link, tags.id, COUNT(tag_id) AS count FROM tags LEFT JOIN tagitem ON tags.id=tag_id GROUP BY tags.id, tags.title, tags.text, tags.link;")
     method_length = db.execute("SELECT COUNT(*) AS count FROM methods")[0]['count']
-    print(tags[0])
     return render_template("explore.html", tags=tags, method_length=method_length)
 
 
@@ -601,10 +600,9 @@ def submission(summary_id):
     return redirect("/")
 # Allows user to request an article to be summarized
 @app.route("/request", methods=["GET", "POST"])
-@login_required
 def requesting():
     if request.method == "GET":
-        return render_template("request.html", message="")
+        return render_template("request.html", message="", user=len(session))
     else:
         article = request.form.get("article")
         doi = request.form.get("doi")
@@ -617,42 +615,37 @@ def requesting():
             citation = "Not available. Please add it."
         # checks if PMID/DOI is already in the requested list
         if len(db.execute("SELECT doi FROM summary WHERE doi=:doi", doi=doi)) > 0:
-            test = db.execute("SELECT article FROM summary WHERE doi=:doi", doi=doi)
-            # checks if your PMID/DOI has the correct title if it is already in database
 
             # if already in database, it increases the number of requests by 1
-            requests = db.execute("SELECT requests FROM summary WHERE doi=:doi", doi=doi)[0]["requests"] + 1
-            db.execute("UPDATE summary SET requests=:requests WHERE doi=:doi", doi=doi, requests=requests)
+            
+            db.execute("UPDATE summary SET requests=requests+1 WHERE doi=:doi", doi=doi)
         else:
             with open('templates/edit_guidelines.html', 'r') as f:
                 summary = f.read()
             # if it isn't in the database, it adds it as a new task
-            db.execute("INSERT INTO summary (requests, article, doi, done, link, citation, likes, approved, request_date, request_user, summary) VALUES (1, :article, :doi, CAST(0 AS BIT), :link, :citation, 0, 0, :request_date, :request_user, :summary);",
+            db.execute("INSERT INTO summary (requests, article, doi, done, link, citation, likes, approved, request_date, request_user, summary, tsv) VALUES (1, :article, :doi, CAST(0 AS BIT), :link, :citation, 0, 0, :request_date, :request_user, :summary, to_tsvector(:article));",
                        article=article, doi=doi, link=link, citation=citation, request_date=request_date, request_user=request_user, summary=summary)
         return render_template("request.html", message="Awesome! Your request has been made. &#127881;")
 
-# homepage with a search bar
-@app.route("/", methods=["GET", "POST"])
-def index():
-    if request.method == "GET":
-        leaderboard = db.execute("SELECT first, last, id, points FROM users WHERE points > 0 ORDER BY points DESC LIMIT 5")
-        random_article = db.execute("SELECT id FROM summary WHERE done=CAST(1 AS BIT) AND approved=1 ORDER BY RANDOM() LIMIT 1")[0]['id']
-        lead_length = len(leaderboard)
-        return render_template("index.html", leaderboard=leaderboard, lead_length=lead_length, random_article=random_article)
-    else:
-        # search bar
-        search = request.form.get("search").lower()
-        # gets info on things that have the searched thing in it
-        results = db.execute("SELECT DISTINCT summary.id AS summary_id, summary.summary, username, article, users.id FROM summary JOIN tagitem ON summary.id=tagitem.item_id JOIN tags ON tagitem.tag_id=tags.id JOIN users ON summary.user_id = users.id WHERE (LOWER(article) LIKE :search OR summary.doi LIKE :search OR username LIKE :search OR LOWER(summary.summary) LIKE :search OR LOWER(summary.citation) LIKE :search OR LOWER(tags.title) LIKE :search) AND summary.done = CAST(1 AS BIT) AND summary.approved = 1", search="%" + search + "%")
-        soup = []
-        links = []
-        for i in range(len(results)):
-            soup.append(percent_remove(str(BeautifulSoup(results[i]["summary"], features="html5lib").get_text()[0:500])))
-            links.append("read/{0}".format(results[i]["summary_id"]))
-        # creates list of links/routes to display to user so they can click on the result and it takes them to the correct read subroute
-        length = len(results)
+@app.route("/search", methods=["POST"])
+def search():
+    # search bar
+    search = request.form.get("search").lower()
+    # gets info on things that have the searched thing in it
+    results = db.execute(""" 
+    SELECT summary.id AS summary_id, summary_date, ts_headline(summary.summary, to_tsquery('english', :search), 'MaxFragments=5, MaxWords=20, MinWords=5') AS summary, first, last, article, users.id FROM summary JOIN users ON user_id=users.id WHERE summary.tsv @@ to_tsquery(:search) OR users.tsv_name @@ to_tsquery(:search);
+    """, search=search)
+    length = len(results)
 
-        return render_template("results.html", results=results, links=links, length=length, search=search, preview=soup)
+    return render_template("results.html", results=results, length=length, search=search)
+
+# homepage with a search bar
+@app.route("/")
+def index():
+    leaderboard = db.execute("SELECT first, last, id, points FROM users WHERE points > 0 ORDER BY points DESC LIMIT 5")
+    random_article = db.execute("SELECT id FROM summary WHERE done=CAST(1 AS BIT) AND approved=1 ORDER BY RANDOM() LIMIT 1")[0]['id']
+    lead_length = len(leaderboard)
+    return render_template("index.html", leaderboard=leaderboard, lead_length=lead_length, random_article=random_article)
 
 #LOGIN_HERE
 @app.route("/login", methods=["GET", "POST"])
@@ -702,8 +695,12 @@ def welcome(user_id):
 @app.route("/_welcome/<int:user_id>", methods=["POST"])
 @login_required
 def _welcome(user_id):
-    if request.form['step'] == 1:
-        bio = "{0} in {1} from {2} in {3}. {4} {5}".format(request.form['degree'], request.form['subject'], request.form['school'], request.form['year'], request.form['xp'], request.form['fact'])
+    if request.form['step'] == '1':
+        if not request.form['fact']:
+            fact = ''
+        else:
+            fact = request.form['fact']
+        bio = "{0} in {1} from {2} in {3}. {4} {5}".format(request.form['degree'], request.form['subject'], request.form['school'], request.form['year'], request.form['xp'], fact)
         db.execute("UPDATE users SET bio=:bio, welcome=:welcome WHERE id=:user_id", welcome=1, bio=bio, user_id=user_id)
         return {}
     else:
@@ -950,12 +947,12 @@ def register():
 
             hashed = generate_password_hash(password)
             if newsletter:
-                db.execute("INSERT INTO users (username, hash, email, first, last, newsletter) VALUES (:username, :hashed, :email, :first, :last, 1)", username=username, hashed=hashed, email=email, first=first, last=last)
+                db.execute("INSERT INTO users (username, hash, email, first, last, newsletter, tsv_name) VALUES (:username, :hashed, :email, :first, :last, 1, to_tsvector(CONCAT(:first, ' ', :last, ' ', :username)))", username=username, hashed=hashed, email=email, first=first, last=last)
             else:
-                db.execute("INSERT INTO users (username, hash, email, first, last, newsletter) VALUES (:username, :hashed, :email, :first, :last, 0)", username=username, hashed=hashed, email=email, first=first, last=last)
+                db.execute("INSERT INTO users (username, hash, email, first, last, newsletter, tsv_name) VALUES (:username, :hashed, :email, :first, :last, 0, to_tsvector(CONCAT(:first, ' ', :last, ' ', :username)))", username=username, hashed=hashed, email=email, first=first, last=last)
 #send confirmation email
             token = generate_confirmation_token(email)
-            user = db.execute("SELECT first FROM users WHERE username=:username", username=username)
+            
             confirm_url = url_for('confirm_email', token=token, _external=True)
             with open('templates/register_email.html', 'r') as f:
                 html_string = f.read()
@@ -963,7 +960,7 @@ def register():
                 from_email='team@dcyphr.org',
                 to_emails=email,
                 subject='Confirm your dcyphr account',
-                html_content=html_string.format(user[0]['first'], confirm_url))
+                html_content=html_string.format(first, confirm_url))
                 # html_content='<h2 style="font-family: Georgia">Welcome to <span style="color: #017bff">dcyphr</span>, {0}!<p>Please follow this link to confirm that this is your email.</p><a href={1}><button class="btn btn-primary border20">Confirm account</button></a>'.format(user[0]['first'], confirm_url))
             try:
                 sg = SendGridAPIClient('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')
@@ -1166,7 +1163,7 @@ def approvals(approval_id):
             from_email=('team@dcyphr.org', 'dcyphr'),
             to_emails=user_info['email'],
             subject='Hi {0}! Your dcyphr distillation was approved and published!'.format(user_info['first']),
-                html_content="<p>Congrats! Your dcyphr distillation was approved by our team and published on our website. Here's the link for you to share it with your friends: <a href='https://www.dcyphr.org/read/{0}'>https://www.dcyphr.org/read/{0}</a></p><p>[{1}] End of message.</p>".format(summary_id['id'], date.today()))
+                html_content="<p>Congrats! Your dcyphr distillation was approved by our team and published on our website. Here's the link for you to share it with your friends: <a clicktracking='off' href='https://www.dcyphr.org/read/{0}'>https://www.dcyphr.org/read/{0}</a></p><p>[{1}] End of message.</p>".format(summary_id['id'], date.today()))
             try:
                 sg = SendGridAPIClient('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')
                 response = sg.send(message)
