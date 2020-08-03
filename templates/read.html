@@ -70,154 +70,154 @@
 
 <div class="container-fluid mb-5" id="read">
     <div class="col-sm-8 mx-auto">
-    <div class="row py-5 rounded bg-white text-left">
+        <div class="row py-5 rounded bg-white text-left">
 
-        <div class="col-md-9 col-xs-6">
-            <p class="" style="color: #017bff; font-family: Lato" id="title">
-                <a href="{{ summary[0]['link'] }}" target="_blank">{{ summary[0]['article'] }}</a>
+            <div class="col-md-9 col-xs-6">
+                <p class="" style="color: #017bff; font-family: Lato" id="title">
+                    <a href="{{ summary[0]['link'] }}" target="_blank">{{ summary[0]['article'] }}</a>
+                    {% if endorsements | length == 0 %}
+                    <button class="btn btn-outline-primary border20" data-target="#endorsers" data-toggle="collapse" id="hidden_button" hidden><div id="endorser_count" class='d-inline'>0</div><i class="fa fa-check"></i></button>
+                    {% else %}
+                    <button class="btn btn-outline-primary border20" data-target="#endorsers" data-toggle="collapse"><div id="endorser_count" class="d-inline">{{ endorsements | length }}</div><i class="fa fa-check"></i></button>
+                    {% endif %}
+                </p>
                 {% if endorsements | length == 0 %}
-                <button class="btn btn-outline-primary border20" data-target="#endorsers" data-toggle="collapse" id="hidden_button" hidden><div id="endorser_count" class='d-inline'>0</div><i class="fa fa-check"></i></button>
-                {% else %}
-                <button class="btn btn-outline-primary border20" data-target="#endorsers" data-toggle="collapse"><div id="endorser_count" class="d-inline">{{ endorsements | length }}</div><i class="fa fa-check"></i></button>
-                {% endif %}
-            </p>
-            {% if endorsements | length == 0 %}
-            <div id="endorsers" class="collapse my-3">
-                <div class="row px-3 pl-4 bg-light border-bottom" style="font-family: Georgia; color:black">
-                    Endorsers
-                </div>
+                <div id="endorsers" class="collapse my-3">
+                    <div class="row px-3 pl-4 bg-light border-bottom" style="font-family: Georgia; color:black">
+                        Endorsers
+                    </div>
 
-                    <div class="row px-3 pl-0 border-bottom text-left" style="font-family: Lato;">
+                        <div class="row px-3 pl-0 border-bottom text-left" style="font-family: Lato;">
+                            <div class="col-12" style="font-size: 16px">
+                                <div id="first" class="d-inline">placeholder</div><div id="last" class='d-inline'></div>
+                                <div class="text-muted" style="font-size: 12px; display: inline"> &nbsp
+
+                                <div id="bio" class='d-inline'></div></div>
+
+                            </div>
+
+
+                        </div>
+                </div>
+                {% else %}
+                <div id="endorsers" class="collapse my-3">
+                    <div class="row px-3 pl-4 bg-light border-bottom" style="font-family: Georgia; color:black">
+                        Endorsers
+                    </div>
+                    {% for i in range(endorsements | length) %}
+
+                        <div class="row px-3 pl-0 border-bottom text-left" style="font-family: Lato;">
+                            <div class="col-12" style="font-size: 16px">
+                                {{ endorsements[i]['first'] }} {{ endorsements[i]['last'] }}
+                                {% if endorsements[i]['verified'] == 1 %}
+                                <img src="https://img.icons8.com/nolan/18/verified-account.png" class="pb-2"/>
+                                {% endif %}
+                                <div class="text-muted" style="font-size: 12px; display: inline"> &nbsp;
+                                {% if endorsements[i]['bio'] == None %}
+                                {% else %}
+                                {{ endorsements[i]['bio'][:120] }}...
+                                {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                    {% endfor %}
+                    <div class="row px-3 pl-0 border-bottom text-left" style="font-family: Lato;" id="new_endorser" hidden>
                         <div class="col-12" style="font-size: 16px">
-                            <div id="first" class="d-inline">placeholder</div><div id="last" class='d-inline'></div>
+                            <div id="first" class="d-inline"></div><div id="last" class='d-inline'></div>
                             <div class="text-muted" style="font-size: 12px; display: inline"> &nbsp
 
                             <div id="bio" class='d-inline'></div></div>
 
                         </div>
 
-
                     </div>
-            </div>
-            {% else %}
-            <div id="endorsers" class="collapse my-3">
-                <div class="row px-3 pl-4 bg-light border-bottom" style="font-family: Georgia; color:black">
-                    Endorsers
                 </div>
-                {% for i in range(endorsements | length) %}
+                    {% endif %}
+            
+                <p style="font-size: medium">
 
-                    <div class="row px-3 pl-0 border-bottom text-left" style="font-family: Lato;">
-                        <div class="col-12" style="font-size: 16px">
-                            {{ endorsements[i]['first'] }} {{ endorsements[i]['last'] }}
-                            {% if endorsements[i]['verified'] == 1 %}
-                            <img src="https://img.icons8.com/nolan/18/verified-account.png" class="pb-2"/>
+
+                    <div class='d-inline'>
+                        {% for i in range(tag_length) %}
+                        <div class='btn btn-outline-secondary border20' name="delete_tag_{{tags[i]['id']}}">
+                            <a href="/tag/{{tags[i]['id']}}/0" name="{{tags[i]['id']}}" id="delete_tag_button_{{tags[i]['id']}}">{{ tags[i]['title'] }}</a>
+                            {% if z == "true" %}
+                            <button name="{{tags[i]['id']}}" class="btn btn-link btn-sm m-0 pr-0 py-0 tagx">x</button>
                             {% endif %}
-                            <div class="text-muted" style="font-size: 12px; display: inline"> &nbsp;
-                            {% if endorsements[i]['bio'] == None %}
-                            {% else %}
-                            {{ endorsements[i]['bio'][:120] }}...
-                            {% endif %}
+                        </div>
+                        {% endfor %}
+                        <div class='btn btn-outline-secondary border20' id="new_tag" name="#" hidden>
+                            <a href="#" id="new_tag_title" class='d-inline'></a>
+                            <button id="delete_tag_new" class="btn btn-link btn-sm m-0 pt-0 pr-0 tagx">x</button>
+                        </div>
+                    </div>
+                    
+
+                    {% if z == "true" %}
+                    <button data-toggle="collapse" data-target="#tag_group" class="btn btn-outline-primary btn-sm">+</button>
+
+                    <div id="tag_group" class="collapse">
+                        <div class="input-group">
+                            <div class="col-xs-2">
+                                <input type="text" name="tag" class="tag form-control" id="tag_name" placeholder="add tag" list="datalist1">
+                                <datalist id="datalist1">
+                                    {% for i in range(all_tags_len) %}
+                                    <option value="{{ all_tags[i]['title'] }}">
+                                    </option>
+                                    {% endfor %}
+                                </datalist>
                             </div>
+                        <div class="input-group-append">
+                        <button type='submit' id="add_tag" class="btn btn-outline-primary btn-sm">Add</button>
+                        </div>
                         </div>
                     </div>
 
-                {% endfor %}
-                <div class="row px-3 pl-0 border-bottom text-left" style="font-family: Lato;" id="new_endorser" hidden>
-                    <div class="col-12" style="font-size: 16px">
-                        <div id="first" class="d-inline"></div><div id="last" class='d-inline'></div>
-                        <div class="text-muted" style="font-size: 12px; display: inline"> &nbsp
+                    {% endif %}
+                </p>
+                <p style="font-size: small;">
+                    <a href="/apa/{{ summary_id }}" style="color: #017bff">APA citation: <em style="color: black">{{ summary[0]['citation'] }}</em></a>
+                </p>
+                <p style="font-size: small;">
+                    <a href="/doi/{{ summary[0]['id'] }}" style="color: #017bff">DOI: <em style="color: black">{{ summary[0]['doi'] }}</em></a>
+                </p>
 
-                        <div id="bio" class='d-inline'></div></div>
+                <p style="font-size: medium;">
+                    dcyphr-d by <font style="color: #017bff"><a href="/public/{{ summary[0]['user_id'] }}">{{ summary[0]['first'] }} {{summary[0]['last']}}</a></font> on {{ summary[0]['summary_date'] }}
+                    {% if summary[0]['verified'] == 1 %}
+                    <img src="https://img.icons8.com/nolan/25/verified-account.png" class="pb-2" title="Verified User"/>
+                    {% endif %}
+                </p>
 
-                    </div>
+                    <!-- <form action="/endorse/{{ summary[0]['id'] }}" method="POST" style="display:inline"> -->
+                        {% if y == False %}
+                        <button class="btn btn-outline-primary border20" type="submit" disabled><i class="fa fa-thumbs-up border-0"></i> Endorse</button>
+                        {% else %}
+                        <button class="btn btn-outline-primary border20" type="submit" id="endorse"><i class="fa fa-thumbs-up border-0"></i> Endorse</button>
+                        {% endif %}
+                    <!-- </form> -->
 
+                    <a href="/edit/{{ summary_id }}">
+                        {% if y  == False %}
+                        <button class="btn btn-outline-primary border20" disabled>
+                        {% else %}
+                        <button class="btn btn-outline-primary border20">
+                        {% endif %}
+                            <i class="fa fa-pencil border-0"></i> Edit</button></a>
+                    <a href="/issues/{{ summary_id }}"><button class="btn btn-outline-primary border20"><i class="fa fa-shield border-0"></i> Issues</button></a>
+                    <a href="/history/{{ summary_id }}"><button class="btn btn-outline-primary border20"><i class="fa fa-cog border-0"></i> Activity</button></a>
+                    <button class="btn btn-outline-primary border20"data-target="#share" data-toggle="collapse"><i class="fa fa-share-alt border-0"></i> Share</button>
+
+
+                <div class="collapse mt-2" id="share">
+                    <a class="w-inline-block social-share-btn fb" href="https://www.facebook.com/sharer/sharer.php?u=&t=" title="Share on Facebook" target="_blank" onclick="window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(document.URL) + '&t=' + encodeURIComponent(document.URL)); return false;"><i style="color:#017bff" class="fa fa-facebook border-0 fa-lg"></i></a>
+                    <a class="w-inline-block social-share-btn tw" href="https://twitter.com/intent/tweet?" target="_blank" title="Tweet" onclick="window.open('https://twitter.com/intent/tweet?text=%20Check%20up%20this%20awesome%20content' + encodeURIComponent(document.title) + ':%20 ' + encodeURIComponent(document.URL)); return false;"><i style="color:#017bff" class="fa fa-twitter border-0 fa-lg"></i></a>
+                    <a class="w-inline-block social-share-btn lnk" href="http://www.linkedin.com/shareArticle?mini=true&url=&title=&summary=&source=" target="_blank" title="Share on LinkedIn" onclick="window.open('http://www.linkedin.com/shareArticle?mini=true&url=' + encodeURIComponent(document.URL) + '&title=' + encodeURIComponent(document.title)); return false;"><i style="color:#017bff"class="fa fa-linkedin border-0 fa-lg"></i></a>
+                    <a class="w-inline-block social-share-btn email" href="mailto:?subject=&body=:%20" target="_blank" title="Email" onclick="window.open('mailto:?subject=' + encodeURIComponent(document.title) + '&body=' + encodeURIComponent(document.URL)); return false;"><i style="color: #017bff" class="fa fa-envelope fa-lg border-0"></i></a>
+                    <a class="w-inline-block social-share-btn redd" href="http://www.reddit.com/submit?url=&title=" target="_blank" title="Submit to Reddit" onclick="window.open('http://www.reddit.com/submit?url=' + encodeURIComponent(document.URL) + '&title=' + encodeURIComponent(document.title)); return false;"><i style="color: #017bff" class="fa fa-reddit fa-lg border-0"></i></a>
                 </div>
             </div>
-                {% endif %}
-        
-            <p style="font-size: medium">
-
-
-                <div class='d-inline'>
-                    {% for i in range(tag_length) %}
-                    <div class='btn btn-outline-secondary border20' name="delete_tag_{{tags[i]['id']}}">
-                        <a href="/tag/{{tags[i]['id']}}/0" name="{{tags[i]['id']}}" id="delete_tag_button_{{tags[i]['id']}}">{{ tags[i]['title'] }}</a>
-                        {% if z == "true" %}
-                        <button name="{{tags[i]['id']}}" class="btn btn-link btn-sm m-0 pr-0 py-0 tagx">x</button>
-                        {% endif %}
-                    </div>
-                    {% endfor %}
-                    <div class='btn btn-outline-secondary border20' id="new_tag" name="#" hidden>
-                        <a href="#" id="new_tag_title" class='d-inline'></a>
-                        <button id="delete_tag_new" class="btn btn-link btn-sm m-0 pt-0 pr-0 tagx">x</button>
-                    </div>
-                </div>
-                
-
-                {% if z == "true" %}
-                <button data-toggle="collapse" data-target="#tag_group" class="btn btn-outline-primary btn-sm">+</button>
-
-                <div id="tag_group" class="collapse">
-                    <div class="input-group">
-                        <div class="col-xs-2">
-                            <input type="text" name="tag" class="tag form-control" id="tag_name" placeholder="add tag" list="datalist1">
-                            <datalist id="datalist1">
-                                {% for i in range(all_tags_len) %}
-                                <option value="{{ all_tags[i]['title'] }}">
-                                </option>
-                                {% endfor %}
-                            </datalist>
-                        </div>
-                    <div class="input-group-append">
-                    <button type='submit' id="add_tag" class="btn btn-outline-primary btn-sm">Add</button>
-                    </div>
-                    </div>
-                </div>
-
-                {% endif %}
-            </p>
-            <p style="font-size: small;">
-                <a href="/apa/{{ summary_id }}" style="color: #017bff">APA citation: <em style="color: black">{{ summary[0]['citation'] }}</em></a>
-            </p>
-            <p style="font-size: small;">
-                <a href="/doi/{{ summary[0]['id'] }}" style="color: #017bff">DOI: <em style="color: black">{{ summary[0]['doi'] }}</em></a>
-            </p>
-
-            <p style="font-size: medium;">
-                dcyphr-d by <font style="color: #017bff"><a href="/public/{{ summary[0]['user_id'] }}">{{ summary[0]['first'] }} {{summary[0]['last']}}</a></font> on {{ summary[0]['summary_date'] }}
-                {% if summary[0]['verified'] == 1 %}
-                <img src="https://img.icons8.com/nolan/25/verified-account.png" class="pb-2" title="Verified User"/>
-                {% endif %}
-            </p>
-
-                <!-- <form action="/endorse/{{ summary[0]['id'] }}" method="POST" style="display:inline"> -->
-                    {% if y == False %}
-                    <button class="btn btn-outline-primary border20" type="submit" disabled><i class="fa fa-thumbs-up border-0"></i> Endorse</button>
-                    {% else %}
-                    <button class="btn btn-outline-primary border20" type="submit" id="endorse"><i class="fa fa-thumbs-up border-0"></i> Endorse</button>
-                    {% endif %}
-                <!-- </form> -->
-
-                <a href="/edit/{{ summary_id }}">
-                    {% if y  == False %}
-                    <button class="btn btn-outline-primary border20" disabled>
-                    {% else %}
-                    <button class="btn btn-outline-primary border20">
-                    {% endif %}
-                        <i class="fa fa-pencil border-0"></i> Edit</button></a>
-                <a href="/issues/{{ summary_id }}"><button class="btn btn-outline-primary border20"><i class="fa fa-shield border-0"></i> Issues</button></a>
-                <a href="/history/{{ summary_id }}"><button class="btn btn-outline-primary border20"><i class="fa fa-cog border-0"></i> Activity</button></a>
-                <button class="btn btn-outline-primary border20"data-target="#share" data-toggle="collapse"><i class="fa fa-share-alt border-0"></i> Share</button>
-
-
-        <div class="collapse mt-2" id="share">
-            <a class="w-inline-block social-share-btn fb" href="https://www.facebook.com/sharer/sharer.php?u=&t=" title="Share on Facebook" target="_blank" onclick="window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(document.URL) + '&t=' + encodeURIComponent(document.URL)); return false;"><i style="color:#017bff" class="fa fa-facebook border-0 fa-lg"></i></a>
-            <a class="w-inline-block social-share-btn tw" href="https://twitter.com/intent/tweet?" target="_blank" title="Tweet" onclick="window.open('https://twitter.com/intent/tweet?text=%20Check%20up%20this%20awesome%20content' + encodeURIComponent(document.title) + ':%20 ' + encodeURIComponent(document.URL)); return false;"><i style="color:#017bff" class="fa fa-twitter border-0 fa-lg"></i></a>
-            <a class="w-inline-block social-share-btn lnk" href="http://www.linkedin.com/shareArticle?mini=true&url=&title=&summary=&source=" target="_blank" title="Share on LinkedIn" onclick="window.open('http://www.linkedin.com/shareArticle?mini=true&url=' + encodeURIComponent(document.URL) + '&title=' + encodeURIComponent(document.title)); return false;"><i style="color:#017bff"class="fa fa-linkedin border-0 fa-lg"></i></a>
-            <a class="w-inline-block social-share-btn email" href="mailto:?subject=&body=:%20" target="_blank" title="Email" onclick="window.open('mailto:?subject=' + encodeURIComponent(document.title) + '&body=' + encodeURIComponent(document.URL)); return false;"><i style="color: #017bff" class="fa fa-envelope fa-lg border-0"></i></a>
-            <a class="w-inline-block social-share-btn redd" href="http://www.reddit.com/submit?url=&title=" target="_blank" title="Submit to Reddit" onclick="window.open('http://www.reddit.com/submit?url=' + encodeURIComponent(document.URL) + '&title=' + encodeURIComponent(document.title)); return false;"><i style="color: #017bff" class="fa fa-reddit fa-lg border-0"></i></a>
-        </div>
-        </div>
 
         <div class="col-md-3 col-xs-6 text-center text-secondary" style="font-size: 1.9em; padding-top: 10px">
             <!-- <form method="POST" action="/likes/{{ summary_id }}"> -->
@@ -248,14 +248,14 @@
                 {% endif %}
             <!-- </form> -->
 
-            <div class="my-3">
-                <form method="POST" action="/flag/{{ summary_id }}">
-                    <button class="btn btn-default bg-white" name="flag" value="flag">
-                        <i class="fa fa-flag fa-2x border-0" style="color: #eb9534;"></i>
-                        <div class="my-1" style="color: #3b3b39">Flag For Moderation</div>
-                    </button>
-                </form>
-            </div>
+                <div class="my-3">
+                    <form method="POST" action="/flag/{{ summary_id }}">
+                        <button class="btn btn-default bg-white" name="flag" value="flag">
+                            <i class="fa fa-flag fa-2x border-0" style="color: #eb9534;"></i>
+                            <div class="my-1" style="color: #3b3b39">Flag For Moderation</div>
+                        </button>
+                    </form>
+                </div>
 
             <div class="my-3" style="font-size: 0.7em">
                 <div class="row px-3 pl-4 bg-light border-bottom" style="font-family: Georgia; color:black">
@@ -272,25 +272,25 @@
                     </div>
                 </div>
                 {% else %}
-                {% for i in range(c_length) %}
-                    {% if i == 0 %}
-                    <div class="row px-3 pl-0 border-bottom text-left" style="font-family: Lato; background: rgb(251, 234, 194)">
-                    {% elif i ==1 %}
-                    <div class="row px-3 pl-0 border-bottom text-left" style="font-family: Lato; background: rgb(238, 238, 238)">
-                    {% elif i == 2 %}
-                    <div class="row px-3 pl-0 border-bottom text-left" style="font-family: Lato; background: rgb(240, 219, 198)">
-                    {% else %}
-                    <div class="row px-3 pl-0 border-bottom text-left" style="font-family: Lato;">
-                    {% endif %}
-                        <div class="col-12" style="font-size: 16px">
-                            <a href="/public/{{ contributors[i]['user_id'] }}" style="color: black">{{ contributors[i]['first'] }} {{ contributors[i]['last'] }}</a>
-                            {% if contributors[i]['verified'] == 1 %}
-                            <img src="https://img.icons8.com/nolan/18/verified-account.png" class="pb-2"/>
-                            {% endif %}
-                            <p class="text-muted mb-0" style="font-size: 12px">{{ contributors[i]['bio'][:40] }}...</p>
+                    {% for i in range(c_length) %}
+                        {% if i == 0 %}
+                        <div class="row px-3 pl-0 border-bottom text-left" style="font-family: Lato; background: rgb(251, 234, 194)">
+                        {% elif i ==1 %}
+                        <div class="row px-3 pl-0 border-bottom text-left" style="font-family: Lato; background: rgb(238, 238, 238)">
+                        {% elif i == 2 %}
+                        <div class="row px-3 pl-0 border-bottom text-left" style="font-family: Lato; background: rgb(240, 219, 198)">
+                        {% else %}
+                        <div class="row px-3 pl-0 border-bottom text-left" style="font-family: Lato;">
+                        {% endif %}
+                            <div class="col-12" style="font-size: 16px">
+                                <a href="/public/{{ contributors[i]['user_id'] }}" style="color: black">{{ contributors[i]['first'] }} {{ contributors[i]['last'] }}</a>
+                                {% if contributors[i]['verified'] == 1 %}
+                                <img src="https://img.icons8.com/nolan/18/verified-account.png" class="pb-2"/>
+                                {% endif %}
+                                <p class="text-muted mb-0" style="font-size: 12px">{{ contributors[i]['bio'][:40] }}...</p>
+                            </div>
                         </div>
-                    </div>
-                {% endfor %}
+                    {% endfor %}
                 {% endif %}
             </div>
         </div>
@@ -318,7 +318,7 @@
 
 
         </div>
-    </div>
+    
     <!--<div style="position: relative">-->
     <!--<div onmouseout="document.getElementById('div1').style.display = 'none';" onmouseover="document.getElementById('div1').style.display = 'block';" class="bg-warning" style="position: absolute">-->
     <!--    some text-->
@@ -432,8 +432,8 @@
                         {% endif %}-->
 
 
-                    <button class="btn btn-default bg-white" data-toggle="collapse" data-target="#reply{{ comment['comment_id'] }}{{ comment['reply'] }}" style="color: DodgerBlue;"><i class="fa fa-reply-all border-0 fa-lg"></i>  Reply</button>
-</div>
+                        <button class="btn btn-default bg-white" data-toggle="collapse" data-target="#reply{{ comment['comment_id'] }}{{ comment['reply'] }}" style="color: DodgerBlue;"><i class="fa fa-reply-all border-0 fa-lg"></i>  Reply</button>
+                    </div>
 
 
                     <form method="POST" action="/comments/{{ summary_id }}" class="form collapse hide" id="reply{{ comment['comment_id'] }}{{ comment['reply'] }}">
@@ -459,7 +459,7 @@
 
         </div>
     </div>
-
+    </div>
 </div>
 
 {% endblock %}
