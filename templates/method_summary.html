@@ -27,12 +27,12 @@
             <button data-toggle="collapse" class="btn btn-outline-primary border20" data-target="#update" disabled><i class="fa fa-pencil border-0"></i> Edit</button>
             {% endif %} </h3>
             <div>
-                {{ methods[0]["description"] }}
+                {{ methods[0]["description"] | safe}}
             </div>
 
             <form action="/methodupdate/{{ methods[0]['id'] }}" id="update" method="POST" class="collapse mx-auto">
                 <div class="row p-3">
-                <textarea name="summary" id="summary">{{ methods[0]['description'] }}</textarea>
+                <textarea name="summary" id="summary">{{ methods[0]['description'] | safe }}</textarea>
                 </div>
                 <div class="row">
                 <button type="submit" class="btn btn-outline-primary border20 btn-block">Update</button>

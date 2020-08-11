@@ -844,7 +844,7 @@ def profile(user_id):
     points = db.execute("SELECT points FROM users WHERE id=:user_id", user_id=session["user_id"])[0]['points']
 
     # gets their username
-    info = db.execute("SELECT bio, username, first, last, verified, email FROM users WHERE id=:user_id", user_id=session["user_id"])
+    info = db.execute("SELECT bio, username, first, last, verified, email, coffee FROM users WHERE id=:user_id", user_id=session["user_id"])
     token = generate_confirmation_token(info[0]['email'])
 
     admin = db.execute("SELECT admin FROM users WHERE id=:user_id", user_id=session["user_id"])[0]['admin']
@@ -852,9 +852,14 @@ def profile(user_id):
         info[0]['bio'] = "This user has no bio right now."
     if points == None:
         points = 0
-    return render_template("profile.html", info=info, articles=articles, message=message, length=length, admin=admin, points=points, user_id=user_id, token=token)
+    return render_template("profile.html", info=info, articles=articles, message=message, length=length, admin=admin, points=points, user_id=user_id, token=token, coffee=info[0]['coffee'])
 
-
+@app.route("/_coffee/<int:user_id>", methods=["POST"])
+@login_required
+def coffee(user_id):
+    link = request.form.get("coffeeLink")
+    db.execute("UPDATE users SET coffee=:coffee WHERE id=:user_id", coffee=link, user_id=user_id)
+    return redirect("/profile/{}".format(user_id))
 
 # public profile that other users view
 @app.route("/public/<int:user_id>")
@@ -862,12 +867,12 @@ def public(user_id):
     articles = db.execute(
         "SELECT article, approved, id FROM summary WHERE user_id=:user_id AND done = CAST(1 AS BIT) ORDER BY approved DESC", user_id=user_id)
     length = len(articles)
-    info = db.execute("SELECT bio, username, points, first, last, admin, verified FROM users WHERE id=:user_id", user_id=user_id)
+    info = db.execute("SELECT bio, username, points, first, last, admin, verified, coffee FROM users WHERE id=:user_id", user_id=user_id)
     if info[0]['points'] == None:
         info[0]['points'] = 0
     if info[0]['bio'] == None:
         info[0]['bio'] = "This user has no bio right now."
-    return render_template("public.html", articles=articles, info=info, length=length)
+    return render_template("public.html", articles=articles, info=info, length=length, coffee=info[0]['coffee'])
 
 # laboratory methods that are hard coded into database
 @app.route("/method/<int:method_id>")
