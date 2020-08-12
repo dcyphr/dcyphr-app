@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block main %}
-<script type="text/javascript">
+<script type="text/javascript" defer>
     $(function() {
         $('#upvote').bind('click', function() {
             $(this).prop("disabled", true);
@@ -68,10 +68,21 @@
     });
 </script>
 
-<div class="container-fluid mb-5" id="read">
+<div class="container-fluid mb-5" id="read" style="position: relative">
+    {% if coffee %}
+    <div class="col-sm-2 d-none d-sm-block" style="position:absolute; bottom: 100vh; left: 0px">
+        <div class="toast text-left lato border p-3" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header">
+              <h4 class="blue">Support the author!</h4>
+            </div>
+            <div class="toast-body">
+              <a href="{{ coffee }}">If you enjoyed this distillation, please consider buying {{ summary[0]['first'] }} a coffee here &#9749;</a>
+            </div>
+        </div>
+    </div>
+    {% endif %}
     <div class="col-sm-8 mx-auto">
         <div class="row py-5 rounded bg-white text-left">
-
             <div class="col-md-9 col-xs-6">
                 <p class="" style="color: #017bff; font-family: Lato" id="title">
                     <a href="{{ summary[0]['link'] }}" target="_blank">{{ summary[0]['article'] }}</a>
@@ -327,17 +338,15 @@
     <!--    some text to show-->
     <!--</div>-->
     <!--</div>-->
-
-
-    <div class="container text-left mx-0">
+    <div class="container text-left mx-0 lato">
         <div id="comments" class="p-3 my-3">
 
 
             <form method="POST" action="/comments/{{ summary_id }}" class="form">
+                <label for="comment" class="lato"><b>Discuss this research!</b></label>
                 <div class="sticky-top form-group row">
-                    <label for="comment" class="col-xs-2 col-form-label"><b>Leave a comment:</b> </label>
                     <div class="col">
-                        <input type="text" name="comment" class="form-control text-wrap w-100" id="comment" placeholder="Write here..." required>
+                        <input type="text" name="comment" class="form-control text-wrap w-100" id="comment" placeholder="Interesting thoughts and new ideas..." required>
                     </div>
                     <div>
                         {% if y == "true" %}
