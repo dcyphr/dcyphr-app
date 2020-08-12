@@ -314,7 +314,7 @@ def read(summary_id):
         # Gets information about article to display
 
         summary = db.execute(
-            "SELECT summary_date, summary.id, summary.summary, link, article, citation, user_id, doi, first, last, bio, verified FROM summary JOIN users ON summary.user_id = users.id WHERE summary.id=:summary_id", summary_id=summary_id)
+            "SELECT summary_date, summary.id, summary.summary, link, article, citation, coffee, user_id, doi, first, last, bio, verified FROM summary JOIN users ON summary.user_id = users.id WHERE summary.id=:summary_id", summary_id=summary_id)
         comments = db.execute("SELECT * FROM comments JOIN users ON comments.user_id = users.id WHERE summary_id=:summary_id ORDER BY comment_id, comments.id", summary_id=summary_id)
 
         endorsements = db.execute("SELECT user_id, verified, first, last, bio FROM endorsements JOIN users ON user_id=users.id WHERE summary_id=:summary_id", summary_id=summary_id)
@@ -375,7 +375,7 @@ def read(summary_id):
                 x = "enable-dislike"
             else:
                 x = "enable-like"
-        return render_template("read.html", endorsements=endorsements, contributors=contributors, c_length=c_length, z=z, all_tags=all_tags, all_tags_len=all_tags_len, tag_length=tag_length, tags=tags, summary_actual=percent_remove(str(summary_actual)), title_length=title_length, titles=title_list, summary_id=summary_id, summary=summary, likes=likes, x=x, y=y, comments=comments)
+        return render_template("read.html", coffee=summary[0]['coffee'], endorsements=endorsements, contributors=contributors, c_length=c_length, z=z, all_tags=all_tags, all_tags_len=all_tags_len, tag_length=tag_length, tags=tags, summary_actual=percent_remove(str(summary_actual)), title_length=title_length, titles=title_list, summary_id=summary_id, summary=summary, likes=likes, x=x, y=y, comments=comments)
 
 
 # gives browse page for a specific tag
@@ -837,8 +837,9 @@ def profile(user_id):
         message=False
     # gets list of articles that the user has written
     articles = db.execute(
-        "SELECT article, id, approved FROM summary WHERE user_id=:user_id AND done=CAST(1 AS BIT) ORDER BY approved DESC", user_id=user_id)
-    
+        "SELECT article, id, approved, pinned FROM summary WHERE user_id=:user_id AND done=CAST(1 AS BIT) ORDER BY approved DESC", user_id=user_id)
+    pinned = db.execute(
+        "SELECT article, id FROM summary WHERE user_id=:user_id AND pinned=1", user_id=user_id)
     # gets number of articles they have written
     length = len(articles)
     points = db.execute("SELECT points FROM users WHERE id=:user_id", user_id=session["user_id"])[0]['points']
@@ -852,13 +853,18 @@ def profile(user_id):
         info[0]['bio'] = "This user has no bio right now."
     if points == None:
         points = 0
-    return render_template("profile.html", info=info, articles=articles, message=message, length=length, admin=admin, points=points, user_id=user_id, token=token, coffee=info[0]['coffee'])
+    return render_template("profile.html", info=info, pinned=pinned, articles=articles, message=message, length=length, admin=admin, points=points, user_id=user_id, token=token, coffee=info[0]['coffee'])
 
 @app.route("/_coffee/<int:user_id>", methods=["POST"])
 @login_required
 def coffee(user_id):
     link = request.form.get("coffeeLink")
     db.execute("UPDATE users SET coffee=:coffee WHERE id=:user_id", coffee=link, user_id=user_id)
+    return redirect("/profile/{}".format(user_id))
+
+@app.route("/_pin/<int:article_id>/<int:user_id>")
+def pin(article_id, user_id):
+    db.execute("UPDATE summary SET pinned=1 WHERE id=:article_id", article_id=article_id)
     return redirect("/profile/{}".format(user_id))
 
 # public profile that other users view
@@ -868,11 +874,13 @@ def public(user_id):
         "SELECT article, approved, id FROM summary WHERE user_id=:user_id AND done = CAST(1 AS BIT) ORDER BY approved DESC", user_id=user_id)
     length = len(articles)
     info = db.execute("SELECT bio, username, points, first, last, admin, verified, coffee FROM users WHERE id=:user_id", user_id=user_id)
+    pinned = db.execute(
+        "SELECT article, id FROM summary WHERE user_id=:user_id AND pinned=1", user_id=user_id)
     if info[0]['points'] == None:
         info[0]['points'] = 0
     if info[0]['bio'] == None:
         info[0]['bio'] = "This user has no bio right now."
-    return render_template("public.html", articles=articles, info=info, length=length, coffee=info[0]['coffee'])
+    return render_template("public.html", articles=articles, info=info, length=length, coffee=info[0]['coffee'], pinned=pinned)
 
 # laboratory methods that are hard coded into database
 @app.route("/method/<int:method_id>")
