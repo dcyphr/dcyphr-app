@@ -1,7 +1,7 @@
-# [dcyphr] (https://www.dcyphr.org) ![Alt](/static/logos/dcyphr_logo_blue.png "LOGO")
+# [dcyphr](https://www.dcyphr.org)
 
 dcyphr is a web application built in Flask/SQL/HTML/JS. It is a crowd-sourced platform informed by NLP to make academic research more
-accessible. [Learn more] (https://linktr.ee/dcyphr)
+accessible. [Learn more](https://linktr.ee/dcyphr)
 
 * **Register** and **login**
 * **Request** articles to be distilled
