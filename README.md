@@ -39,7 +39,7 @@ Each route is defined by an `@app.route` and routes that require the user to be 
 
 ## TODO
 
-* Train NLP on [PLOS dataset] (http://deepdive.stanford.edu/opendata/#plos-public-library-of-science)
+* Train NLP on [PLOS dataset](http://deepdive.stanford.edu/opendata/#plos-public-library-of-science)
 * Integrate NLP feature for automatic distillation
     1. Article URL -> distillation
     2. Article DOI -> distillation
