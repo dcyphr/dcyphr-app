@@ -65,11 +65,13 @@
               </div>
             </div>
         </div>
-        <div class="mt-5">
+        <div class="mt-5 px-5 row">
             {% for pin in pinned %}
-            <div class="border col-sm-4 lato text-left p-3">
-                <a href="/read/{{ pin['id'] }}" class="blue">{{ pin['article'] }}</a><br>
-                <small>Pinned by {{ info[0]['first'] }}</small>
+            <div class="p-3 col-sm-4">
+                <div class="border lato text-left p-3">
+                    <a href="/read/{{ pin['id'] }}" class="blue">{{ pin['article'] }}</a><br>
+                    <small>Pinned by {{ info[0]['first'] }}</small>
+                </div>
             </div>
             {% endfor %}
         </div>
