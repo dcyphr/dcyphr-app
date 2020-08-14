@@ -73,13 +73,13 @@ def get_google_provider_cfg():
 def addmethod():
     title = request.form.get("title")
     description = request.form.get("description")
-    db.execute("INSERT INTO methods (name, description) VALUES (:title, :description)", title=title, description=description)
+    db.execute("INSERT INTO methods (name, description) VALUES (:title, :description)", title=title, description=description) # inserts a term title and description into the database
     return redirect("/method/0")
 
 # explore page with tag clusters
 @app.route("/explore")
 def explore():
-    tags = db.execute("SELECT title, text, tags.link, tags.id, COUNT(tag_id) AS count FROM tags LEFT JOIN tagitem ON tags.id=tag_id GROUP BY tags.id, tags.title, tags.text, tags.link;")
+    tags = db.execute("SELECT title, text, tags.link, tags.id, COUNT(tag_id) AS count FROM tags LEFT JOIN tagitem ON tags.id=tag_id GROUP BY tags.id, tags.title, tags.text, tags.link;") # selects relevant tag information
     method_length = db.execute("SELECT COUNT(*) AS count FROM methods")[0]['count']
     return render_template("explore.html", tags=tags, method_length=method_length)
 
@@ -124,8 +124,8 @@ def browse(page):
 @app.route("/history/<int:summary_id>", methods=["GET", "POST"])
 def history(summary_id):
     if request.method == "GET":
-        info = db.execute("SELECT * FROM history JOIN users ON users.id = history.user_id WHERE summary_id=:summary_id", summary_id=summary_id)
-        article = db.execute("SELECT article, link, citation, doi, id FROM summary WHERE id=:summary_id", summary_id=summary_id)
+        info = db.execute("SELECT * FROM history JOIN users ON users.id = history.user_id WHERE summary_id=:summary_id", summary_id=summary_id) # gets version history information
+        article = db.execute("SELECT article, link, citation, doi, id FROM summary WHERE id=:summary_id", summary_id=summary_id) # gets relevant article information
         length=len(info)
         # checks if user is logged in and if user is admin
         if len(session) == 0:
@@ -157,7 +157,9 @@ def history(summary_id):
 @app.route("/version/<int:summary_id>/<int:version>", methods=["GET", "POST"])
 def version(summary_id, version):
     if request.method == "GET":
-        info = db.execute("SELECT * FROM history JOIN users ON users.id=history.user_id JOIN summary ON summary_id=summary.id WHERE summary_id=:summary_id AND version=:version", summary_id=summary_id, version=version)[0]
+        info = db.execute(
+            "SELECT * FROM history JOIN users ON users.id=history.user_id JOIN summary ON summary_id=summary.id WHERE summary_id=:summary_id AND version=:version", summary_id=summary_id, version=version
+            )[0] # shows version history
         return render_template("version.html", info=info, summary_id=summary_id)
 
 # shows reported issues of a summary
@@ -329,22 +331,6 @@ def read(summary_id):
         contributors = db.execute("SELECT first, last, user_id, verified, bio, COUNT(*) AS count FROM history JOIN users ON user_id=users.id WHERE summary_id=:summary_id GROUP BY user_id, first, last, verified, bio ORDER BY COUNT(*) DESC LIMIT 3", summary_id=summary_id)
         c_length = len(contributors)
 
-        # handles the process of parsing for methods used in the summary
-        # article_methods = summary[0]["summary"].lower()
-        # methods = db.execute("SELECT name FROM methods")
-        # methods_list = []
-        # for i in range(len(methods)):
-        #     methods_list.append(methods[i]["name"])
-        # methods_used = []
-        # method_id = []
-        # for method in methods_list:
-        #     for word in method.split():
-        #         if word.lower() in article_methods:
-        #             methods_used.append(method)
-        #             method_id.append(db.execute("SELECT id FROM methods WHERE name=:method", method=method)[0]["id"])
-        # methods_used = list(dict.fromkeys(methods_used))
-        # method_length = len(methods_used)
-
         # handles display of the html
         html = summary[0]['summary']
         soup = BeautifulSoup(html, features="html5lib")
@@ -416,6 +402,7 @@ def tag(tag_id, page):
         desc = request.form.get("description")
         db.execute("UPDATE tags SET text = :desc WHERE id=:tag_id", desc=desc, tag_id=tag_id)
         return redirect("/tag/{}/0".format(tag_id))
+        
 # page where admins input information for QuickTasks
 @app.route("/adminsuggestions", methods=["GET", "POST"])
 @login_required

@@ -1,0 +1,27 @@
+version: '3.7'
+services:
+  postgres:
+    image: postgres:12
+    user: root
+    volumes:
+     - ./data/pgdata:/var/lib/postgresql/data
+    container_name: ddb
+    ports:
+    - "5435:5432"
+    volumes:
+    - ./data/db:/var/lib/postgresql/data
+    - ./data/sql:/var/lib/postgresql/sql
+    environment:
+     POSTGRES_PASSWORD: app_password
+  app:
+    build:
+     network: host
+     context: .
+    container_name: app
+    ports:
+    - "80:5000"
+    environment:
+     - "FLASK_ENV=development"
+     - "SECRET_KEY=fakekey123"
+    volumes:
+    - ./data/models:/dcyphr/models

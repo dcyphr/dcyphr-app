@@ -1,45 +1,50 @@
-# setting up local environment
-Clone this repositiory using git clone.
+# [dcyphr](https://www.dcyphr.org)
+
+dcyphr is a web application built in Flask/SQL/HTML/JS. It is a crowd-sourced platform informed by NLP to make academic research more
+accessible. [Learn more](https://linktr.ee/dcyphr)
+
+* **Register** and **login**
+* **Request** articles to be distilled
+* **Browse** knowledge base through *Search* or *Explore*
+* **Interact** with articles by *liking*, *endorsing*, *sharing*, *commenting*, raising *issues*.
+
+![Alt](/static/landing/landing.png "Landing")
+
+## Installation
+
+Clone this repositiory `git clone https://github.com/dcyphr/dcyphr.git`.
 Navigate to the repository on your local machine.
 
-Set up a python virtual environment.
+Set up a python3 virtual environment.
 ```
-sudo pip install virtualenv
-virtualenv myenv
+python3 -m venv myenv
 source myenv/bin/activate
 ```
-Make sure you are running Python 3
-```
-python --version
-```
+
 Install requirements
 `pip install -r requirements.txt`
 
-Install Heroku CLI and get the database URL (use DATABASE_URL)
-`heroku config -a dcyphr`
-
-Set environment variables
+Run the setup script
 ```
-export FLASK_APP=application.py FLASK_ENV=development DATABASE_URL={whatever you got from the previous step}
+source ./setup.sh
 ```
-Should be good to go!
 
-# starting up
+You should have the Flask app running on your local environment!
 
-Run the following to spin up a flask instance to locally test the web app
-`./init`
-`flask run`
-
-If you want to use the local database to run tests, run the following to spin up a database instance to interact with the database structure
-`phpliteadmin dcyphr.db`
+## Getting started
 
 Each route is defined by an `@app.route` and routes that require the user to be logged in have the decorator `@login_required`
-If you run into a 500 Internal server error, it is likely that you have either not run `./init` or have not changed the database declaration to `db = SQL("sqlite:///dcyphr.db")` by uncommenting it and commenting out the following line.
 
 `db.execute` is used to run an SQL query on the database and uses string interpolation through setting a variable in the string by preceding it with a colon and then defining the variable as a second, third, etc. argument in the db.execute method.
 
-To integrate API key for mail:
-run the following in terminal
-    echo "export SENDGRID_API_KEY='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'" > sendgrid.env
-    echo "sendgrid.env" >> .gitignore
-    source ./sendgrid.env
+## TODO
+
+* Train NLP on [PLOS dataset](http://deepdive.stanford.edu/opendata/#plos-public-library-of-science)
+* Integrate NLP feature for automatic distillation
+    1. Article URL -> distillation
+    2. Article DOI -> distillation
+    3. Article PDF -> distillation
+    4. Ability to request *human pruning* or *mark as correct*
+* Generate wrapper for NLP to periodically retrain on new data
+* Integrate Stripe payment and create premium features
+* React overhaul
