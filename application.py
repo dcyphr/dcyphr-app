@@ -16,8 +16,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from datetime import date, datetime
 from bs4 import BeautifulSoup
 import jellyfish
-from helpers import apology, login_required, readability, remove_scripts, percent_remove
-from summry import summry, get_apa
+from helpers import apology, login_required, readability, remove_scripts, percent_remove, summry, get_apa, generate_confirmation_token, confirm_token, remove_html_tags
 from itsdangerous import URLSafeTimedSerializer
 
 import requests
@@ -27,8 +26,6 @@ import json
 # Configure application
 app = Flask(__name__, static_folder='static')
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
-
-from token1 import generate_confirmation_token, confirm_token
 
 # Ensure templates are auto-reloaded
 app.config["TEMPLATES_AUTO_RELOAD"] = True
@@ -511,10 +508,6 @@ def tasks():
         #return render_template("bookmarks.html", tasks=tasks, length=length)
         return redirect("/bookmarks")
 
-# helper function to remove html tags
-def remove_html_tags(text):
-    clean = re.compile('<.*?>')
-    return re.sub(clean, "", text)
 
 # handles bookmarks
 @app.route("/bookmarks", methods=["GET", "POST"])
@@ -833,7 +826,7 @@ def profile(user_id):
 
     # gets their username
     info = db.execute("SELECT bio, username, first, last, verified, email, coffee FROM users WHERE id=:user_id", user_id=session["user_id"])
-    token = generate_confirmation_token(info[0]['email'])
+    token = generate_confirmation_token(info[0]['email'], app)
 
     admin = db.execute("SELECT admin FROM users WHERE id=:user_id", user_id=session["user_id"])[0]['admin']
     if info[0]['bio'] == None:
@@ -896,7 +889,7 @@ def methodupdate(method_id):
 @app.route("/password/<password_token>", methods=["GET", "POST"])
 def password(password_token):
     try:
-        email = confirm_token(password_token)
+        email = confirm_token(password_token, app)
     except:
         flash('The link is invalid or has expired.', 'danger')
     if request.method == "GET":
@@ -951,7 +944,7 @@ def register():
             else:
                 db.execute("INSERT INTO users (username, hash, email, first, last, newsletter, tsv_name) VALUES (:username, :hashed, :email, :first, :last, 0, to_tsvector(CONCAT(:first, ' ', :last, ' ', :username)))", username=username, hashed=hashed, email=email, first=first, last=last)
 #send confirmation email
-            token = generate_confirmation_token(email)
+            token = generate_confirmation_token(email, app)
             
             confirm_url = url_for('confirm_email', token=token, _external=True)
             with open('templates/register_email.html', 'r') as f:
@@ -1057,16 +1050,14 @@ def registercallback():
 @app.route('/reset', methods=['POST'])
 def reset():
     email = request.form.get('email')
-    token = generate_confirmation_token(email)
+    token = generate_confirmation_token(email, app)
     confirm_url = url_for('password', password_token=token, _external=True)
-    with open('templates/password_email.html', 'r') as f:
-        html_string = f.read()
+    
     message = Mail(
         from_email='team@dcyphr.org',
         to_emails=email,
         subject='Change your password',
-        html_content=html_string.format(confirm_url=confirm_url))
-        # html_content='<p>Please follow this link to change your password.</p><a href="{}">Confirm account</a>'.format(confirm_url))
+        html_content="""<p>Please follow this link to change your password.<a href="{0}">Confirm account</a></p><p>If that doesn't work, try copy and pasting this url: {0}""".format(confirm_url))
     try:
         sg = SendGridAPIClient('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')
         response = sg.send(message)
@@ -1081,7 +1072,7 @@ def reset():
 @app.route("/confirm/<token>")
 def confirm_email(token):
     try:
-        email = confirm_token(token)
+        email = confirm_token(token, app)
     except:
         flash('The confirmation link is invalid or has expired.', 'danger')
     status = db.execute("SELECT confirmed FROM users WHERE email=:email", email=email)
@@ -1099,7 +1090,7 @@ def unconfirmed(user_id):
         return render_template("unconfirmed.html")
     else:
         user = db.execute("SELECT email, first FROM users WHERE id=:user_id", user_id=user_id)[0]
-        token = generate_confirmation_token(user['email'])
+        token = generate_confirmation_token(user['email'], app)
         confirm_url = url_for('confirm_email', token=token, _external=True)
         message = Mail(
             from_email=('team@dcyphr.org', 'dcyphr'),
