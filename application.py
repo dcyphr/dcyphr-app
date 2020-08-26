@@ -1098,7 +1098,7 @@ def unconfirmed(user_id):
             subject='Confirm Your dcyphr Account',
                 html_content='<h2 style="font-family: Georgia">Welcome to <span style="color: #017bff">dcyphr</span>, {0}!</h2><a href={1}>Please follow this link to confirm your account.</a><p>[{2}] End of message.</p>'.format(user['first'], confirm_url, date.today()))
         try:
-            sg = SendGridAPIClient('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')
+            sg = SendGridAPIClient(os.environ.get('SENDGRID_API_KEY', 'dev'))
             response = sg.send(message)
             print(response.status_code)
             print(response.body)
@@ -1136,7 +1136,7 @@ def approvals(approval_id):
             subject='Hi {0}! Unfortunately, your dcyphr distillation was not approved.'.format(user_info['first']),
                 html_content="<p>I'm sorry to inform you that your dcyphr distillation for {0} was not accepted. This usually is due to errors that are too significant to be edited by our moderators. Some reasons include but are not limited to: plagiarism, inaccuracy, and profanity. Thank you for your time and energy. We hope you will still continue to make distillations for dcyphr. If you would like to know more, simply reply to this email.<p>[{1}] End of message.</p>".format(summary_id['article'], date.today()))
             try:
-                sg = SendGridAPIClient('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')
+                sg = SendGridAPIClient(os.environ.get('SENDGRID_API_KEY', 'dev'))
                 response = sg.send(message)
                 print(response.status_code)
                 print(response.body)
@@ -1156,7 +1156,7 @@ def approvals(approval_id):
             subject='Hi {0}! Your dcyphr distillation was approved and published!'.format(user_info['first']),
                 html_content="<p>Congrats! Your dcyphr distillation was approved by our team and published on our website. Here's the link for you to share it with your friends: <a clicktracking='off' href='https://www.dcyphr.org/read/{0}'>https://www.dcyphr.org/read/{0}</a></p><p>[{1}] End of message.</p>".format(summary_id['id'], date.today()))
             try:
-                sg = SendGridAPIClient('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')
+                sg = SendGridAPIClient(os.environ.get('SENDGRID_API_KEY', 'dev'))
                 response = sg.send(message)
                 print(response.status_code)
                 print(response.body)
