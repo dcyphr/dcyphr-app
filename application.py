@@ -956,7 +956,7 @@ def register():
                 html_content=html_string.format(first, confirm_url))
                 # html_content='<h2 style="font-family: Georgia">Welcome to <span style="color: #017bff">dcyphr</span>, {0}!<p>Please follow this link to confirm that this is your email.</p><a href={1}><button class="btn btn-primary border20">Confirm account</button></a>'.format(user[0]['first'], confirm_url))
             try:
-                sg = SendGridAPIClient('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')
+                sg = SendGridAPIClient(os.environ.get('SENDGRID_API_KEY', 'dev'))
                 response = sg.send(message)
                 print(response.status_code)
                 print(response.body)
@@ -1059,7 +1059,7 @@ def reset():
         subject='Change your password',
         html_content="""<p>Please follow this link to change your password.<a href="{0}">Confirm account</a></p><p>If that doesn't work, try copy and pasting this url: {0}""".format(confirm_url))
     try:
-        sg = SendGridAPIClient('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')
+        sg = SendGridAPIClient(os.environ.get('SENDGRID_API_KEY', 'dev'))
         response = sg.send(message)
         print(response.status_code)
         print(response.body)
