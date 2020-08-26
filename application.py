@@ -25,7 +25,7 @@ import json
 
 # Configure application
 app = Flask(__name__, static_folder='static')
-app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
+app.secret_key = os.environ.get('SECRET_KEY', 'dev')
 
 # Ensure templates are auto-reloaded
 app.config["TEMPLATES_AUTO_RELOAD"] = True
@@ -52,9 +52,9 @@ db = SQL(os.environ['DATABASE_URL'])
 
 # Google authentication
 GOOGLE_CLIENT_ID = "809605574601-dcuiplqktluk68ih4p61jstg2g44n1ld.apps.googleusercontent.com"
-GOOGLE_CLIENT_SECRET = "iZA7d5-tR_KBg2rdyHsrmAI5"
+GOOGLE_CLIENT_SECRET = os.environ.get('GOOGLE_CLIENT_SECRET', 'dev')
 FACEBOOK_APP_ID = "569416280425492"
-FACEBOOK_CLIENT_SECRET = "4e8c5f7c7e3fa420ba5dd8081878bf63"
+FACEBOOK_CLIENT_SECRET = os.environ.get('FACEBOOK_CLIENT_SECRET', 'dev')
 
 GOOGLE_DISCOVERY_URL = (
     "https://accounts.google.com/.well-known/openid-configuration"
