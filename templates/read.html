@@ -69,6 +69,12 @@
 </script>
 
 <div class="container-fluid mb-5" id="read" style="position: relative">
+
+    <!-- 
+         Buy me a coffee functionality. 
+         Appears on left side of screen
+    -->
+
     {% if coffee %}
     <div class="col-sm-2 d-none d-sm-block" style="position:absolute; bottom: 100vh; left: 0px">
         <div class="toast text-left lato border p-3" role="alert" aria-live="assertive" aria-atomic="true">
@@ -81,17 +87,27 @@
         </div>
     </div>
     {% endif %}
+
     <div class="col-sm-8 mx-auto">
         <div class="row py-5 rounded bg-white text-left">
             <div class="col-md-9 col-xs-6">
+                
+                <!-- Title Section -->
                 <p class="" style="color: #017bff; font-family: Lato" id="title">
+
+                    <!-- Title of Summary -->
                     <a href="{{ summary[0]['link'] }}" target="_blank">{{ summary[0]['article'] }}</a>
+
+                    <!-- Endorsements Button -->
                     {% if endorsements | length == 0 %}
                     <button class="btn btn-outline-primary border20" data-target="#endorsers" data-toggle="collapse" id="hidden_button" hidden><div id="endorser_count" class='d-inline'>0</div><i class="fa fa-check"></i></button>
                     {% else %}
                     <button class="btn btn-outline-primary border20" data-target="#endorsers" data-toggle="collapse"><div id="endorser_count" class="d-inline">{{ endorsements | length }}</div><i class="fa fa-check"></i></button>
                     {% endif %}
                 </p>
+
+                <!-- If there are no endorsments the button doesn't show up -->
+                <!-- When clicked, endorsments list expands -->
                 {% if endorsements | length == 0 %}
                 <div id="endorsers" class="collapse my-3">
                     <div class="row px-3 pl-4 bg-light border-bottom" style="font-family: Georgia; color:black">
@@ -104,12 +120,12 @@
                                 <div class="text-muted" style="font-size: 12px; display: inline"> &nbsp
 
                                 <div id="bio" class='d-inline'></div></div>
-
                             </div>
-
-
                         </div>
                 </div>
+                
+                <!-- Lists all endorsements for the post -->
+                <!-- User must click on the button to see the endorsements -->
                 {% else %}
                 <div id="endorsers" class="collapse my-3">
                     <div class="row px-3 pl-4 bg-light border-bottom" style="font-family: Georgia; color:black">
@@ -137,23 +153,19 @@
                         <div class="col-12" style="font-size: 16px">
                             <div id="first" class="d-inline"></div><div id="last" class='d-inline'></div>
                             <div class="text-muted" style="font-size: 12px; display: inline"> &nbsp
-
                             <div id="bio" class='d-inline'></div></div>
-
                         </div>
-
                     </div>
                 </div>
-                    {% endif %}
+                {% endif %}
             
                 <p style="font-size: medium">
-
-
+                    <!-- Tags for each post -->
                     <div class='d-inline'>
                         {% for i in range(tag_length) %}
                         <div class='btn btn-outline-secondary border20' name="delete_tag_{{tags[i]['id']}}">
                             <a href="/tag/{{tags[i]['id']}}/0" name="{{tags[i]['id']}}" id="delete_tag_button_{{tags[i]['id']}}">{{ tags[i]['title'] }}</a>
-                            {% if z == "true" %}
+                            {% if is_admin == "true" %}
                             <button name="{{tags[i]['id']}}" class="btn btn-link btn-sm m-0 pr-0 py-0 tagx">x</button>
                             {% endif %}
                         </div>
@@ -163,11 +175,9 @@
                             <button id="delete_tag_new" class="btn btn-link btn-sm m-0 pt-0 pr-0 tagx">x</button>
                         </div>
                     </div>
-                    
 
-                    {% if z == "true" %}
+                    {% if is_admin == "true" %}
                     <button data-toggle="collapse" data-target="#tag_group" class="btn btn-outline-primary btn-sm">+</button>
-
                     <div id="tag_group" class="collapse">
                         <div class="input-group">
                             <div class="col-xs-2">
@@ -184,16 +194,20 @@
                         </div>
                         </div>
                     </div>
-
                     {% endif %}
                 </p>
+
+                <!-- APA Citation -->
                 <p style="font-size: small;">
                     <a href="/apa/{{ summary_id }}" style="color: #017bff">APA citation: <em style="color: black">{{ summary[0]['citation'] }}</em></a>
                 </p>
+
+                <!-- DOI -->
                 <p style="font-size: small;">
                     <a href="/doi/{{ summary[0]['id'] }}" style="color: #017bff">DOI: <em style="color: black">{{ summary[0]['doi'] }}</em></a>
                 </p>
 
+                <!-- Dcyphr-d by {user} on {date} -->
                 <p style="font-size: medium;">
                     dcyphr-d by <font style="color: #017bff"><a href="/public/{{ summary[0]['user_id'] }}">{{ summary[0]['first'] }} {{summary[0]['last']}}</a></font> on {{ summary[0]['summary_date'] }}
                     {% if summary[0]['verified'] == 1 %}
@@ -201,26 +215,35 @@
                     {% endif %}
                 </p>
 
+                <!-- Endorse Button -->
                     <!-- <form action="/endorse/{{ summary[0]['id'] }}" method="POST" style="display:inline"> -->
-                        {% if y == False %}
+                        {% if logged_out == False %}
                         <button class="btn btn-outline-primary border20" type="submit" disabled><i class="fa fa-thumbs-up border-0"></i> Endorse</button>
                         {% else %}
                         <button class="btn btn-outline-primary border20" type="submit" id="endorse"><i class="fa fa-thumbs-up border-0"></i> Endorse</button>
                         {% endif %}
                     <!-- </form> -->
-
-                    <a href="/edit/{{ summary_id }}">
-                        {% if y  == False %}
-                        <button class="btn btn-outline-primary border20" disabled>
+                
+                <!-- Edit Button -->
+                <a href="/edit/{{ summary_id }}">
+                        {% if logged_out  == False %}
+                    <button class="btn btn-outline-primary border20" disabled>
                         {% else %}
-                        <button class="btn btn-outline-primary border20">
+                    <button class="btn btn-outline-primary border20">
                         {% endif %}
-                            <i class="fa fa-pencil border-0"></i> Edit</button></a>
-                    <a href="/issues/{{ summary_id }}"><button class="btn btn-outline-primary border20"><i class="fa fa-shield border-0"></i> Issues</button></a>
-                    <a href="/history/{{ summary_id }}"><button class="btn btn-outline-primary border20"><i class="fa fa-cog border-0"></i> Activity</button></a>
-                    <button class="btn btn-outline-primary border20"data-target="#share" data-toggle="collapse"><i class="fa fa-share-alt border-0"></i> Share</button>
+                <i class="fa fa-pencil border-0"></i> Edit</button></a>
+                
+                <!-- Issues Button -->
+                <a href="/issues/{{ summary_id }}"><button class="btn btn-outline-primary border20"><i class="fa fa-shield border-0"></i> Issues</button></a>
 
+                <!-- Activities Button -->
+                <a href="/history/{{ summary_id }}"><button class="btn btn-outline-primary border20"><i class="fa fa-cog border-0"></i> Activity</button></a>
 
+                <!-- Share Button -->
+                <!-- When clicked user will see options to share on FB, Twitter, LinkedIn, Email, Reddit-->
+                <button class="btn btn-outline-primary border20"data-target="#share" data-toggle="collapse"><i class="fa fa-share-alt border-0"></i> Share</button>
+
+                <!-- Share Options -->
                 <div class="collapse mt-2" id="share">
                     <a class="w-inline-block social-share-btn fb" href="https://www.facebook.com/sharer/sharer.php?u=&t=" title="Share on Facebook" target="_blank" onclick="window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(document.URL) + '&t=' + encodeURIComponent(document.URL)); return false;"><i style="color:#017bff" class="fa fa-facebook border-0 fa-lg"></i></a>
                     <a class="w-inline-block social-share-btn tw" href="https://twitter.com/intent/tweet?" target="_blank" title="Tweet" onclick="window.open('https://twitter.com/intent/tweet?text=%20Check%20up%20this%20awesome%20content' + encodeURIComponent(document.title) + ':%20 ' + encodeURIComponent(document.URL)); return false;"><i style="color:#017bff" class="fa fa-twitter border-0 fa-lg"></i></a>
@@ -228,23 +251,27 @@
                     <a class="w-inline-block social-share-btn email" href="mailto:?subject=&body=:%20" target="_blank" title="Email" onclick="window.open('mailto:?subject=' + encodeURIComponent(document.title) + '&body=' + encodeURIComponent(document.URL)); return false;"><i style="color: #017bff" class="fa fa-envelope fa-lg border-0"></i></a>
                     <a class="w-inline-block social-share-btn redd" href="http://www.reddit.com/submit?url=&title=" target="_blank" title="Submit to Reddit" onclick="window.open('http://www.reddit.com/submit?url=' + encodeURIComponent(document.URL) + '&title=' + encodeURIComponent(document.title)); return false;"><i style="color: #017bff" class="fa fa-reddit fa-lg border-0"></i></a>
                 </div>
-            </div>
+        </div>
+
 
         <div class="col-md-3 col-xs-6 text-center text-secondary" style="font-size: 1.9em; padding-top: 10px">
             <!-- <form method="POST" action="/likes/{{ summary_id }}"> -->
-                {% if x == "true" %}
+
+                <!-- Upvotes are enabled or disabled -->
+                <!-- {{ likes }} indicates the number of likes for the post -->
+                {% if can_like == "true" %}
                 <div><button class="btn btn-default bg-white pb-3" type="submit" name="like" value="like" id="upvote" disabled>
                     <i class="fa fa-chevron-up border-0 fa-lg" style="color: #017bff;"></i></button></div>
                 <span id="likes">{{ likes }}</span>
                 <div><button class="btn btn-default bg-white pt-3" type="submit" name="dislike" value="dislike" id="downvote" disabled>
                     <i class="fa fa-chevron-down border-0 fa-lg" style="color: #017bff;"></i></button></div>
-                {% elif x == "enable-like" %}
+                {% elif can_like == "enable-like" %}
                 <div><button class="btn btn-default bg-white pb-3" type="submit" name="like" value="like" id="upvote">
                     <i class="fa fa-chevron-up border-0 fa-lg" style="color: #017bff;"></i></button></div>
                 <span id="likes">{{ likes }}</span>
                 <div><button class="btn btn-default bg-white pt-3" type="submit" name="dislike" value="dislike" id="downvote"disabled>
                     <i class="fa fa-chevron-down border-0 fa-lg" style="color: #017bff;"></i></button></div>
-                {% elif x == "enable-dislike" %}
+                {% elif can_like == "enable-dislike" %}
                 <div><button class="btn btn-default bg-white pb-3" type="submit" name="like" value="like" id="upvote" disabled>
                     <i class="fa fa-chevron-up border-0 fa-lg" style="color: #017bff;"></i></button></div>
                 <span id="likes">{{ likes }}</span>
@@ -259,6 +286,8 @@
                 {% endif %}
             <!-- </form> -->
 
+                <!-- Flag for moderation -->
+                <!-- WIll take user to /flag page -->
                 <div class="my-3">
                     <form method="POST" action="/flag/{{ summary_id }}">
                         <button class="btn btn-default bg-white" name="flag" value="flag">
@@ -268,10 +297,13 @@
                     </form>
                 </div>
 
+            <!-- Contributors -->
             <div class="my-3" style="font-size: 0.7em">
                 <div class="row px-3 pl-4 bg-light border-bottom" style="font-family: Georgia; color:black">
                     Contributors
                 </div>
+
+                <!-- If there are no contributors -->
                 {% if c_length == 0 %}
                 <div class="row px-3 pl-0 border-bottom text-left" style="font-family: Lato; background: rgb(251, 234, 194)">
                     <div class="col-12" style="font-size: 16px">
@@ -282,6 +314,9 @@
                             <p class="text-muted mb-0" style="font-size: 12px">{{ summary[0]['bio'][:40] }}...</p>
                     </div>
                 </div>
+
+                <!-- Loops through all contributes and lists info -->
+                <!-- This is underneath the flag for moderation button -->
                 {% else %}
                     {% for i in range(c_length) %}
                         {% if i == 0 %}
@@ -307,27 +342,23 @@
         </div>
     </div>
 
-
-    
+        <!-- Contents Box -->
         <div class="p-0 bg-light border border-dark" id="content-box" >
             <h1 class="" style="color: #017bff; font-family: Georgia" id="title">Contents</h1>
             <ul class="ml-3 text-left" style="list-style: none;">
                 {% for i in range(title_length) %}
-                <li><a class="contentButton" href="#{{ titles[i] }}" style="font-family: Lato">{{ i + 1 }}.{{ titles[i] }}</a></li>
+                <li><a class="contentButton" href="#{{ titles[i] }}" style="font-family: Lato">{{ i + 1 }}. {{ titles[i] }}</a></li>
                 {% endfor %}
             </ul>
         </div>
 
+        <!-- Summary of entire article -->
         <div class="text-left border-bottom">
-
             <div id="summary" class="p-3 my-3">
                 <p class="pl-4 text-weight-light" style="line-height: 40px; font-size: 20px;">
                     {{summary_actual | safe}}
                 </p>
-
             </div>
-
-
         </div>
     
     <!--<div style="position: relative">-->
@@ -341,7 +372,7 @@
     <div class="container text-left mx-0 lato">
         <div id="comments" class="p-3 my-3">
 
-
+            <!-- Allow users to comment if they are logged in -->
             <form method="POST" action="/comments/{{ summary_id }}" class="form">
                 <label for="comment" class="lato"><b>Discuss this research!</b></label>
                 <div class="sticky-top form-group row">
@@ -349,7 +380,7 @@
                         <input type="text" name="comment" class="form-control text-wrap w-100" id="comment" placeholder="Interesting thoughts and new ideas..." required>
                     </div>
                     <div>
-                        {% if y == "true" %}
+                        {% if logged_out == "true" %}
                         <button class="btn btn-default" type="submit" value="{{summary_id}}" disabled>Post</button>
                         {% else %}
                         <button class="btn btn-default" type="submit" value="{{summary_id}}">Post</button>
@@ -358,13 +389,14 @@
                 </div>
             </form>
 
+            <!-- List all comments -->
             {% for comment in comments %}
-            {% if comment['reply'] == 1 and comment['last'] == 1 %}
 
+            {% if comment['reply'] == 1 and comment['last'] == 1 %}
                 <div class="container" style="width: 80%">
                     <div id="{{comment['id']}}">
                         {{ comment['comment'] }} &mdash; <span class="text-danger"> <a href="/public/{{ comment['user_id'] }}">{{ comment['first'] }} {{ comment['last'][0] }}.</a></span> on <span class="text-danger">{{ comment['date'] }}</span>
-                        <!--{% if y == "true" %}
+                        <!--{% if logged_out == "true" %}
                             <button style="float: right;" class="btn btn-default" type="submit" name="like" value="like" disabled>Like</button>
                         {% else %}
                             <button style="float: right;" class="btn btn-default bg-white btn-sm" type="submit" name="dislike_comment" value="dislike_comment">
@@ -373,10 +405,7 @@
                             <button style="float: right;" class="btn btn-default bg-white btn-sm" type="submit" name="like_comment" value="like_comment">
                                 <i class="fa fa-thumbs-o-up" style="color: #017bff;"></i></button>
                         {% endif %}-->
-
-
                     <button class="btn btn-default bg-white" data-toggle="collapse" data-target="#reply{{ comment['comment_id'] }}{{ comment['reply'] }}" style="color: DodgerBlue;"><i class="fa fa-reply-all border-0 fa-lg"></i>  Reply</button>
-
                     </div>
 
                     <form method="POST" action="/comments/{{ summary_id }}" class="collapse" id="reply{{ comment['comment_id'] }}{{ comment['reply'] }}">
@@ -385,7 +414,7 @@
                                 <input type="text" name="reply" class="form-control text-wrap w-100" id="reply" placeholder="Reply here..." required>
                             </div>
                             <div>
-                            {% if y == "true" %}
+                            {% if logged_out == "true" %}
                                 <button class="btn btn-default" type="submit" value="{{ comment['id'] }}" disabled>Post</button>
                             {% else %}
                                 <button class="btn btn-default" type="submit" name="comment_button" value="{{ comment['comment_id'] }}">Post</button>
@@ -398,7 +427,7 @@
                 <div class="container" style="width: 80%">
                     <div>
                        {{ comment['comment'] }} &mdash; <span class="text-danger"> <a href="/public/{{ comment['user_id'] }}">{{ comment['first'] }} {{ comment['last'][0] }}.</a></span> on <span class="text-danger">{{ comment['date'] }}</span>
-                        <!--{% if y == "true" %}
+                        <!--{% if logged_out == "true" %}
                             <button style="float: right;" class="btn btn-default" type="submit" name="like" value="like" disabled>Like</button>
                         {% else %}
                             <button style="float: right;" class="btn btn-default bg-white btn-sm" type="submit" name="dislike_comment" value="dislike_comment">
@@ -408,8 +437,6 @@
                                 <i class="fa fa-thumbs-o-up" style="color: #017bff;"></i></button>
                         {% endif %}-->
                     </div>
-
-
                     <!--<form method="POST" class="form">
                         <div class="sticky-top form-group row">
                             <label for="reply" class="col-xs-2 col-form-label">Want to reply? </label>
@@ -417,7 +444,7 @@
                                 <input type="text" name="reply" class="form-control text-wrap w-100" id="reply" placeholder="Reply here...">
                             </div>
                             <div>
-                            {% if y == "true" %}
+                            {% if logged_out == "true" %}
                                 <button class="btn btn-default" type="submit" value="{{ comment['id'] }}" disabled>Submit</button>
                             {% else %}
                                 <button class="btn btn-default" type="submit" name="comment_button" value="{{ comment['comment_id'] }}">Submit</button>
@@ -430,7 +457,7 @@
                 <div class="container">
                     <div>
                          {{ comment['comment'] }} &mdash;<span class="text-danger"><a href="/public/{{ comment['user_id'] }}">{{ comment['first'] }} {{ comment['last'][0] }}.</a></span>  on <span class="text-danger">{{ comment['date'] }}</span>
-                        <!--{% if y == "true" %}
+                        <!--{% if logged_out == "true" %}
                             <button style="float: right;" class="btn btn-default" type="submit" name="like" value="like" disabled>Like</button>
                         {% else %}
                             <button style="float: right;" class="btn btn-default bg-white btn-sm" type="submit" name="dislike_comment" value="dislike_comment">
@@ -443,8 +470,6 @@
 
                         <button class="btn btn-default bg-white" data-toggle="collapse" data-target="#reply{{ comment['comment_id'] }}{{ comment['reply'] }}" style="color: DodgerBlue;"><i class="fa fa-reply-all border-0 fa-lg"></i>  Reply</button>
                     </div>
-
-
                     <form method="POST" action="/comments/{{ summary_id }}" class="form collapse hide" id="reply{{ comment['comment_id'] }}{{ comment['reply'] }}">
                         <div class="sticky-top form-group row">
 
@@ -452,7 +477,7 @@
                                 <input type="text" name="reply" class="form-control text-wrap w-100" id="reply" placeholder="Reply here..." required>
                             </div>
                             <div>
-                            {% if y == "true" %}
+                            {% if logged_out == "true" %}
                                 <button class="btn btn-default" type="submit" value="{{ comment['id'] }}" disabled>Post</button>
                             {% else %}
                                 <button class="btn btn-default" type="submit" name="comment_button" value="{{ comment['comment_id'] }}">Post</button>
@@ -462,7 +487,6 @@
                     </form>
                 </div>
             {% endif %}
-
             <hr>
             {% endfor %}
 
@@ -470,5 +494,4 @@
     </div>
     </div>
 </div>
-
 {% endblock %}
