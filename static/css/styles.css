@@ -269,6 +269,40 @@ dl:nth-of-type(odd) {
 .custom-shape-divider-bottom-1595009839 .shape-fill {
     fill: #FFFFFF;
 }
+
+
+.custom-shape-divider-bottom-1595009850 {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    overflow: hidden;
+    line-height: 0;
+    transform: rotate(0deg);
+    background-color:  #000d24;
+}
+
+.custom-shape-divider-bottom-1595009850 svg {
+    position: relative;
+    display: block;
+    width: calc(100% + 1.3px);
+    height: 150px;
+}
+
+.custom-shape-divider-bottom-1595009850 .shape-fill {
+    fill: #000d24;
+}
+
+.custom-shape-divider-bottom-1595009850 .shape-fill-top {
+    fill: white;
+}
+
+.custom-shape-divider-bottom-1595009850 .shape-fill-mid {
+    fill: #202020;
+}
+
+
+
 .custom-shape-divider-bottom-1595011423 {
     position: absolute;
     bottom: 0;
