@@ -339,26 +339,26 @@ def read(summary_id):
         summary_actual=soup
 
         # Checks if person is logged in
-        # x is a variable that disables liking when true and enables liking when false
-        # y checks if person is logged in
-        # z checks if person is admin
-        z = "false"
+        # can_like is a variable that disables liking when true and enables liking when false
+        # logged_out checks if person is logged out
+        # is_admin checks if person is admin
+        is_admin = "false"
         if len(session) == 0:
-            x = "true"
-            y = "true"
+            can_like = "true"
+            logged_out = "true"
         else:
-            y = "false"
+            logged_out = "false"
             if db.execute("SELECT admin FROM users WHERE id=:user_id", user_id=session['user_id'])[0]['admin'] == 1:
-                z = "true"
+                is_admin = "true"
             # Checks if person already liked the post
             liked = db.execute("SELECT vote FROM likes WHERE user_id=:user_id AND summary_id=:summary_id", user_id=session["user_id"], summary_id=summary_id)
             if liked == []:
-                x = "false"
+                can_like = "false"
             elif liked[0]["vote"] == 1:
-                x = "enable-dislike"
+                can_like = "enable-dislike"
             else:
-                x = "enable-like"
-        return render_template("read.html", coffee=summary[0]['coffee'], endorsements=endorsements, contributors=contributors, c_length=c_length, z=z, all_tags=all_tags, all_tags_len=all_tags_len, tag_length=tag_length, tags=tags, summary_actual=percent_remove(str(summary_actual)), title_length=title_length, titles=title_list, summary_id=summary_id, summary=summary, likes=likes, x=x, y=y, comments=comments)
+                can_like = "enable-like"
+        return render_template("read.html", coffee=summary[0]['coffee'], endorsements=endorsements, contributors=contributors, c_length=c_length, is_admin=is_admin, all_tags=all_tags, all_tags_len=all_tags_len, tag_length=tag_length, tags=tags, summary_actual=percent_remove(str(summary_actual)), title_length=title_length, titles=title_list, summary_id=summary_id, summary=summary, likes=likes, can_like=can_like, logged_out=logged_out, comments=comments)
 
 
 # gives browse page for a specific tag

@@ -5,26 +5,56 @@
 
 {% block navbar %}
 <meta name="description" content="dcyphr is revolutionizing the process of reading academic papers through a crowdsourced solution informed by artificial intelligence.">
+
+<style type="text/css">
+    #mc_embed_signup{background:white; clear:left; font:14px Helvetica,Arial,sans-serif; width:100%;}
+    /* Add your own Mailchimp form style overrides in your site stylesheet or in this style block.
+    We recommend moving this block and the preceding CSS link to the HEAD of your HTML file. */
+    input[type="email"]::-webkit-input-placeholder {
+        color: gray !important;
+    }
+
+    input[type="email"]:-moz-placeholder { /* Firefox 18- */
+        color: gray !important;  
+    }
+
+    input[type="email"]::-moz-placeholder {  /* Firefox 19+ */
+        color: gray !important;  
+    }
+    
+    input[type="email"]:-ms-input-placeholder {  
+        color: gray !important;  
+    }
+    
+</style>
+
+
+
+
 <div id="preloader">
     <div id="status" class="text-center">
         <img style="margin-top: 20vh" src="{{ url_for('static', filename='logos/dna.svg') }}" alt="Loading...">
     </div>
 </div>
 <nav class="navbar navbar-expand-md navbar-dark" style="background-color: rgb(19,19,19) !important; font-family: Lato; font-weight:400;">
-    <a class="navbar-brand" href="/" ><img src="{{ url_for('static', filename='logos/dcyphr_logo.png') }}" alt="" width="60" height="58"></a>
+    <a class="navbar-brand" href="/" >
+        dcyphr
+       <!-- <img src="{{ url_for('static', filename='logos/dcyphr_logo.png') }}" alt="" width="60" height="58">
+       -->
+    </a>
             <button aria-controls="navbarIndex" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler" data-target="#navbarIndex" data-toggle="collapse" type="button">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarIndex">
                     <ul class="navbar-nav mr-auto mt-2">
                         
-                        <li class="nav-item"><a class="nav-link text-white" href="/explore">Explore</a></li>
+                        <li class="nav-item"><a class="nav-link text-white" href="/explore">Browse</a></li>
                         <li class="nav-item"><a class="nav-link text-white" href="/request">Request</a></li>
                         <li class="nav-item"><a class="nav-link text-white" href="/tasks">Contribute</a></li>
                         <li class="nav-item"><a class="nav-link text-white" href="/about">About</a></li>
 
                         <form action="/search" method="POST">
-                        <div class="nav-item ml-3 mb-1 input-group">
+                        <div class="nav-item ml-5 mb-1 input-group">
                             <input class="form-control-underlined form-control text-white" style="background-color: rgb(19,19,19)" type="text" name="search" id="search" placeholder="Search">
                         </div>
                         </form>
@@ -39,7 +69,7 @@
                 {% else %}
 
                     <ul class="navbar-nav ml-auto mt-2">
-                        <li class="nav-item"><a class="nav-link" href="/login"><button class="btn btn-outline-light">Log In</button></a></li>
+                        <li class="nav-item"><a class="nav-link" href="/login"><button class="btn text-white bg-transparent">Log In</button></a></li>
                         <li class="nav-item"><a class="nav-link" href="/register"><button class="btn btn-outline-light">Sign Up</button></a></li>
                     </ul>
                 {% endif %}
@@ -65,23 +95,27 @@
         <div class="col-lg-6">
             <div class="text-center" style="font-family: Lato;">
                 
-                <p class="pt-5 text-white" style="font-weight: 300; font-size: 5vh" id="landing">
-                    Spend less time reading.<br>
-                    Spend more time discovering.
+                <p class="h1 pt-5 text-white" style="font-size: 5vh" id="landing">
+                    Science, simplified.
+                    <div class="pt-0 text-white" style="font-weight: 100; font-size: 3vh">
+                        Spend less time reading.<br>
+                        Spend more time discovering.
+                    </div>
                 </p>
-                
-                <a href="/read/{{ random_article }}" class="btn btn-lg bg-0 text-primary" style="font-weight: 300;">
-                    I'm Feeling Lucky &rsaquo;
+                <a href="/read/{{ random_article }}" class="mt-5 btn btn-lg bg-0 text-primary mr-5" style="font-weight: 300;">
+                    I'm Feeling Lucky
                 </a>
-                <a href="/register" class="btn btn-lg bg-0 text-primary" style="font-weight: 300;">
-                    Get Started &rsaquo;
+                <a href="/register" class="mt-5 btn btn-lg btn-primary p-2" style="font-weight: 300;">
+                    Start Discovering Now
                 </a>
             </div>
         </div>
         <div class="col-3"></div>
+
+        <!-- Custom shape as a border -->
         <div class="custom-shape-divider-bottom-1595009839">
             <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
-                <path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" opacity=".25" class="shape-fill"></path>
+                <path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" opacity="0.25" class="shape-fill"></path>
                 <path d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z" opacity=".5" class="shape-fill"></path>
                 <path d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z" class="shape-fill"></path>
             </svg>
@@ -89,24 +123,20 @@
     </div>
 
 
-    <div class="home_page row" id="section2" >
+    <div class="home_page row" id="section2" style="position: relative;" >
         <div class="col-md"></div>
          <div class="col-md-6">
             <div class="text-left index_div_1" style="font-family: Lato; font-weight: 300; padding-top: 15%; padding-bottom: 15%;">
                 <div class="mb-2" style="font-size: 3.0em">
-                    Maximize productivity
+                    <strong>Maximize Productivity</strong>
                 </div>
                 <p style="font-family: Lato; font-weight: 300; font-size: 1.3em;">
-                    Researchers like yourself spend at least 11 hours reading articles each week. <span style="color: #017bff">dcyphr</span> uses psycholinguistics and cutting-edge AI to generate research distillations that save you time and resources. <a href="/register" style="color:#017bff">Register for free</a> to start requesting and contributing research distillations!
+                    dcyphr provides an open platform that allows people to browse, request, 
+                    and contribute summaries of scientific articles that are improved for readability.
+                    With the help of AI and research volunteers, our summaries help users recover 80% of the value 
+                    of an article with only 20% of the work. And 0% of the frustration.
                 </p>
-                <ul class="list-group">
-                    <li class="list-group-item border-0"><span class="fa fa-rocket" style="color: #017bff"></span> &nbsp; Up to 83% time reduction</li>
-                    <li class="list-group-item border-0"><span class="fa fa-life-buoy" style="color: #017bff"></span> &nbsp; Efficiently keep up with new research</li>
-                    <li class="list-group-item border-0"><span class="fa fa-smile-o" style="color: #017bff"></span> &nbsp; Top-notch research community</li>
-                </ul>
-
             </div>
-
         </div>
         <div class="col-md-5 my-auto pt-0">
             <picture id="pic" class="my-auto">
@@ -114,7 +144,13 @@
                 <img src="{{ url_for('static', filename='landing/research.png') }}" alt="">
             </picture>
         </div>
-        <div class="row mt-0">
+
+        
+        <!-- Section that lists In Partnership With -->
+        <div class="row mt-0 mb-5">
+            <div class="row mx-auto">
+                <div class="col-12 text-center h1" style="font-family: Lato;">In Partnership With</div>
+            </div>
             <div class="row pb-4 pt-0 mt-0 mx-auto">
                 <div class="col"></div>
                 <div class="col my-auto">
@@ -138,130 +174,92 @@
                 </picture>
                 </div>
                 <div class="col"></div>
-        </div>
-        </div>
-    </div>
-    
-    <div class="home_page row d-block landing_row" style="position: relative;">
-        <div class="text-center d-block mx-auto pt-5">
-            <div style="font-family: Lato; font-size: 3.0em; font-weight:300;" class="pt-5 pb-3" id="for_people">dcyphr is for people</div>
-            <div style="font-family: Lato; font-weight: 300; font-size: 1.3em;" class="col-lg-5 mx-auto">
-                <p><a href="https://staff.aub.edu.lb/~lmeho/meho-physics-world.pdf" target="_blank" style="text-decoration: underline">50%</a> of published research goes unread.
-                <a href="https://thejournal.com/articles/2016/11/17/many-high-school-graduates-want-to-pursue-stem-careers-but-are-unprepared-for-stem-college-courses.aspx" target="_blank" style="text-decoration: underline">74%</a> of high school graduates are not prepared to take undergraduate STEM classes.
-                <a href="https://www.pnas.org/content/116/16/7662" target="_blank" style="text-decoration: underline">84%</a> of Americans think there is a problem with scientific communication.</p>
-            </div>
-        </div>
-        <div class="row pt-5 mt-5" style="font-family: Lato;">
-            <div class="col-sm"></div>
-            <div class="col-sm text-left">
-                <p style="font-weight:700; font-size: 3vh"><i class="fa fa-lg fa-institution"></i> &nbsp; For researchers &nbsp;</p>
-                <p>We make browsing literature easy and enjoyable. Contribute distillations to make your research more accessible and impactful.</p>
-            </div>
-            <div class="col-sm text-left">
-                <p style="font-weight:700; font-size: 3vh"><i class="fa fa-lg fa-graduation-cap"></i> &nbsp; For students</p>
-                <p>We help students break into research fields by allowing them to quickly grasp concepts instead of being weighed down by jargon.</p>
-            </div>
-            <div class="col-sm text-left">
-                <p style="font-weight:700; font-size: 3vh"><i class="fa fa-lg fa-users"></i> &nbsp; For everyone</p>
-                <p>We make research accessible and fun to read for everyone. We believe the public has the right to understand new discoveries.</p>
-            </div>
-            <div class="col-sm"></div>
-        </div>
-        <div class="custom-shape-divider-bottom-1595011423">
-            <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
-                <path d="M1200 120L0 16.48 0 0 1200 0 1200 120z" class="shape-fill"></path>
-            </svg>
-        </div>
-    </div>
-    <div class="home_page row" id="section3" style="position: relative;">
-         <div class="col-lg-7 col-12">
-            <div class="index_info text-left" style="font-family: Lato; font-weight: 300">
-                <div class="mb-2" style="font-size: 3.0em">
-                    Become a research distiller
-                </div>
-                <p>
-                    We're looking for driven and research-oriented individuals to join our team. <a href="/register" style="color:#017bff">Sign up as a freelance contributor</a> or <a href="mailto:team@dcyphr.org" style="color:#017bff">become a dcyphr research fellow</a>.
-                </p>
-                <br>
-                <a href="https://bit.ly/30Co0P9" target="_blank" class="btn bg-0 btn-lg btn-outline-primary">
-                    Join our Slack &nbsp &#8594;
-                </a>
-            </div>
-        </div>
-
-        <div class="col" style="color: black; font-family: Lato; font-weight: 300">
-
-            <div class="h-25">
-
-            </div>
-
-            <div class="p-3 mx-5 border border-white bg-white landing_box" style="min-height: 60%; box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.71); position: relative">
-                <div class="text-left text-muted" style="font-size:30px; margin-left:20px; font-family: Georgia">Leaderboard</div>
-
-                <div class="row m-3 ">
-                    <div class="col-3">
-
-                    </div>
-
-                    <div class="col-5 border-bottom" style="font-size:20px; color:#017bff">
-                        User
-                    </div>
-
-                    <div class="col-3 border-bottom" style="font-size:20px; color:#017bff">
-                        Points
-                    </div>
-                </div>
-
-                {% for i in range(lead_length) %}
-                <div class="row m-3">
-                    <div class="col-3">
-                        {% if i == 0 %}
-                        <i class="fa fa-trophy border-0 fa-lg" style="color:gold"></i>
-                        {% elif i == 1 %}
-                        <i class="fa fa-trophy border-0 fa-lg" style="color:silver"></i>
-                        {% elif i == 2 %}
-                        <i class="fa fa-trophy border-0 fa-lg" style="color: rgb(240, 219, 198)"></i>
-                        {% endif %}
-                    </div>
-
-                    <div class="col-5">
-                        <a href="/public/{{ leaderboard[i]['id'] }}">{{ leaderboard[i]['first'] }} {{leaderboard[i]['last'][0]}}.</a>
-                    </div>
-
-                    <div class="col-3" style="color: rgba(211, 0, 0, 0.58)">
-                        {{ leaderboard[i]["points"] }}
-                    </div>
-                </div>
-                {% endfor %}
-                <div class="text-left" style="bottom:2vh; left:2vh; position:absolute">
-                     <small class="text-muted">All-time top contributors. Points are earned through distilling research, editing articles to improve accuracy, and others' engaging with your content.</small>
-                </div>
-            </div>
-        </div>
-        <div class="row mx-auto py-5 mb-5 w-50 landing_box" style="background: rgb(94,113,228); box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.71);">
-            <!-- Begin Mailchimp Signup Form -->
-            <link href="//cdn-images.mailchimp.com/embedcode/horizontal-slim-10_7.css" rel="stylesheet" type="text/css">
-            <style type="text/css">
-                #mc_embed_signup{background:rgb(94,113,228); clear:left; font:14px Helvetica,Arial,sans-serif; width:100%;}
-                /* Add your own Mailchimp form style overrides in your site stylesheet or in this style block.
-                We recommend moving this block and the preceding CSS link to the HEAD of your HTML file. */
-            </style>
-            <div id="mc_embed_signup">
-            <form action="https://dcyphr.us8.list-manage.com/subscribe/post?u=1c38534c3ddafced299e23a1c&amp;id=52012213fb" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank" novalidate>
-                <div id="mc_embed_signup_scroll">
-                <p style="font-family: Lato; font-size:3vh; color:white;" class="py-4">Get bite-sized science in your inbox each week!</p>
-                <input type="email" value="" name="EMAIL" class="border20 form-control w-50" style="background-color: rgb(94,113,228); color:white;" id="mce-EMAIL" placeholder="isaac.newton@earth.org" required>
-                <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
-                <div style="position: absolute; left: -5000px;" aria-hidden="true"><input type="text" name="b_1c38534c3ddafced299e23a1c_52012213fb" tabindex="-1" value=""></div>
-                <div class="clear"><input type="submit" value="Subscribe" name="subscribe" id="mc-embedded-subscribe" class="btn btn-outline-light border20"></div>
-                </div>
-            </form>
             </div>
         </div>
         
+        <div class="row py-5"></div>
+        <div class="custom-shape-divider-bottom-1595009850">
+            <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
+                <path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" opacity="1" class="shape-fill-mid"></path>
+                <path d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z" opacity="0.25" class="shape-fill-top"></path>
+                <path d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z" opacity="1" class="shape-fill-top"></path>
+            </svg>
+        </div>
+
     </div>
 
     
 
+    <!-- dcyphr is for everyone section -->
+    <div class="home_page row d-block landing_row" style="position: relative;">
+        <div class="row py-5"></div>
+        <div class="text-left d-block mx-auto pt-5">
+            <div class="text-center" style="font-family: Lato; font-size: 3.0em; font-weight:300;" class="pt-5 pb-3" id="for_people">
+                <strong>dcyphr Is For Everyone</strong>
+            </div>
+            <div style="font-family: Lato;  font-weight: 100; font-size: 1.3em;" class="col-lg-5 mx-auto pt-4">
+                <p><strong>50%</strong> of published research goes unread.<br>
+                <a style="text-decoration: none" href="https://thejournal.com/articles/2016/11/17/many-high-school-graduates-want-to-pursue-stem-careers-but-are-unprepared-for-stem-college-courses.aspx" target="_blank" style="text-decoration: underline">
+                    <strong>74%</strong></a> of high school graduates are not prepared to take undergraduate STEM classes.<br>
+                <a style="text-decoration: none" href="https://www.pnas.org/content/116/16/7662" target="_blank" style="text-decoration: underline">
+                    <strong>84%</strong></a> of Americans think there is a problem with scientific communication.</p>
+            </div>
+        </div>
+
+        <div class="row py-5 mt-5" style="font-family: Lato;">
+            <div class="col-sm"></div>
+            <div class="col-sm text-left">
+                <p style="font-weight:300; font-size: 3vh"><i class="fa fa-lg fa-institution"></i> &nbsp; <strong>For researchers</strong> &nbsp;</p>
+                <p style="font-weight:300;">
+                    We make reading articles fast and easy, 
+                    so you can keep up with the latest scientific 
+                    discoveries.
+                </p>
+            </div>
+            <div class="col-sm text-left">
+                <p style="font-weight:300; font-size: 3vh"><i class="fa fa-lg fa-graduation-cap"></i> &nbsp; <strong>For students</strong></p>
+                <p style="font-weight:300;">
+                    We make grasping scientific concepts simple, 
+                    so you can spend less time weighed down by jargon.
+                </p>
+            </div>
+            <div class="col-sm text-left">
+                <p style="font-weight:300; font-size: 3vh"><i class="fa fa-lg fa-users"></i> &nbsp; <strong>For everyone</strong></p>
+                <p style="font-weight:300;">
+                    We make research digestible and fun, 
+                    because you have the right to underestand new discoveries.
+                </p>
+            </div>
+            <div class="col-sm"></div>
+        </div>
+        
+        <div class="row py-5"></div>
+        <div class="row mx-auto py-5 w-50 landing_box border10" style="background: white; box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.71);">
+                <!-- Begin Mailchimp Signup Form -->
+                <link href="//cdn-images.mailchimp.com/embedcode/horizontal-slim-10_7.css" rel="stylesheet" type="text/css">
+                
+                <div id="mc_embed_signup">
+                <form action="https://dcyphr.us8.list-manage.com/subscribe/post?u=1c38534c3ddafced299e23a1c&amp;id=52012213fb" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank" novalidate>
+                    <div id="mc_embed_signup_scroll">
+                    <p style="font-family: Lato; font-size:3vh; color:black;" class="pb-3">
+                        Get bite-sized science in your inbox each week!
+                    </p>
+                    <input type="email" value="" 
+                        name="EMAIL" 
+                        class="border10 border-dark form-control w-50 bg-light text-black mr-5" 
+                        style="color:black;" 
+                        id="mce-EMAIL" 
+                        placeholder="isaac.newton@earth.org"    
+                        required
+                    >
+                    <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
+                    <div style="position: absolute; left: -5000px;" aria-hidden="true"><input type="text" name="b_1c38534c3ddafced299e23a1c_52012213fb" tabindex="-1" value=""></div>
+                    <div class="clear"><input type="submit" value="Subscribe" name="subscribe" id="mc-embedded-subscribe" class="btn text-white bg-primary border10"></div>
+                    </div>
+                </form>
+                </div>
+        </div>
+        <div class="row py-5"></div>
+    </div>
 </div>
 {% endblock %}
